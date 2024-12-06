@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import calcReducer from "./calc";
+import beamReducer from "./beam";
 
 export const store = configureStore({
   reducer: {
-    calc: calcReducer,
+    beam: beamReducer,
   },
 });

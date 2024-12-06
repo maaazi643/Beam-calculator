@@ -123,11 +123,11 @@ function PinnedSupportSettings() {
         animate={showSinking ? "visible" : "hidden"}
         variants={configDropdownVariants}
       >
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </motion.div>
       <div className="space-y-[0.5rem] mb-[1rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>
@@ -159,11 +159,11 @@ function RollerSupportSettings() {
         animate={showSinking ? "visible" : "hidden"}
         variants={configDropdownVariants}
       >
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </motion.div>
       <div className="space-y-[0.5rem] mb-[1rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>
@@ -195,11 +195,11 @@ function FixedSupportSettings() {
         animate={showSinking ? "visible" : "hidden"}
         variants={configDropdownVariants}
       >
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </motion.div>
       <div className="space-y-[0.5rem] mb-[1rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>

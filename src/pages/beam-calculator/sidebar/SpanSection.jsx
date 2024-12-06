@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { beamActions } from "../../../store/beam";
 import { motion } from "framer-motion";
 import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
 import WrapperHeader from "../../../components/typography/WrapperHeader";
@@ -8,6 +11,11 @@ import WrapperButton from "../../../components/buttons/WrapperButton";
 import UpArrow from "../../../icons/UpArrow";
 import { MetreUnit, EIUnit } from "../../../icons/units";
 import RoundedPlus from "../../../icons/RoundedPlus";
+import { createNewSpan } from "../../../store/beam-utils";
+import {
+  validateSpanLength,
+  validateSpanFlexuralRigidity,
+} from "../../../utils/validators";
 
 const dropdownVariants = {
   hidden: {
@@ -26,10 +34,19 @@ const dropdownVariants = {
 };
 
 export default function SpanSection() {
-  const [showConfig, setShowConfig] = useState(false);
+  const dispatch = useDispatch();
+  const { showSpanConfig, spans } = useSelector((state) => state.beam);
 
   const toggleShowConfigHandler = () => {
-    setShowConfig((previousConfig) => !previousConfig);
+    dispatch(
+      beamActions.set({ key: "showSpanConfig", value: !showSpanConfig })
+    );
+  };
+
+  const addSpanHandler = () => {
+    dispatch(
+      beamActions.set({ key: "spans", value: [...spans, createNewSpan()] })
+    );
   };
 
   return (
@@ -41,27 +58,20 @@ export default function SpanSection() {
         <WrapperHeader>Spans</WrapperHeader>
         <UpArrow
           className={`transform transition-transform ${
-            showConfig ? "rotate-180" : ""
+            showSpanConfig ? "rotate-180" : ""
           }`}
         />
       </button>
       <motion.div
         initial="hidden"
-        animate={showConfig ? "visible" : "hidden"}
+        animate={showSpanConfig ? "visible" : "hidden"}
         variants={dropdownVariants}
         className="space-y-[1rem] overflow-hidden px-1"
       >
-        <div className="flex flex-row gap-x-[1rem]">
-          <div className="space-y-[0.5rem]">
-            <WrapperParagraph>Length</WrapperParagraph>
-            <NumberInput icon={<MetreUnit />} placeholder="" />
-          </div>
-          <div className="space-y-[0.5rem]">
-            <WrapperParagraph>EI</WrapperParagraph>
-            <NumberInput icon={<EIUnit />} placeholder="" />
-          </div>
-        </div>
-        <WrapperButton>
+        {spans.map((span) => (
+          <SpanItem key={span.id} span={span} />
+        ))}
+        <WrapperButton onClick={addSpanHandler}>
           <span>Add New Span</span>
           <RoundedPlus />
         </WrapperButton>
@@ -70,3 +80,58 @@ export default function SpanSection() {
     </PropertyWrapper>
   );
 }
+
+function SpanItem({ span }) {
+  const dispatch = useDispatch();
+  const { spans } = useSelector((state) => state.beam);
+  const [lengthIsValid, lengthErrorMessage] = validateSpanLength(span.length);
+  const [flexuralRigidityIsValid, flexuralRigidityErrorMessage] =
+    validateSpanFlexuralRigidity(span.flexuralRigidity);
+
+  console.log(validateSpanLength(span.length));
+
+  const lengthChangeHandler = (length) => {
+    const newSpans = [...spans];
+    const spanIndex = newSpans.findIndex((s) => s.id === span.id);
+    newSpans[spanIndex] = { ...span, length: length };
+    dispatch(beamActions.set({ key: "spans", value: newSpans }));
+  };
+
+  const flexuralRigidityChangeHandler = (flexuralRigidity) => {
+    const newSpans = [...spans];
+    const spanIndex = newSpans.findIndex((s) => s.id === span.id);
+    newSpans[spanIndex] = { ...span, flexuralRigidity: flexuralRigidity };
+    dispatch(beamActions.set({ key: "spans", value: newSpans }));
+  };
+
+  return (
+    <div className="flex flex-row gap-x-[1rem]">
+      <div className="space-y-[0.5rem]">
+        <WrapperParagraph>Length</WrapperParagraph>
+        <NumberInput
+          Icon={MetreUnit}
+          placeholder=""
+          onChange={lengthChangeHandler}
+          value={span.length}
+          isValid={lengthIsValid}
+          errorMessage={lengthErrorMessage}
+        />
+      </div>
+      <div className="space-y-[0.5rem]">
+        <WrapperParagraph>EI</WrapperParagraph>
+        <NumberInput
+          Icon={EIUnit}
+          placeholder=""
+          onChange={flexuralRigidityChangeHandler}
+          value={span.flexuralRigidity}
+          isValid={flexuralRigidityIsValid}
+          errorMessage={flexuralRigidityErrorMessage}
+        />
+      </div>
+    </div>
+  );
+}
+
+SpanItem.propTypes = {
+  span: PropTypes.object,
+};

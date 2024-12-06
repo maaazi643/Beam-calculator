@@ -8,7 +8,7 @@ export default function ControlBar({ className }) {
   return (
     <div
       className={twMerge(
-        "bg-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] py-7 px-4 flex items-center justify-center gap-8",
+        "bg-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] py-8 px-4 flex items-center justify-center gap-8",
         className
       )}
     >

@@ -134,7 +134,7 @@ UniformDistributedLoad.propTypes = {
   onClick: PropTypes.func,
 };
 
-export const NonUniformDistributedLoad = ({ active, onClick }) => {
+export const UniformVaryingLoad = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -209,7 +209,7 @@ export const NonUniformDistributedLoad = ({ active, onClick }) => {
   );
 };
 
-NonUniformDistributedLoad.propTypes = {
+UniformVaryingLoad.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };

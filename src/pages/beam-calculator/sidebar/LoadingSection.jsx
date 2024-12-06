@@ -10,7 +10,7 @@ import { MetreUnit } from "../../../icons/units";
 import {
   SinglePointLoad,
   UniformDistributedLoad,
-  NonUniformDistributedLoad,
+  UniformVaryingLoad,
 } from "../../../icons/Properties";
 
 const dropdownVariants = {
@@ -70,14 +70,14 @@ export default function LoadingSection() {
             active={isUniformDistributedLoad}
             onClick={() => setLoadType(1)}
           />
-          <NonUniformDistributedLoad
+          <UniformVaryingLoad
             active={isNonUniformDistributedLoad}
             onClick={() => setLoadType(2)}
           />
         </div>
         {isSinglePointLoad && <SinglePointLoadSettings />}
         {isUniformDistributedLoad && <UniformDistributedLoadSettings />}
-        {isNonUniformDistributedLoad && <NonUniformDistributedLoadSettings />}
+        {isNonUniformDistributedLoad && <UniformVaryingLoadSettings />}
       </motion.div>
     </PropertyWrapper>
   );
@@ -98,11 +98,11 @@ function SinglePointLoadSettings() {
     >
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Value of Loading</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>
@@ -124,22 +124,22 @@ function UniformDistributedLoadSettings() {
     >
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Value of Loading</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Span of Loading</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>
   );
 }
 
-function NonUniformDistributedLoadSettings() {
+function UniformVaryingLoadSettings() {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }} // Animation on mount (fade in and slide down)
@@ -154,19 +154,19 @@ function NonUniformDistributedLoadSettings() {
     >
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Opening Value</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Closing Value</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Span of Loading</WrapperParagraph>
-        <NumberInput icon={<MetreUnit />} />
+        <NumberInput Icon={MetreUnit} />
       </div>
       <WrapperButton>Apply</WrapperButton>
     </motion.div>
