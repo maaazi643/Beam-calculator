@@ -3,12 +3,11 @@ import { motion } from "framer-motion";
 import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
 import WrapperHeader from "../../../components/typography/WrapperHeader";
 import WrapperParagraph from "../../../components/typography/WrapperParagraph";
+import NumberInput from "../../../components/inputs/NumberInput";
+import WrapperButton from "../../../components/buttons/WrapperButton";
 import UpArrow from "../../../icons/UpArrow";
-import {
-  SinglePointLoad,
-  UniformDistributedLoad,
-  NonUniformDistributedLoad
-} from "../../../icons/Properties";
+import { MetreUnit, EIUnit } from "../../../icons/units";
+import RoundedPlus from "../../../icons/RoundedPlus";
 
 const dropdownVariants = {
   hidden: {
@@ -21,12 +20,13 @@ const dropdownVariants = {
     height: "auto",
     transition: { duration: 0.3, ease: "easeInOut" },
     marginTop: 16,
+    borderTop: "1px solid #D4D4D8",
+    paddingTop: 16,
   },
 };
 
-export default function LoadingSection() {
-  const [showConfig, setShowConfig] = useState(true);
-  const [loadType, setLoadType] = useState(0);
+export default function SpanSection() {
+  const [showConfig, setShowConfig] = useState(false);
 
   const toggleShowConfigHandler = () => {
     setShowConfig((previousConfig) => !previousConfig);
@@ -38,7 +38,7 @@ export default function LoadingSection() {
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"
       >
-        <WrapperHeader>Loadings</WrapperHeader>
+        <WrapperHeader>Spans</WrapperHeader>
         <UpArrow
           className={`transform transition-transform ${
             showConfig ? "rotate-180" : ""
@@ -49,25 +49,23 @@ export default function LoadingSection() {
         initial="hidden"
         animate={showConfig ? "visible" : "hidden"}
         variants={dropdownVariants}
-        className="space-y-[1rem] overflow-hidden"
+        className="space-y-[1rem] overflow-hidden px-1"
       >
-        <WrapperParagraph>Loading Type</WrapperParagraph>
-        <div className="flex gap-x-[0.5rem]">
-          <SinglePointLoad
-            active={0 === loadType}
-            onClick={() => setLoadType(0)}
-          />
-          <UniformDistributedLoad
-            active={1 === loadType}
-            onClick={() => setLoadType(1)}
-          />
-          <NonUniformDistributedLoad
-            active={2 === loadType}
-            onClick={() => setLoadType(2)}
-          />
+        <div className="flex flex-row gap-x-[1rem]">
+          <div className="space-y-[0.5rem]">
+            <WrapperParagraph>Length</WrapperParagraph>
+            <NumberInput icon={<MetreUnit />} placeholder="" />
+          </div>
+          <div className="space-y-[0.5rem]">
+            <WrapperParagraph>EI</WrapperParagraph>
+            <NumberInput icon={<EIUnit />} placeholder="" />
+          </div>
         </div>
-        <WrapperParagraph>Distance (from left)</WrapperParagraph>
-        <WrapperParagraph>Value of Loading</WrapperParagraph>
+        <WrapperButton>
+          <span>Add New Span</span>
+          <RoundedPlus />
+        </WrapperButton>
+        <WrapperButton>Apply</WrapperButton>
       </motion.div>
     </PropertyWrapper>
   );

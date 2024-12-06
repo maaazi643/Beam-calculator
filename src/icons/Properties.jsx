@@ -213,3 +213,207 @@ NonUniformDistributedLoad.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
+
+export const PinnedSupport = ({ active, onClick }) => {
+  return (
+    <motion.button
+      className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
+      onClick={onClick}
+      animate={{
+        backgroundColor: active ? "#444" : "#fff", // Button background color
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.3,
+      }}
+    >
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          ease: "easeInOut",
+        }}
+      >
+        <motion.path
+          d="M14.4201 0.699997L25.9382 20.65H2.90192L14.4201 0.699997Z"
+          fill={active ? "#fff" : "#444"}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+        {[17.8353, 13.3764, 8.91766, 4.45874, 0].map((x, i) => (
+          <motion.line
+            key={i}
+            y1="-0.309196"
+            x2="7.49229"
+            y2="-0.309196"
+            transform={`matrix(0.758752 -0.65138 -0.634148 -0.773212 ${x} 25.2)`}
+            stroke={active ? "#fff" : "#444"}
+            strokeWidth="0.618392"
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </motion.svg>
+    </motion.button>
+  );
+};
+
+PinnedSupport.propTypes = {
+  active: PropTypes.bool,
+  onClick: PropTypes.func,
+};
+
+export const RollerSupport = ({ active, onClick }) => {
+  return (
+    <motion.button
+      className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
+      onClick={onClick}
+      animate={{
+        backgroundColor: active ? "#444" : "#fff", // Button background color
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.3,
+      }}
+    >
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          ease: "easeInOut",
+        }}
+      >
+        <motion.path
+          d="M14 0.699997L25.5182 20.65H2.48187L14 0.699997Z"
+          fill={active ? "#fff" : "#444"}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.circle
+          cx="6.22996"
+          cy="23.45"
+          r="3.15"
+          fill={active ? "#fff" : "#444"}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.circle
+          cx="20.9299"
+          cy="23.45"
+          r="3.15"
+          fill={active ? "#fff" : "#444"}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.svg>
+    </motion.button>
+  );
+};
+
+RollerSupport.propTypes = {
+  active: PropTypes.bool,
+  onClick: PropTypes.func,
+};
+
+export const FixedSupport = ({ active, onClick }) => {
+  return (
+    <motion.button
+      className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
+      onClick={onClick}
+      animate={{
+        backgroundColor: active ? "#444" : "#fff", // Button background color
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.3,
+      }}
+    >
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="34"
+        height="34"
+        viewBox="0 0 34 34"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          ease: "easeInOut",
+        }}
+      >
+        <motion.line
+          x1="14.9454"
+          y1="14.6688"
+          x2="26.1454"
+          y2="14.6688"
+          stroke={active ? "#fff" : "#444"}
+          strokeWidth="1.24444"
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.path
+          d="M15.0394 2.68896L15.0394 25.089"
+          stroke={active ? "#fff" : "#444"}
+          strokeWidth="1.24444"
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+        />
+        {[10.0164, 15.4954, 20.9744, 26.4538, 31.9331].map((y, i) => (
+          <motion.line
+            key={i}
+            y1="-0.311111"
+            x2="9.64934"
+            y2="-0.311111"
+            transform={`matrix(0.689851 -0.723952 0.804268 0.594267 8.19513 ${y})`}
+            stroke={active ? "#fff" : "#444"}
+            strokeWidth="0.622222"
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </motion.svg>
+    </motion.button>
+  );
+};
+
+FixedSupport.propTypes = {
+  active: PropTypes.bool,
+  onClick: PropTypes.func,
+};
