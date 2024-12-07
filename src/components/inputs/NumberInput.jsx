@@ -33,7 +33,7 @@ export default function NumberInput({
           min="0"
           className={`w-full flex items-center gap-[0.8125rem] pl-[1.125rem] py-[0.8rem] border rounded-[0.4375rem] border-solid focus:ring-1 outline-none transition-colors ${
             canShowError
-              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              ? "border-error focus:border-error focus:ring-error"
               : "border-[#D4D4D8] focus:border-[#CDCED9] focus:ring-[#CDCED9]"
           }`}
           placeholder="Enter a number"
@@ -44,19 +44,19 @@ export default function NumberInput({
         />
         {Icon && (
           <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            {<Icon className={canShowError ? "text-red-500" : ""} />}
+            {<Icon className={canShowError ? "text-error" : ""} />}
           </span>
         )}
       </div>
       <AnimatePresence>
         {canShowError && (
           <motion.span
-            className="mt-0.5 text-xs text-red-500"
+            className="mt-0.5 text-xs inline-block text-error"
             role="alert"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3 }}
           >
             {errorMessage || "Invalid number"}
           </motion.span>

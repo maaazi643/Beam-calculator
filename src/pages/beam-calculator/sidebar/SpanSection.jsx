@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { beamActions } from "../../../store/beam";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
+import MemberIndicator from "../../../components/indicators/MemberIndicator";
 import WrapperHeader from "../../../components/typography/WrapperHeader";
 import WrapperParagraph from "../../../components/typography/WrapperParagraph";
 import NumberInput from "../../../components/inputs/NumberInput";
 import WrapperButton from "../../../components/buttons/WrapperButton";
+import DeleteButton from "../../../components/buttons/DeleteButton";
 import UpArrow from "../../../icons/UpArrow";
+import Trash from "../../../icons/Trash";
 import { MetreUnit, EIUnit } from "../../../icons/units";
 import RoundedPlus from "../../../icons/RoundedPlus";
 import { createNewSpan } from "../../../store/beam-utils";
@@ -33,9 +36,32 @@ const dropdownVariants = {
   },
 };
 
+const indicatorVariants = {
+  hidden: {
+    opacity: 0,
+    height: 0,
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+  visible: {
+    opacity: 1,
+    height: "auto",
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+};
+
 export default function SpanSection() {
+  const spanSectionRef = useRef(null);
   const dispatch = useDispatch();
-  const { showSpanConfig, spans } = useSelector((state) => state.beam);
+  const { showSpanConfig, spans, beamPropertiesHistory, beamProperties } =
+    useSelector((state) => state.beam);
+
+  const scrollToBottom = () => {
+    const wrapperEl = spanSectionRef?.current;
+    const sectionsNodes = wrapperEl?.querySelectorAll(".span-section");
+    const sections = Array.from(sectionsNodes);
+    const lastSection = sections[sections.length - 1];
+    lastSection.scrollIntoView({ behavior: "smooth" });
+  };
 
   const toggleShowConfigHandler = () => {
     dispatch(
@@ -47,18 +73,42 @@ export default function SpanSection() {
     dispatch(
       beamActions.set({ key: "spans", value: [...spans, createNewSpan()] })
     );
+    scrollToBottom();
+  };
+
+  const applySpanHandler = () => {
+    const newBeamProperties = { ...beamProperties };
+    newBeamProperties.spans = spans;
+    dispatch(
+      beamActions.set({ key: "beamProperties", value: newBeamProperties })
+    );
+    dispatch(
+      beamActions.set({
+        key: "beamPropertiesHistory",
+        value: [...beamPropertiesHistory, newBeamProperties],
+      })
+    );
   };
 
   return (
-    <PropertyWrapper className="">
+    <PropertyWrapper ref={spanSectionRef} className="">
       <button
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"
       >
-        <WrapperHeader>Spans</WrapperHeader>
+        <WrapperHeader className="flex flex-row items-center gap-2">
+          <span>Spans</span>
+          <motion.span
+            initial="hidden"
+            animate={spans.length > 0 ? "visible" : "hidden"}
+            variants={indicatorVariants}
+          >
+            <MemberIndicator number={spans.length} />
+          </motion.span>
+        </WrapperHeader>
         <UpArrow
           className={`transform transition-transform ${
-            showSpanConfig ? "rotate-180" : ""
+            !showSpanConfig ? "rotate-180" : ""
           }`}
         />
       </button>
@@ -68,14 +118,24 @@ export default function SpanSection() {
         variants={dropdownVariants}
         className="space-y-[1rem] overflow-hidden px-1"
       >
-        {spans.map((span) => (
-          <SpanItem key={span.id} span={span} />
-        ))}
+        <AnimatePresence>
+          {spans.map((span) => (
+            <motion.div
+              key={span.id}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SpanItem key={span.id} span={span} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
         <WrapperButton onClick={addSpanHandler}>
           <span>Add New Span</span>
           <RoundedPlus />
         </WrapperButton>
-        <WrapperButton>Apply</WrapperButton>
+        <WrapperButton onClick={applySpanHandler}>Apply</WrapperButton>
       </motion.div>
     </PropertyWrapper>
   );
@@ -87,8 +147,6 @@ function SpanItem({ span }) {
   const [lengthIsValid, lengthErrorMessage] = validateSpanLength(span.length);
   const [flexuralRigidityIsValid, flexuralRigidityErrorMessage] =
     validateSpanFlexuralRigidity(span.flexuralRigidity);
-
-  console.log(validateSpanLength(span.length));
 
   const lengthChangeHandler = (length) => {
     const newSpans = [...spans];
@@ -104,30 +162,40 @@ function SpanItem({ span }) {
     dispatch(beamActions.set({ key: "spans", value: newSpans }));
   };
 
+  const deleteSpanHandler = () => {
+    const newSpans = spans.filter((s) => s.id !== span.id);
+    dispatch(beamActions.set({ key: "spans", value: newSpans }));
+  };
+
   return (
-    <div className="flex flex-row gap-x-[1rem]">
-      <div className="space-y-[0.5rem]">
-        <WrapperParagraph>Length</WrapperParagraph>
-        <NumberInput
-          Icon={MetreUnit}
-          placeholder=""
-          onChange={lengthChangeHandler}
-          value={span.length}
-          isValid={lengthIsValid}
-          errorMessage={lengthErrorMessage}
-        />
+    <div className="space-y-[1rem] span-section">
+      <div className="flex flex-row items-start gap-x-[1rem]">
+        <div className="space-y-[0.5rem]">
+          <WrapperParagraph>Length</WrapperParagraph>
+          <NumberInput
+            Icon={MetreUnit}
+            placeholder=""
+            onChange={lengthChangeHandler}
+            value={span.length}
+            isValid={lengthIsValid}
+            errorMessage={lengthErrorMessage}
+          />
+        </div>
+        <div className="space-y-[0.5rem]">
+          <WrapperParagraph>EI</WrapperParagraph>
+          <NumberInput
+            Icon={EIUnit}
+            placeholder=""
+            onChange={flexuralRigidityChangeHandler}
+            value={span.flexuralRigidity}
+            isValid={flexuralRigidityIsValid}
+            errorMessage={flexuralRigidityErrorMessage}
+          />
+        </div>
       </div>
-      <div className="space-y-[0.5rem]">
-        <WrapperParagraph>EI</WrapperParagraph>
-        <NumberInput
-          Icon={EIUnit}
-          placeholder=""
-          onChange={flexuralRigidityChangeHandler}
-          value={span.flexuralRigidity}
-          isValid={flexuralRigidityIsValid}
-          errorMessage={flexuralRigidityErrorMessage}
-        />
-      </div>
+      <DeleteButton onClick={deleteSpanHandler}>
+        <Trash />
+      </DeleteButton>
     </div>
   );
 }

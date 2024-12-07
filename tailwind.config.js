@@ -3,6 +3,8 @@ export const COLORS = {
   secondary: "#444",
   "secondary-2": "#666",
   tertiary: "#F7F7F7",
+  error: "#DA1414",
+  "error-2": "#FEEFEF",
 };
 
 /** @type {import('tailwindcss').Config} */

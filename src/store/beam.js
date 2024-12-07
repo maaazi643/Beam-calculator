@@ -1,34 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createNewSpan } from "./beam-utils";
 
 const initialState = {
   // spans config
-  showSpanConfig: false,
-  spans: [],
+  showSpanConfig: true,
+  spans: [createNewSpan()],
   // loadings config
-  showLoadingsConfig: false,
-  activeLoadingType: null,
-  singlePointLoadDistanceFromLeft: "",
-  singlePointLoadValueOfLoading: "",
-  uniformDistributedLoadDistanceFromLeft: "",
-  uniformDistributedLoadValueOfLoading: "",
-  uniformDistributedLoadSpanOfLoading: "",
-  uniformVaryingLoadDistanceFromLeft: "",
-  uniformVaryingLoadOpeningValue: "",
-  uniformVaryingLoadClosingSpan: "",
-  uniformVaryingLoadSpanOfOpening: "",
-  // supports config
-  showSupportsConfig: false,
+  showLoadingConfig: false,
+  loadings: [],
+  showSupportConfig: false,
+  supports: [],
   activeSupportType: null,
-  pinnedSupportSinking: false,
-  pinnedSupportSinkingValue: "",
-  pinnedSupportDistanceFromLeft: "",
-  rollerSupportSinking: false,
-  rollerSupportSinkingValue: "",
-  rollerSupportDistanceFromLeft: "",
-  fixedSupportSinking: false,
-  fixedSupportSinkingValue: "",
-  fixedSupportDistanceFromLeft: "",
-  activeMember: { type: null, id: null },
   beamPropertiesHistory: [],
   beamProperties: {
     spans: [],
