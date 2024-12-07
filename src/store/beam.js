@@ -11,7 +11,8 @@ const initialState = {
   showSupportConfig: false,
   supports: [],
   activeSupportType: null,
-  beamPropertiesHistory: [],
+  beamPropertiesUndoStack: [],
+  beamPropertiesRedoStack: [],
   beamProperties: {
     spans: [],
     supports: [],
@@ -24,7 +25,9 @@ export const beamSlice = createSlice({
   initialState,
   reducers: {
     reset: () => {
-      return initialState;
+      const newInitialState = { ...initialState };
+      newInitialState.spans = [];
+      return newInitialState;
     },
     set: (state, { payload }) => {
       if (Array.isArray(payload)) {

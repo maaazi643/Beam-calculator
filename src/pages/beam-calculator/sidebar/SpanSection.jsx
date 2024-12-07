@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { beamActions } from "../../../store/beam";
@@ -50,18 +50,9 @@ const indicatorVariants = {
 };
 
 export default function SpanSection() {
-  const spanSectionRef = useRef(null);
   const dispatch = useDispatch();
-  const { showSpanConfig, spans, beamPropertiesHistory, beamProperties } =
+  const { showSpanConfig, spans, beamPropertiesUndoStack, beamProperties } =
     useSelector((state) => state.beam);
-
-  const scrollToBottom = () => {
-    const wrapperEl = spanSectionRef?.current;
-    const sectionsNodes = wrapperEl?.querySelectorAll(".span-section");
-    const sections = Array.from(sectionsNodes);
-    const lastSection = sections[sections.length - 1];
-    lastSection.scrollIntoView({ behavior: "smooth" });
-  };
 
   const toggleShowConfigHandler = () => {
     dispatch(
@@ -73,25 +64,24 @@ export default function SpanSection() {
     dispatch(
       beamActions.set({ key: "spans", value: [...spans, createNewSpan()] })
     );
-    scrollToBottom();
   };
 
   const applySpanHandler = () => {
     const newBeamProperties = { ...beamProperties };
     newBeamProperties.spans = spans;
     dispatch(
-      beamActions.set({ key: "beamProperties", value: newBeamProperties })
-    );
-    dispatch(
-      beamActions.set({
-        key: "beamPropertiesHistory",
-        value: [...beamPropertiesHistory, newBeamProperties],
-      })
+      beamActions.set([
+        { key: "beamProperties", value: newBeamProperties },
+        {
+          key: "beamPropertiesUndoStack",
+          value: [...beamPropertiesUndoStack, newBeamProperties],
+        },
+      ])
     );
   };
 
   return (
-    <PropertyWrapper ref={spanSectionRef} className="">
+    <PropertyWrapper className="">
       <button
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"

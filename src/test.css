@@ -1,6 +1,5 @@
 .ppp {
-    @apply text-[color:var(--text-primary-87,#212121)] text-sm not-italic font-semibold leading-[133%];
-    /* Typography@14/600 */
+    @apply text-[#444] text-base not-italic font-semibold leading-[133%];
     font-family: Inter;
-    /* 1.16375rem */
+    /* 1.33rem */
 }

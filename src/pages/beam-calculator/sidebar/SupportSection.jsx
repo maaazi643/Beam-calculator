@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,8 +71,12 @@ const indicatorVariants = {
 
 export default function SupportSection() {
   const dispatch = useDispatch();
-  const { showSupportConfig, supports, beamPropertiesHistory, beamProperties } =
-    useSelector((state) => state.beam);
+  const {
+    showSupportConfig,
+    supports,
+    beamPropertiesUndoStack,
+    beamProperties,
+  } = useSelector((state) => state.beam);
 
   const toggleShowSupportHandler = () => {
     dispatch(
@@ -93,13 +97,13 @@ export default function SupportSection() {
     const newBeamProperties = { ...beamProperties };
     newBeamProperties.supports = supports;
     dispatch(
-      beamActions.set({ key: "beamProperties", value: newBeamProperties })
-    );
-    dispatch(
-      beamActions.set({
-        key: "beamPropertiesHistory",
-        value: [...beamPropertiesHistory, newBeamProperties],
-      })
+      beamActions.set([
+        { key: "beamProperties", value: newBeamProperties },
+        {
+          key: "beamPropertiesUndoStack",
+          value: [...beamPropertiesUndoStack, newBeamProperties],
+        },
+      ])
     );
   };
 
@@ -187,7 +191,7 @@ function SupportItem({ support }) {
   };
 
   return (
-    <div className="space-y-[1rem] px-[0.5px]">
+    <div className="space-y-[1rem] px-[0.5px] support-section">
       <WrapperParagraph>Support Type</WrapperParagraph>
       <div className="flex gap-x-[0.5rem]">
         <PinnedSupport
@@ -216,10 +220,8 @@ function PinnedSupportSettings({ support }) {
   const dispatch = useDispatch();
   const { supports } = useSelector((state) => state.beam);
   const { type, sinking, sinkingValue, distanceFromLeft } = support;
-  const [sinkingValueIsValid, sinkingErrorMessage] = validateSupportSinkingValue(
-    type,
-    sinkingValue
-  );
+  const [sinkingValueIsValid, sinkingErrorMessage] =
+    validateSupportSinkingValue(type, sinkingValue);
   const [distanceFromLeftIsValid, distanceFromLeftErrorMessage] =
     validateSupportDistanceFromLeft(type, distanceFromLeft);
 
@@ -270,6 +272,7 @@ function PinnedSupportSettings({ support }) {
         onChange={setSinking}
         className="mb-[1rem]"
       />
+
       <motion.div
         initial="hidden"
         animate={sinking ? "visible" : "hidden"}
@@ -306,10 +309,8 @@ function RollerSupportSettings({ support }) {
   const dispatch = useDispatch();
   const { supports } = useSelector((state) => state.beam);
   const { type, sinking, sinkingValue, distanceFromLeft } = support;
-  const [sinkingValueIsValid, sinkingErrorMessage] = validateSupportSinkingValue(
-    type,
-    sinkingValue
-  );
+  const [sinkingValueIsValid, sinkingErrorMessage] =
+    validateSupportSinkingValue(type, sinkingValue);
   const [distanceFromLeftIsValid, distanceFromLeftErrorMessage] =
     validateSupportDistanceFromLeft(type, distanceFromLeft);
 
@@ -396,10 +397,8 @@ function FixedSupportSettings({ support }) {
   const dispatch = useDispatch();
   const { supports } = useSelector((state) => state.beam);
   const { type, sinking, sinkingValue, distanceFromLeft } = support;
-  const [sinkingValueIsValid, sinkingErrorMessage] = validateSupportSinkingValue(
-    type,
-    sinkingValue
-  );
+  const [sinkingValueIsValid, sinkingErrorMessage] =
+    validateSupportSinkingValue(type, sinkingValue);
   const [distanceFromLeftIsValid, distanceFromLeftErrorMessage] =
     validateSupportDistanceFromLeft(type, distanceFromLeft);
 

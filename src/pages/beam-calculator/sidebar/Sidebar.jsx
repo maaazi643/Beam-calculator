@@ -8,7 +8,7 @@ import SolveButton from "../../../components/buttons/SolveButton";
 
 export default function Sidebar() {
   return (
-    <div className="flex flex-col basis-[25%] py-12 px-8 justify-between gap-y-4 h-full">
+    <div className="flex flex-col basis-[25%] min-w-[350px] py-12 px-8 justify-between gap-y-4 h-full max-h-full items-stretch">
       <Scroller className="grow space-y-[1.5rem] overflow-y-auto">
         <div className="">
           <SmallHeader>Beam Properties</SmallHeader>

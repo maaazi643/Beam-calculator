@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,20 +58,13 @@ const indicatorVariants = {
 };
 
 export default function LoadingSection() {
-  const loadingSectionRef = useRef(null);
   const dispatch = useDispatch();
-  const { showLoadingConfig, loadings, beamPropertiesHistory, beamProperties } =
-    useSelector((state) => state.beam);
-
-  const scrollToBottom = () => {
-    const wrapperEl = loadingSectionRef?.current;
-    console.log(wrapperEl);
-    const sectionsNodes = wrapperEl?.querySelectorAll(".loading-section");
-    console.log(sectionsNodes);
-    const sections = Array.from(sectionsNodes);
-    const lastSection = sections[sections.length - 1];
-    lastSection.scrollIntoView({ behavior: "smooth" });
-  };
+  const {
+    showLoadingConfig,
+    loadings,
+    beamPropertiesUndoStack,
+    beamProperties,
+  } = useSelector((state) => state.beam);
 
   const toggleShowConfigHandler = () => {
     dispatch(
@@ -86,7 +79,6 @@ export default function LoadingSection() {
         value: [...loadings, createNewLoad()],
       })
     );
-    scrollToBottom();
   };
 
   const applyLoadingsHandler = () => {
@@ -97,14 +89,14 @@ export default function LoadingSection() {
     );
     dispatch(
       beamActions.set({
-        key: "beamPropertiesHistory",
-        value: [...beamPropertiesHistory, newBeamProperties],
+        key: "beamPropertiesUndoStack",
+        value: [...beamPropertiesUndoStack, newBeamProperties],
       })
     );
   };
 
   return (
-    <PropertyWrapper ref={loadingSectionRef} className="">
+    <PropertyWrapper className="">
       <button
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"
@@ -145,7 +137,7 @@ export default function LoadingSection() {
           ))}
         </AnimatePresence>
         <WrapperButton onClick={addLoadingHandler}>
-          <span>Add New Support</span>
+          <span>Add New Load</span>
           <RoundedPlus />
         </WrapperButton>
         <WrapperButton onClick={applyLoadingsHandler}>Apply</WrapperButton>
@@ -179,7 +171,7 @@ function LoadingItem({ load }) {
   };
 
   return (
-    <div className="space-y-[1rem] px-[0.5px] loading-section">
+    <div className="loading-section space-y-[1rem] px-[0.5px]">
       <WrapperParagraph>Loading Type</WrapperParagraph>
       <div className="flex gap-x-[0.5rem]">
         <SinglePointLoad
@@ -254,7 +246,7 @@ function SinglePointLoadSettings({ load }) {
         duration: 0.3,
         ease: "easeInOut",
       }}
-      className="w-full space-y-[1rem] px-1"
+      className="w-full space-y-[1rem] px-1 loading-section"
       key="single-point-load"
     >
       <div className="space-y-[0.5rem]">
