@@ -15,7 +15,3 @@ body{
   background-color: #FEFEFE;
   font-family: 'Inter', sans-serif;
 }
-
-html {
-  overflow-y: scroll; /* Always show scrollbar */
-}
