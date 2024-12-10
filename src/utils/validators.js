@@ -1,7 +1,7 @@
 import { supportEnums, loadingEnums } from "../store/beam-utils";
 
 import { isDecimal } from "validator";
-export const MaxSpanLength = 10;
+export const MaxSpanLength = 100;
 export const MaxSpanFlexuralRigidity = 1000;
 
 export const validateSpanLength = (length) => {
@@ -35,13 +35,13 @@ export const validateSupportSinkingValue = (supportType, value) => {
 export const validateSupportDistanceFromLeft = (supportType, value) => {
   if (!isDecimal(value)) return [false, "Distance from left must be a number."];
   // if (supportType === supportEnums.SINKING_PINNED) return [true, ""];
-  if (value <= 0) return [false, "Distance from left must be greater than 0."];
+  if (value < 0) return [false, "Distance from left must be greater than 0."];
   return [true, ""];
 };
 
 export const validateLoadingDistanceFromLeft = (loadingType, value) => {
   if (!isDecimal(value)) return [false, "Distance from left must be a number."];
-  if (value <= 0) return [false, "Distance from left must be greater than 0."];
+  if (value < 0) return [false, "Distance from left must be greater than 0."];
   return [true, ""];
 };
 

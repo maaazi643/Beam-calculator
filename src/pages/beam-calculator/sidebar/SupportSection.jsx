@@ -16,9 +16,9 @@ import Trash from "../../../icons/Trash";
 import RoundedPlus from "../../../icons/RoundedPlus";
 import { MetreUnit } from "../../../icons/units";
 import {
-  PinnedSupport,
-  RollerSupport,
-  FixedSupport,
+  PinnedSupportButton,
+  RollerSupportButton,
+  FixedSupportButton,
 } from "../../../icons/Properties";
 import { createNewSupport, supportEnums } from "../../../store/beam-utils";
 import {
@@ -194,15 +194,15 @@ function SupportItem({ support }) {
     <div className="space-y-[1rem] px-[0.5px] support-section">
       <WrapperParagraph>Support Type</WrapperParagraph>
       <div className="flex gap-x-[0.5rem]">
-        <PinnedSupport
+        <PinnedSupportButton
           active={isPinnedSupport}
           onClick={changeSupportType.bind(null, supportEnums.pinned)}
         />
-        <RollerSupport
+        <RollerSupportButton
           active={isRollerSupport}
           onClick={changeSupportType.bind(null, supportEnums.roller)}
         />
-        <FixedSupport
+        <FixedSupportButton
           active={isFixedSupport}
           onClick={changeSupportType.bind(null, supportEnums.fixed)}
         />

@@ -61,3 +61,37 @@ export const createNewLoad = (
     closingValue: closingValue,
   };
 };
+
+export const getBeamTotalLength = (beam) => {
+  return beam?.spans?.reduce((acc, span) => acc + span.length, 0);
+};
+
+export const getLoadPositionAndDimension = (beam, loadId) => {
+  const load = beam?.loadings?.find((l) => l.id === loadId);
+  const beamTotalLength = getBeamTotalLength(beam);
+
+  let left = 0;
+  let top = 0;
+  let width = 0;
+  let height = 0;
+
+
+  if (load?.type === loadingEnums.single) {
+    left = (load.distanceFromLeft / beamTotalLength) * 100;
+    top = 20;
+    width = 2.2;
+    height = 30;
+  } else if (load?.type === loadingEnums.uniform) {
+    left = (load.distanceFromLeft / beamTotalLength) * 100;
+    top = 20;
+    width = (load.spanOfLoading / beamTotalLength) * 100;
+    height = 30;
+  } else if (load?.type === loadingEnums.varying) {
+    left = (load.distanceFromLeft / beamTotalLength) * 100;
+    top = 20;
+    width = (load.spanOfLoading / beamTotalLength) * 100;
+    height = 30;
+  }
+
+  return { left, top, width, height };
+};

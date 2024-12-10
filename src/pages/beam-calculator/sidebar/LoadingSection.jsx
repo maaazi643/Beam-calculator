@@ -15,9 +15,9 @@ import Trash from "../../../icons/Trash";
 import RoundedPlus from "../../../icons/RoundedPlus";
 import { MetreUnit, NewtonUnit } from "../../../icons/units";
 import {
-  SinglePointLoad,
-  UniformDistributedLoad,
-  UniformVaryingLoad,
+  SinglePointLoadButton,
+  UniformDistributedLoadButton,
+  UniformVaryingLoadButton,
 } from "../../../icons/Properties";
 import { createNewLoad, loadingEnums } from "../../../store/beam-utils";
 import {
@@ -154,7 +154,7 @@ function LoadingItem({ load }) {
 
   const isSinglePointLoad = type === loadingEnums.single;
   const isUniformDistributedLoad = type === loadingEnums.uniform;
-  const isNonUniformDistributedLoad = type === loadingEnums.nonUniform;
+  const isNonUniformDistributedLoad = type === loadingEnums.varying;
 
   const changeLoadType = (type) => {
     const newLoad = {
@@ -174,17 +174,17 @@ function LoadingItem({ load }) {
     <div className="loading-section space-y-[1rem] px-[0.5px]">
       <WrapperParagraph>Loading Type</WrapperParagraph>
       <div className="flex gap-x-[0.5rem]">
-        <SinglePointLoad
+        <SinglePointLoadButton
           active={isSinglePointLoad}
           onClick={changeLoadType.bind(null, loadingEnums.single)}
         />
-        <UniformDistributedLoad
+        <UniformDistributedLoadButton
           active={isUniformDistributedLoad}
           onClick={changeLoadType.bind(null, loadingEnums.uniform)}
         />
-        <UniformVaryingLoad
+        <UniformVaryingLoadButton
           active={isNonUniformDistributedLoad}
-          onClick={changeLoadType.bind(null, loadingEnums.nonUniform)}
+          onClick={changeLoadType.bind(null, loadingEnums.varying)}
         />
       </div>
       {isSinglePointLoad && <SinglePointLoadSettings load={load} />}

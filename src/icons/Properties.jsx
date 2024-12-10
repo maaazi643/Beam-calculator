@@ -2,8 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 import { COLORS } from "../../tailwind.config";
+import { twMerge } from "tailwind-merge";
 
-export const SinglePointLoad = ({ active, onClick }) => {
+export const SinglePointLoadButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -50,11 +51,12 @@ export const SinglePointLoad = ({ active, onClick }) => {
   );
 };
 
-SinglePointLoad.propTypes = {
+SinglePointLoadButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
-export const UniformDistributedLoad = ({ active, onClick }) => {
+
+export const UniformDistributedLoadButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -129,12 +131,12 @@ export const UniformDistributedLoad = ({ active, onClick }) => {
   );
 };
 
-UniformDistributedLoad.propTypes = {
+UniformDistributedLoadButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export const UniformVaryingLoad = ({ active, onClick }) => {
+export const UniformVaryingLoadButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -209,12 +211,12 @@ export const UniformVaryingLoad = ({ active, onClick }) => {
   );
 };
 
-UniformVaryingLoad.propTypes = {
+UniformVaryingLoadButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export const PinnedSupport = ({ active, onClick }) => {
+export const PinnedSupportButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -271,12 +273,12 @@ export const PinnedSupport = ({ active, onClick }) => {
   );
 };
 
-PinnedSupport.propTypes = {
+PinnedSupportButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export const RollerSupport = ({ active, onClick }) => {
+export const RollerSupportButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -338,12 +340,12 @@ export const RollerSupport = ({ active, onClick }) => {
   );
 };
 
-RollerSupport.propTypes = {
+RollerSupportButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export const FixedSupport = ({ active, onClick }) => {
+export const FixedSupportButton = ({ active, onClick }) => {
   return (
     <motion.button
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
@@ -413,7 +415,122 @@ export const FixedSupport = ({ active, onClick }) => {
   );
 };
 
-FixedSupport.propTypes = {
+FixedSupportButton.propTypes = {
   active: PropTypes.bool,
   onClick: PropTypes.func,
+};
+
+export const BeamIcon = ({ className }) => (
+  <div className={twMerge("w-full bg-secondary h-0.5", className)} />
+);
+
+BeamIcon.propTypes = {
+  className: PropTypes.string,
+};
+
+export const SinglePointLoadIcon = ({ style, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    // width="16"
+    // height="45"
+    viewBox="0 0 16 45"
+    fill="none"
+    style={style}
+    className="border border-red-500"
+    preserveAspectRatio="none"
+    {...props}
+  >
+    <path
+      d="M7.14153 44.7071C7.53205 45.0976 8.16522 45.0976 8.55574 44.7071L14.9197 38.3431C15.3102 37.9526 15.3102 37.3195 14.9197 36.9289C14.5292 36.5384 13.896 36.5384 13.5055 36.9289L7.84863 42.5858L2.19178 36.9289C1.80125 36.5384 1.16809 36.5384 0.777565 36.9289C0.387041 37.3195 0.387041 37.9526 0.777565 38.3431L7.14153 44.7071ZM6.84863 0L6.84863 44H8.84863L8.84863 0L6.84863 0Z"
+      fill={COLORS.secondary}
+    />
+  </svg>
+);
+
+SinglePointLoadIcon.propTypes = {
+  style: PropTypes.object,
+};
+
+export const UniformDistributedLoadIcon = ({ style, ...props }) => (
+  <svg
+    // width="112"
+    // height="47"
+    viewBox="0 0 112 47"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={style}
+    className="border border-red-500"
+    preserveAspectRatio="none"
+    {...props}
+  >
+    <line
+      x1="7.84863"
+      y1="1"
+      x2="103.849"
+      y2="1"
+      stroke={COLORS.secondary}
+      strokeWidth="2"
+    />
+    <path
+      d="M7.14153 46.7071C7.53205 47.0976 8.16522 47.0976 8.55574 46.7071L14.9197 40.3431C15.3102 39.9526 15.3102 39.3195 14.9197 38.9289C14.5292 38.5384 13.896 38.5384 13.5055 38.9289L7.84863 44.5858L2.19178 38.9289C1.80125 38.5384 1.16809 38.5384 0.777565 38.9289C0.387041 39.3195 0.387041 39.9526 0.777565 40.3431L7.14153 46.7071ZM6.84863 2L6.84863 46H8.84863L8.84863 2H6.84863Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M39.1415 46.7071C39.5321 47.0976 40.1652 47.0976 40.5557 46.7071L46.9197 40.3431C47.3102 39.9526 47.3102 39.3195 46.9197 38.9289C46.5292 38.5384 45.896 38.5384 45.5055 38.9289L39.8486 44.5858L34.1918 38.9289C33.8013 38.5384 33.1681 38.5384 32.7776 38.9289C32.387 39.3195 32.387 39.9526 32.7776 40.3431L39.1415 46.7071ZM38.8486 2V46H40.8486V2H38.8486Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M71.1415 46.7071C71.5321 47.0976 72.1652 47.0976 72.5557 46.7071L78.9197 40.3431C79.3102 39.9526 79.3102 39.3195 78.9197 38.9289C78.5292 38.5384 77.896 38.5384 77.5055 38.9289L71.8486 44.5858L66.1918 38.9289C65.8013 38.5384 65.1681 38.5384 64.7776 38.9289C64.387 39.3195 64.387 39.9526 64.7776 40.3431L71.1415 46.7071ZM70.8486 2V46H72.8486V2H70.8486Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M103.142 46.7071C103.532 47.0976 104.165 47.0976 104.556 46.7071L110.92 40.3431C111.31 39.9526 111.31 39.3195 110.92 38.9289C110.529 38.5384 109.896 38.5384 109.505 38.9289L103.849 44.5858L98.1918 38.9289C97.8013 38.5384 97.1681 38.5384 96.7776 38.9289C96.387 39.3195 96.387 39.9526 96.7776 40.3431L103.142 46.7071ZM102.849 2V46H104.849V2H102.849Z"
+      fill={COLORS.secondary}
+    />
+  </svg>
+);
+
+UniformDistributedLoadIcon.propTypes = {
+  style: PropTypes.object,
+};
+
+export const VaryingDistributedLoadIcon = ({ style, ...props }) => (
+  <svg
+    viewBox="0 0 112 68"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={style}
+    className="border border-red-500"
+    preserveAspectRatio="none"
+    {...props}
+  >
+    <line
+      x1="6.6391"
+      y1="22.0222"
+      x2="104.639"
+      y2="1.0222"
+      stroke={COLORS.secondary}
+      strokeWidth="2"
+    />
+    <path
+      d="M7.14153 67.7071C7.53205 68.0976 8.16522 68.0976 8.55574 67.7071L14.9197 61.3431C15.3102 60.9526 15.3102 60.3195 14.9197 59.9289C14.5292 59.5384 13.896 59.5384 13.5055 59.9289L7.84863 65.5858L2.19178 59.9289C1.80125 59.5384 1.16809 59.5384 0.777565 59.9289C0.387041 60.3195 0.387041 60.9526 0.777565 61.3431L7.14153 67.7071ZM6.84863 23L6.84863 67H8.84863L8.84863 23H6.84863Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M39.1415 67.7071C39.5321 68.0976 40.1652 68.0976 40.5557 67.7071L46.9197 61.3431C47.3102 60.9526 47.3102 60.3195 46.9197 59.9289C46.5292 59.5384 45.896 59.5384 45.5055 59.9289L39.8486 65.5858L34.1918 59.9289C33.8013 59.5384 33.1681 59.5384 32.7776 59.9289C32.387 60.3195 32.387 60.9526 32.7776 61.3431L39.1415 67.7071ZM38.8486 15L38.8486 67L40.8486 67L40.8486 15L38.8486 15Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M71.1415 67.7071C71.5321 68.0976 72.1652 68.0976 72.5557 67.7071L78.9197 61.3431C79.3102 60.9526 79.3102 60.3195 78.9197 59.9289C78.5292 59.5384 77.896 59.5384 77.5055 59.9289L71.8486 65.5858L66.1918 59.9289C65.8013 59.5384 65.1681 59.5384 64.7776 59.9289C64.387 60.3195 64.387 60.9526 64.7776 61.3431L71.1415 67.7071ZM70.8486 8L70.8486 67L72.8486 67L72.8486 8L70.8486 8Z"
+      fill={COLORS.secondary}
+    />
+    <path
+      d="M103.142 67.7071C103.532 68.0976 104.165 68.0976 104.556 67.7071L110.92 61.3431C111.31 60.9526 111.31 60.3195 110.92 59.9289C110.529 59.5384 109.896 59.5384 109.505 59.9289L103.849 65.5858L98.1918 59.9289C97.8013 59.5384 97.1681 59.5384 96.7776 59.9289C96.387 60.3195 96.387 60.9526 96.7776 61.3431L103.142 67.7071ZM102.849 2L102.849 67L104.849 67L104.849 2L102.849 2Z"
+      fill={COLORS.secondary}
+    />
+  </svg>
+);
+
+VaryingDistributedLoadIcon.propTypes = {
+  style: PropTypes.object,
 };
