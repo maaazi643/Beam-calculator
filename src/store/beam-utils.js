@@ -75,7 +75,6 @@ export const getLoadPositionAndDimension = (beam, loadId) => {
   let width = 0;
   let height = 0;
 
-
   if (load?.type === loadingEnums.single) {
     left = (load.distanceFromLeft / beamTotalLength) * 100;
     top = 20;
@@ -94,4 +93,46 @@ export const getLoadPositionAndDimension = (beam, loadId) => {
   }
 
   return { left, top, width, height };
+};
+
+const widthOfPinnedOrRollerSupportInPixel = 39.5;
+
+export const getSupportPositionAndDimension = (
+  beam,
+  supportId,
+  beamPixelLength
+) => {
+  const support = beam?.supports?.find((s) => s.id === supportId);
+  const beamTotalLength = getBeamTotalLength(beam);
+
+  let left = 0;
+  let top = 0;
+
+  if (support?.type === supportEnums.pinned) {
+    left = Math.abs(
+      (support.distanceFromLeft / beamTotalLength) * 100 -
+        ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2
+    );
+
+    console.log(support?.distanceFromLeft);
+    console.log(left);
+
+    top = 50;
+  }
+
+  if (support?.type === supportEnums.roller) {
+    left = Math.abs(
+      (support.distanceFromLeft / beamTotalLength) * 100 -
+        ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2
+    );
+    top = 50;
+  }
+
+  if (support?.type === supportEnums.fixed) {
+    const atStart = support.distanceFromLeft == 0;
+    left = atStart ? -1.3 : 100;
+    top = 40;
+  }
+
+  return { left, top };
 };

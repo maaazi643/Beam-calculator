@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 import { COLORS } from "../../tailwind.config";
@@ -420,12 +420,35 @@ FixedSupportButton.propTypes = {
   onClick: PropTypes.func,
 };
 
-export const BeamIcon = ({ className }) => (
-  <div className={twMerge("w-full bg-secondary h-0.5", className)} />
-);
+export const BeamIcon = ({ className, setBeamPixelLength }) => {
+  const beamRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (beamRef.current) {
+        setBeamPixelLength(beamRef.current.offsetWidth); // Width in pixels
+      }
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [setBeamPixelLength]);
+
+  return (
+    <div
+      ref={beamRef}
+      className={twMerge("w-full bg-secondary h-0.5", className)}
+    />
+  );
+};
 
 BeamIcon.propTypes = {
   className: PropTypes.string,
+  setBeamPixelLength: PropTypes.func,
 };
 
 export const SinglePointLoadIcon = ({ style, ...props }) => (
@@ -436,7 +459,6 @@ export const SinglePointLoadIcon = ({ style, ...props }) => (
     viewBox="0 0 16 45"
     fill="none"
     style={style}
-    className="border border-red-500"
     preserveAspectRatio="none"
     {...props}
   >
@@ -459,7 +481,6 @@ export const UniformDistributedLoadIcon = ({ style, ...props }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     style={style}
-    className="border border-red-500"
     preserveAspectRatio="none"
     {...props}
   >
@@ -494,43 +515,274 @@ UniformDistributedLoadIcon.propTypes = {
   style: PropTypes.object,
 };
 
-export const VaryingDistributedLoadIcon = ({ style, ...props }) => (
+export const VaryingDistributedLoadIcon = ({ style, bigToSmall, ...props }) =>
+  bigToSmall ? (
+    <svg
+      width="112"
+      height="68"
+      viewBox="0 0 112 68"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={style}
+      preserveAspectRatio="none"
+      {...props}
+    >
+      <line
+        y1="-1"
+        x2="100.225"
+        y2="-1"
+        transform="matrix(-0.977802 -0.209529 -0.209529 0.977802 104.849 23)"
+        stroke={COLORS.secondary}
+        strokeWidth="2"
+      />
+      <path
+        d="M104.556 67.7071C104.165 68.0976 103.532 68.0976 103.142 67.7071L96.7776 61.3431C96.387 60.9526 96.387 60.3195 96.7776 59.9289C97.1681 59.5384 97.8013 59.5384 98.1918 59.9289L103.849 65.5858L109.505 59.9289C109.896 59.5384 110.529 59.5384 110.92 59.9289C111.31 60.3195 111.31 60.9526 110.92 61.3431L104.556 67.7071ZM104.849 23V67H102.849V23H104.849Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M72.5557 67.7071C72.1652 68.0976 71.532 68.0976 71.1415 67.7071L64.7776 61.3431C64.387 60.9526 64.387 60.3195 64.7776 59.9289C65.1681 59.5384 65.8013 59.5384 66.1918 59.9289L71.8486 65.5858L77.5055 59.9289C77.896 59.5384 78.5292 59.5384 78.9197 59.9289C79.3102 60.3195 79.3102 60.9526 78.9197 61.3431L72.5557 67.7071ZM72.8486 15L72.8486 67L70.8486 67L70.8486 15L72.8486 15Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M40.5557 67.7071C40.1652 68.0976 39.532 68.0976 39.1415 67.7071L32.7776 61.3431C32.387 60.9526 32.387 60.3195 32.7776 59.9289C33.1681 59.5384 33.8013 59.5384 34.1918 59.9289L39.8486 65.5858L45.5055 59.9289C45.896 59.5384 46.5292 59.5384 46.9197 59.9289C47.3102 60.3195 47.3102 60.9526 46.9197 61.3431L40.5557 67.7071ZM40.8486 8L40.8486 67L38.8486 67L38.8486 8L40.8486 8Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M8.55574 67.7071C8.16521 68.0976 7.53205 68.0976 7.14152 67.7071L0.777562 61.3431C0.387038 60.9526 0.387038 60.3195 0.777562 59.9289C1.16809 59.5384 1.80125 59.5384 2.19178 59.9289L7.84863 65.5858L13.5055 59.9289C13.896 59.5384 14.5292 59.5384 14.9197 59.9289C15.3102 60.3195 15.3102 60.9526 14.9197 61.3431L8.55574 67.7071ZM8.84863 2L8.84863 67L6.84863 67L6.84863 2L8.84863 2Z"
+        fill={COLORS.secondary}
+      />
+    </svg>
+  ) : (
+    <svg
+      viewBox="0 0 112 68"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={style}
+      preserveAspectRatio="none"
+      {...props}
+    >
+      <line
+        x1="6.6391"
+        y1="22.0222"
+        x2="104.639"
+        y2="1.0222"
+        stroke={COLORS.secondary}
+        strokeWidth="2"
+      />
+      <path
+        d="M7.14153 67.7071C7.53205 68.0976 8.16522 68.0976 8.55574 67.7071L14.9197 61.3431C15.3102 60.9526 15.3102 60.3195 14.9197 59.9289C14.5292 59.5384 13.896 59.5384 13.5055 59.9289L7.84863 65.5858L2.19178 59.9289C1.80125 59.5384 1.16809 59.5384 0.777565 59.9289C0.387041 60.3195 0.387041 60.9526 0.777565 61.3431L7.14153 67.7071ZM6.84863 23L6.84863 67H8.84863L8.84863 23H6.84863Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M39.1415 67.7071C39.5321 68.0976 40.1652 68.0976 40.5557 67.7071L46.9197 61.3431C47.3102 60.9526 47.3102 60.3195 46.9197 59.9289C46.5292 59.5384 45.896 59.5384 45.5055 59.9289L39.8486 65.5858L34.1918 59.9289C33.8013 59.5384 33.1681 59.5384 32.7776 59.9289C32.387 60.3195 32.387 60.9526 32.7776 61.3431L39.1415 67.7071ZM38.8486 15L38.8486 67L40.8486 67L40.8486 15L38.8486 15Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M71.1415 67.7071C71.5321 68.0976 72.1652 68.0976 72.5557 67.7071L78.9197 61.3431C79.3102 60.9526 79.3102 60.3195 78.9197 59.9289C78.5292 59.5384 77.896 59.5384 77.5055 59.9289L71.8486 65.5858L66.1918 59.9289C65.8013 59.5384 65.1681 59.5384 64.7776 59.9289C64.387 60.3195 64.387 60.9526 64.7776 61.3431L71.1415 67.7071ZM70.8486 8L70.8486 67L72.8486 67L72.8486 8L70.8486 8Z"
+        fill={COLORS.secondary}
+      />
+      <path
+        d="M103.142 67.7071C103.532 68.0976 104.165 68.0976 104.556 67.7071L110.92 61.3431C111.31 60.9526 111.31 60.3195 110.92 59.9289C110.529 59.5384 109.896 59.5384 109.505 59.9289L103.849 65.5858L98.1918 59.9289C97.8013 59.5384 97.1681 59.5384 96.7776 59.9289C96.387 60.3195 96.387 60.9526 96.7776 61.3431L103.142 67.7071ZM102.849 2L102.849 67L104.849 67L104.849 2L102.849 2Z"
+        fill={COLORS.secondary}
+      />
+    </svg>
+  );
+
+VaryingDistributedLoadIcon.propTypes = {
+  style: PropTypes.object,
+  bigToSmall: PropTypes.bool,
+};
+
+export const PinnedSupportIcon = ({ style, ...props }) => (
   <svg
-    viewBox="0 0 112 68"
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    width="41"
+    height="38"
+    viewBox="0 0 41 38"
+    fill="none"
     style={style}
-    className="border border-red-500"
-    preserveAspectRatio="none"
     {...props}
   >
+    <path
+      d="M21.4487 0L37.9032 28.5H4.99425L21.4487 0Z"
+      fill={COLORS.secondary}
+    />
     <line
-      x1="6.6391"
-      y1="22.0222"
-      x2="104.639"
-      y2="1.0222"
+      y1="-0.441709"
+      x2="10.7033"
+      y2="-0.441709"
+      transform="matrix(0.758752 -0.65138 -0.634148 -0.773212 26.3276 35)"
       stroke={COLORS.secondary}
-      strokeWidth="2"
+      strokeWidth="0.883417"
     />
-    <path
-      d="M7.14153 67.7071C7.53205 68.0976 8.16522 68.0976 8.55574 67.7071L14.9197 61.3431C15.3102 60.9526 15.3102 60.3195 14.9197 59.9289C14.5292 59.5384 13.896 59.5384 13.5055 59.9289L7.84863 65.5858L2.19178 59.9289C1.80125 59.5384 1.16809 59.5384 0.777565 59.9289C0.387041 60.3195 0.387041 60.9526 0.777565 61.3431L7.14153 67.7071ZM6.84863 23L6.84863 67H8.84863L8.84863 23H6.84863Z"
-      fill={COLORS.secondary}
+    <line
+      y1="-0.441709"
+      x2="10.7033"
+      y2="-0.441709"
+      transform="matrix(0.758752 -0.65138 -0.634148 -0.773212 19.9578 35)"
+      stroke={COLORS.secondary}
+      strokeWidth="0.883417"
     />
-    <path
-      d="M39.1415 67.7071C39.5321 68.0976 40.1652 68.0976 40.5557 67.7071L46.9197 61.3431C47.3102 60.9526 47.3102 60.3195 46.9197 59.9289C46.5292 59.5384 45.896 59.5384 45.5055 59.9289L39.8486 65.5858L34.1918 59.9289C33.8013 59.5384 33.1681 59.5384 32.7776 59.9289C32.387 60.3195 32.387 60.9526 32.7776 61.3431L39.1415 67.7071ZM38.8486 15L38.8486 67L40.8486 67L40.8486 15L38.8486 15Z"
-      fill={COLORS.secondary}
+    <line
+      y1="-0.441709"
+      x2="10.7033"
+      y2="-0.441709"
+      transform="matrix(0.758752 -0.65138 -0.634148 -0.773212 13.5881 35)"
+      stroke={COLORS.secondary}
+      strokeWidth="0.883417"
     />
-    <path
-      d="M71.1415 67.7071C71.5321 68.0976 72.1652 68.0976 72.5557 67.7071L78.9197 61.3431C79.3102 60.9526 79.3102 60.3195 78.9197 59.9289C78.5292 59.5384 77.896 59.5384 77.5055 59.9289L71.8486 65.5858L66.1918 59.9289C65.8013 59.5384 65.1681 59.5384 64.7776 59.9289C64.387 60.3195 64.387 60.9526 64.7776 61.3431L71.1415 67.7071ZM70.8486 8L70.8486 67L72.8486 67L72.8486 8L70.8486 8Z"
-      fill={COLORS.secondary}
+    <line
+      y1="-0.441709"
+      x2="10.7033"
+      y2="-0.441709"
+      transform="matrix(0.758752 -0.65138 -0.634148 -0.773212 7.21826 35)"
+      stroke={COLORS.secondary}
+      strokeWidth="0.883417"
     />
-    <path
-      d="M103.142 67.7071C103.532 68.0976 104.165 68.0976 104.556 67.7071L110.92 61.3431C111.31 60.9526 111.31 60.3195 110.92 59.9289C110.529 59.5384 109.896 59.5384 109.505 59.9289L103.849 65.5858L98.1918 59.9289C97.8013 59.5384 97.1681 59.5384 96.7776 59.9289C96.387 60.3195 96.387 60.9526 96.7776 61.3431L103.142 67.7071ZM102.849 2L102.849 67L104.849 67L104.849 2L102.849 2Z"
-      fill={COLORS.secondary}
+    <line
+      y1="-0.441709"
+      x2="10.7033"
+      y2="-0.441709"
+      transform="matrix(0.758752 -0.65138 -0.634148 -0.773212 0.848633 35)"
+      stroke={COLORS.secondary}
+      strokeWidth="0.883417"
     />
   </svg>
 );
 
-VaryingDistributedLoadIcon.propTypes = {
+PinnedSupportIcon.propTypes = {
   style: PropTypes.object,
+};
+
+export const RollerSupportIcon = ({ style, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="39"
+    height="38"
+    viewBox="0 0 39 38"
+    fill="none"
+    style={style}
+    {...props}
+  >
+    <path
+      d="M19.8486 0L36.3031 28.5H3.39415L19.8486 0Z"
+      fill={COLORS.secondary}
+    />
+    <circle cx="8.74854" cy="32.5" r="4.5" fill={COLORS.secondary} />
+    <circle cx="29.7485" cy="32.5" r="4.5" fill={COLORS.secondary} />
+  </svg>
+);
+
+RollerSupportIcon.propTypes = {
+  style: PropTypes.object,
+};
+
+export const FixedSupportIcon = ({ style, atStart, ...props }) =>
+  atStart ? (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="13"
+      height="55"
+      viewBox="0 0 13 55"
+      fill="none"
+      style={style}
+      {...props}
+    >
+      <path
+        d="M11.8489 1L11.8489 42"
+        stroke={COLORS.secondary}
+        strokeWidth="2"
+      />
+      <line
+        x1="0.616978"
+        y1="14.0526"
+        x2="11.3151"
+        y2="1.30311"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="0.616978"
+        y1="24.0526"
+        x2="11.3151"
+        y2="11.3031"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="0.616978"
+        y1="34.0526"
+        x2="11.3151"
+        y2="21.3031"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="0.616978"
+        y1="44.0526"
+        x2="11.3151"
+        y2="31.3031"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="0.616978"
+        y1="54.0526"
+        x2="11.3151"
+        y2="41.3031"
+        stroke={COLORS.secondary}
+      />
+    </svg>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="13"
+      height="54"
+      viewBox="0 0 13 54"
+      fill="none"
+      style={style}
+      {...props}
+    >
+      <path
+        d="M0.999756 53.374L0.999758 12.374"
+        stroke="#444444"
+        strokeWidth="2"
+      />
+      <line
+        x1="12.2317"
+        y1="40.3214"
+        x2="1.53354"
+        y2="53.0709"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="12.2317"
+        y1="30.3214"
+        x2="1.53354"
+        y2="43.0709"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="12.2317"
+        y1="20.3214"
+        x2="1.53354"
+        y2="33.0709"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="12.2317"
+        y1="10.3214"
+        x2="1.53354"
+        y2="23.0709"
+        stroke={COLORS.secondary}
+      />
+      <line
+        x1="12.2317"
+        y1="0.321394"
+        x2="1.53354"
+        y2="13.0709"
+        stroke={COLORS.secondary}
+      />
+    </svg>
+  );
+
+FixedSupportIcon.propTypes = {
+  style: PropTypes.object,
+  atStart: PropTypes.bool,
 };

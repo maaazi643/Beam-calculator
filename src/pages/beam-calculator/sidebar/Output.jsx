@@ -10,7 +10,7 @@ import ControlBar from "./ControlBar";
 export default function Output() {
   return (
     <div className="basis-[75%] bg-tertiary flex flex-col justify-between h-full max-h-full relative overflow-y-hidden">
-      <div className="flex flex-col gap-y-6 py-12 px-8 grow overflow-y-auto">
+      <div className="flex flex-col gap-y-3 py-12 px-8 grow overflow-y-auto">
         <Navbar />
         <BigHeader>
           <TypeAnimation
@@ -31,7 +31,7 @@ export default function Output() {
         </BigHeader>
         <div className="grow bg-primary p-4 flex flex-col overflow-y-auto">
           <Tabs />
-          <Scroller className="grow overflow-y-auto p-4">
+          <Scroller className="grow overflow-y-auto py-4 px-6 border">
             <Outlet />
           </Scroller>
         </div>

@@ -25,18 +25,29 @@ const initialState = {
     ],
 
     supports: [
-      {
-        id: "c9077aec-184d-4468-8fa2-836630a00615",
+      // {
+      //   id: "c9077aec-184d-4468-8fa2-836630a00615",
 
-        type: "fixed",
+      //   type: "fixed",
 
-        sinking: false,
+      //   sinking: false,
 
-        sinkingValue: "",
+      //   sinkingValue: "",
 
-        distanceFromLeft: "0",
-      },
+      //   distanceFromLeft: "0",
+      // },
 
+      // {
+      //   id: "ee67e63e-ba4a-46cd-92db-7a2fef94c304",
+
+      //   type: "pinned",
+
+      //   sinking: false,
+
+      //   sinkingValue: "",
+
+      //   distanceFromLeft: "0",
+      // },
       {
         id: "ee67e63e-ba4a-46cd-92db-7a2fef94c304",
 
@@ -46,20 +57,20 @@ const initialState = {
 
         sinkingValue: "",
 
-        distanceFromLeft: "4",
+        distanceFromLeft: "0",
       },
 
-      {
-        id: "fdf58ec7-f9b8-4c90-a84c-e4c8fa890057",
+      // {
+      //   id: "fdf58ec7-f9b8-4c90-a84c-e4c8fa890057",
 
-        type: "roller",
+      //   type: "roller",
 
-        sinking: false,
+      //   sinking: false,
 
-        sinkingValue: "",
+      //   sinkingValue: "",
 
-        distanceFromLeft: "10",
-      },
+      //   distanceFromLeft: "13",
+      // },
 
       {
         id: "fed7e991-9085-4ee7-a3dc-f8853f6e94b2",
@@ -118,9 +129,9 @@ const initialState = {
 
         spanOfLoading: "2",
 
-        openingValue: "4",
+        openingValue: "5",
 
-        closingValue: "5",
+        closingValue: "4",
       },
     ],
   },
