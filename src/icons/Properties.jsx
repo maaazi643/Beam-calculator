@@ -786,3 +786,19 @@ FixedSupportIcon.propTypes = {
   style: PropTypes.object,
   atStart: PropTypes.bool,
 };
+
+export const Mark = ({ style, mark, ...props }) => (
+  <div className="border-x absolute h-[12%]" style={style} {...props}>
+    <div className="w-full h-full relative text-[#ccc] text-xs not-italic font-normal leading-[133%]">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-[#ccc] w-full" />
+      <div className="absolute top-3/4 left-1/2 -translate-x-1/2">
+        {mark?.spacingInUnit}m
+      </div>
+    </div>
+  </div>
+);
+
+Mark.propTypes = {
+  style: PropTypes.object.isRequired,
+  mark: PropTypes.object.isRequired,
+};

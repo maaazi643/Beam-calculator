@@ -1,3 +1,4 @@
+import { p } from "motion/react-client";
 import { v4 as uuidv4 } from "uuid";
 
 export const createNewSpan = (length = "", flexuralRigidity = "") => {
@@ -63,10 +64,12 @@ export const createNewLoad = (
 };
 
 export const getBeamTotalLength = (beam) => {
-  return beam?.spans?.reduce((acc, span) => acc + span.length, 0);
+  return beam?.spans?.reduce((acc, span) => +acc + +span.length, 0);
 };
 
-export const getLoadPositionAndDimension = (beam, loadId) => {
+const widthOfSinglePointInPixel = 25;
+
+export const getLoadPositionAndDimension = (beam, loadId, beamPixelLength) => {
   const load = beam?.loadings?.find((l) => l.id === loadId);
   const beamTotalLength = getBeamTotalLength(beam);
 
@@ -76,7 +79,10 @@ export const getLoadPositionAndDimension = (beam, loadId) => {
   let height = 0;
 
   if (load?.type === loadingEnums.single) {
-    left = (load.distanceFromLeft / beamTotalLength) * 100;
+    left = Math.abs(
+      (load.distanceFromLeft / beamTotalLength) * 100 -
+        ((widthOfSinglePointInPixel / beamPixelLength) * 100) / 2
+    );
     top = 20;
     width = 2.2;
     height = 30;
@@ -95,7 +101,7 @@ export const getLoadPositionAndDimension = (beam, loadId) => {
   return { left, top, width, height };
 };
 
-const widthOfPinnedOrRollerSupportInPixel = 39.5;
+const widthOfPinnedOrRollerSupportInPixel = 45;
 
 export const getSupportPositionAndDimension = (
   beam,
@@ -109,22 +115,18 @@ export const getSupportPositionAndDimension = (
   let top = 0;
 
   if (support?.type === supportEnums.pinned) {
-    left = Math.abs(
-      (support.distanceFromLeft / beamTotalLength) * 100 -
-        ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2
-    );
-
-    console.log(support?.distanceFromLeft);
+    console.log(support);
+    left =
+      (+support.distanceFromLeft / beamTotalLength) * 100 -
+      ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2;
     console.log(left);
-
     top = 50;
   }
 
   if (support?.type === supportEnums.roller) {
-    left = Math.abs(
-      (support.distanceFromLeft / beamTotalLength) * 100 -
-        ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2
-    );
+    left =
+      (+support.distanceFromLeft / beamTotalLength) * 100 -
+      ((widthOfPinnedOrRollerSupportInPixel / beamPixelLength) * 100) / 2;
     top = 50;
   }
 
@@ -135,4 +137,71 @@ export const getSupportPositionAndDimension = (
   }
 
   return { left, top };
+};
+
+export const getMarkings = (beam) => {
+  const totalBeamLength = getBeamTotalLength(beam);
+
+  const supportsAndLoadings = [
+    ...(beam?.supports || []),
+    ...(beam?.loadings || []),
+  ];
+  supportsAndLoadings.sort((a, b) => a.distanceFromLeft - b.distanceFromLeft);
+
+  let markings = [];
+  supportsAndLoadings?.forEach((sal, i, arr) => {
+    const prevSal = arr?.[i - 1];
+
+    if (i === 0) {
+      markings.push(0);
+      return;
+    }
+    if (i === arr.length - 1) {
+      markings.push(totalBeamLength);
+      return;
+    }
+
+    if (sal?.spanOfLoading)
+      markings.push(
+        +sal?.distanceFromLeft,
+        +sal?.distanceFromLeft + +sal?.spanOfLoading
+      );
+    else markings.push(+sal?.distanceFromLeft);
+
+    if (prevSal?.spanOfLoading)
+      markings.push(
+        +prevSal?.distanceFromLeft,
+        +prevSal?.distanceFromLeft + +prevSal?.spanOfLoading
+      );
+    else markings.push(+prevSal?.distanceFromLeft);
+  });
+
+  markings.sort((a, b) => a - b);
+
+  const uniqueMarks = [...new Set(markings)];
+
+  const markCoords = uniqueMarks
+    .map((mark, i, arr) => {
+      let leftInUnit,
+        leftInPercentage,
+        spacingInUnit,
+        spacingInPercentage = 0;
+
+      const nextMark = arr?.[i + 1];
+
+      leftInUnit = mark;
+      leftInPercentage = (leftInUnit / totalBeamLength) * 100;
+      spacingInUnit = Math.abs(nextMark - mark);
+      spacingInPercentage = (spacingInUnit / totalBeamLength) * 100;
+
+      return {
+        leftInUnit,
+        leftInPercentage,
+        spacingInUnit,
+        spacingInPercentage,
+      };
+    })
+    ?.slice(0, -1);
+
+  return markCoords;
 };

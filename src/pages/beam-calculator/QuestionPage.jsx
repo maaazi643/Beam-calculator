@@ -9,6 +9,7 @@ import {
   PinnedSupportIcon,
   RollerSupportIcon,
   FixedSupportIcon,
+  Mark,
 } from "../../icons/Properties";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -16,6 +17,7 @@ import {
   loadingEnums,
   getSupportPositionAndDimension,
   supportEnums,
+  getMarkings,
 } from "../../store/beam-utils";
 import { beamActions } from "../../store/beam";
 // import JSONFormatter from "json-formatter-js";
@@ -29,8 +31,8 @@ import { beamActions } from "../../store/beam";
 //   bracketStyle: { color: "#6d6d6d" }, // Dark gray for brackets
 // };
 
-const LoadIcon = ({ load, beam }) => {
-  const dim = getLoadPositionAndDimension(beam, load.id);
+const LoadIcon = ({ load, beam, beamPixelLength }) => {
+  const dim = getLoadPositionAndDimension(beam, load.id, beamPixelLength);
   const { top, left, width, height } = dim;
   if (load.type === loadingEnums.single) {
     return (
@@ -42,8 +44,9 @@ const LoadIcon = ({ load, beam }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          transform: `translate(-${left}%, 0)`,
+          // transform: `translate(-${left}%, 0)`,
         }}
+        valueOfLoading={load?.valueOfLoading}
       />
     );
   }
@@ -57,7 +60,7 @@ const LoadIcon = ({ load, beam }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          transform: `translate(-${left}%, 0)`,
+          // transform: `translate(-${left}%, 0)`,
         }}
       />
     );
@@ -72,9 +75,9 @@ const LoadIcon = ({ load, beam }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          transform: `translate(-${left}%, 0)`,
+          // transform: `translate(-${left}%, 0)`,
         }}
-        bigToSmall={load?.openingValue > load?.closingValue}
+        bigToSmall={+load?.openingValue > +load?.closingValue}
       />
     );
   }
@@ -83,6 +86,7 @@ const LoadIcon = ({ load, beam }) => {
 LoadIcon.propTypes = {
   load: PropTypes.object.isRequired,
   beam: PropTypes.object.isRequired,
+  beamPixelLength: PropTypes.number.isRequired,
 };
 
 const SupportIcon = ({ support, beam, beamPixelLength }) => {
@@ -95,7 +99,7 @@ const SupportIcon = ({ support, beam, beamPixelLength }) => {
         key={support.id}
         style={{
           position: "absolute",
-          left: `-${left}%`,
+          left: `${left}%`,
           top: `${top}%`,
         }}
       />
@@ -109,7 +113,6 @@ const SupportIcon = ({ support, beam, beamPixelLength }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          // transform: `translate(-${left}%, 0)`,
         }}
       />
     );
@@ -123,7 +126,6 @@ const SupportIcon = ({ support, beam, beamPixelLength }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          // transform: `translate(-${left}%, 0)`,
         }}
       />
     );
@@ -134,6 +136,26 @@ SupportIcon.propTypes = {
   support: PropTypes.object.isRequired,
   beam: PropTypes.object.isRequired,
   beamPixelLength: PropTypes.number.isRequired,
+};
+
+const Markings = ({ beam }) => {
+  let markings = getMarkings(beam);
+
+  return markings?.map((mark, i) => (
+    <Mark
+      key={i}
+      style={{
+        top: "75%",
+        width: `${mark?.spacingInPercentage}%`,
+        left: `${mark?.leftInPercentage}%`,
+      }}
+      mark={mark}
+    />
+  ));
+};
+
+Markings.propTypes = {
+  beam: PropTypes.object,
 };
 
 export default function QuestionPage() {
@@ -147,8 +169,6 @@ export default function QuestionPage() {
   const setBeamPixelLength = (length) => {
     dispatch(beamActions.set({ key: "beamPixelLength", value: length }));
   };
-
-  console.log("beamPixelLength", beamPixelLength);
 
   return (
     <AnimatePresence>
@@ -166,7 +186,12 @@ export default function QuestionPage() {
             setBeamPixelLength={setBeamPixelLength}
           />
           {beamProperties?.loadings?.map((load) => (
-            <LoadIcon load={load} beam={beamProperties} key={load.id} />
+            <LoadIcon
+              load={load}
+              beam={beamProperties}
+              beamPixelLength={beamPixelLength}
+              key={load.id}
+            />
           ))}
           {beamProperties?.supports?.map((support) => (
             <SupportIcon
@@ -176,6 +201,7 @@ export default function QuestionPage() {
               key={support.id}
             />
           ))}
+          <Markings beam={beamProperties} />
         </motion.div>
       )}
     </AnimatePresence>

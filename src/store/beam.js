@@ -136,6 +136,116 @@ const initialState = {
     ],
   },
   // beamProperties: {
+  //   spans: [
+  //     {
+  //       id: "4c3224d7-3f46-43f1-b91a-ec3fce894bb4",
+
+  //       length: "13",
+
+  //       flexuralRigidity: "1",
+  //     },
+  //   ],
+
+  //   supports: [
+  //     {
+  //       id: "e1fb7217-fcbe-47f6-a17c-3d44ba53ae14",
+
+  //       type: "fixed",
+
+  //       sinking: false,
+
+  //       sinkingValue: "",
+
+  //       distanceFromLeft: "0",
+  //     },
+
+  //     {
+  //       id: "da774b6c-219f-4b96-8df8-d5fdaebdbccc",
+
+  //       type: "pinned",
+
+  //       sinking: false,
+
+  //       sinkingValue: "",
+
+  //       distanceFromLeft: "4",
+  //     },
+
+  //     {
+  //       id: "82657d81-b1ce-4ac5-a2cf-ecf5e7403cfd",
+
+  //       type: "roller",
+
+  //       sinking: false,
+
+  //       sinkingValue: "",
+
+  //       distanceFromLeft: "10",
+  //     },
+
+  //     {
+  //       id: "01b07b83-0354-42b1-b572-51a3c2ad8b05",
+
+  //       type: "fixed",
+
+  //       sinking: false,
+
+  //       sinkingValue: "",
+
+  //       distanceFromLeft: "13",
+  //     },
+  //   ],
+
+  //   loadings: [
+  //           {
+  //       id: "de5e4ab8-4209-4aed-a11c-b4aca1e9bac0",
+
+  //       type: "uniform",
+
+  //       distanceFromLeft: "1",
+
+  //       valueOfLoading: "4",
+
+  //       spanOfLoading: "2",
+
+  //       openingValue: "",
+
+  //       closingValue: "",
+  //     },
+  //     {
+  //       id: "45506a5e-5a56-4868-8d89-152f3327d374",
+
+  //       type: "single",
+
+  //       distanceFromLeft: "4",
+
+  //       valueOfLoading: "5",
+
+  //       spanOfLoading: "",
+
+  //       openingValue: "",
+
+  //       closingValue: "",
+  //     },
+
+  //     {
+  //       id: "9639ef17-45dc-4a4f-8029-5baddcabfbbc",
+
+  //       type: "varying",
+
+  //       distanceFromLeft: "8",
+
+  //       valueOfLoading: "",
+
+  //       spanOfLoading: "4",
+
+  //       openingValue: "8",
+
+  //       closingValue: "10",
+  //     },
+  //   ],
+  // },
+  // beamProperties: {
   //   spans: [],
   //   supports: [],
   //   loadings: [],
