@@ -1,3 +1,9 @@
 {
-  "ignoreWords": ["flexural", "uuidv4"]
+  "ignoreWords": [
+    "flexural",
+    "uuidv4"
+  ],
+  "words": [
+    "signleload"
+  ]
 }

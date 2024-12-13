@@ -15,7 +15,7 @@ export const validateSpanLength = (length) => {
 export const validateSpanFlexuralRigidity = (flexuralRigidity) => {
   if (!isDecimal(flexuralRigidity))
     return [false, "Flexural rigidity must be a number."];
-  if (flexuralRigidity <= 0)
+  if (flexuralRigidity < 0)
     return [false, "Flexural rigidity must be greater than 0."];
   if (flexuralRigidity > MaxSpanFlexuralRigidity)
     return [

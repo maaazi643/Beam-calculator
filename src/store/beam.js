@@ -14,141 +14,40 @@ const initialState = {
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
   beamProperties: {
-    spans: [
-      {
-        id: "91ecf04a-8fee-41ef-813e-981bfcddbe67",
-
-        length: "13",
-
-        flexuralRigidity: "1",
-      },
-    ],
-
-    supports: [
-      // {
-      //   id: "c9077aec-184d-4468-8fa2-836630a00615",
-
-      //   type: "fixed",
-
-      //   sinking: false,
-
-      //   sinkingValue: "",
-
-      //   distanceFromLeft: "0",
-      // },
-
-      // {
-      //   id: "ee67e63e-ba4a-46cd-92db-7a2fef94c304",
-
-      //   type: "pinned",
-
-      //   sinking: false,
-
-      //   sinkingValue: "",
-
-      //   distanceFromLeft: "0",
-      // },
-      {
-        id: "ee67e63e-ba4a-46cd-92db-7a2fef94c304",
-
-        type: "pinned",
-
-        sinking: false,
-
-        sinkingValue: "",
-
-        distanceFromLeft: "0",
-      },
-
-      // {
-      //   id: "fdf58ec7-f9b8-4c90-a84c-e4c8fa890057",
-
-      //   type: "roller",
-
-      //   sinking: false,
-
-      //   sinkingValue: "",
-
-      //   distanceFromLeft: "13",
-      // },
-
-      {
-        id: "fed7e991-9085-4ee7-a3dc-f8853f6e94b2",
-
-        type: "fixed",
-
-        sinking: false,
-
-        sinkingValue: "",
-
-        distanceFromLeft: "13",
-      },
-    ],
-
-    loadings: [
-      {
-        id: "a42a41f5-5ea5-4f07-9421-91291469c1e6",
-
-        type: "single",
-
-        distanceFromLeft: "2",
-
-        valueOfLoading: "5",
-
-        spanOfLoading: "",
-
-        openingValue: "",
-
-        closingValue: "",
-      },
-
-      {
-        id: "d47b0c93-d63f-4255-b8c9-189316f1c7ff",
-
-        type: "uniform",
-
-        distanceFromLeft: "4",
-
-        valueOfLoading: "6",
-
-        spanOfLoading: "2",
-
-        openingValue: "",
-
-        closingValue: "",
-      },
-
-      {
-        id: "ce05c2f8-a9ba-4ccd-b1db-d06a51b46ea8",
-
-        type: "varying",
-
-        distanceFromLeft: "10",
-
-        valueOfLoading: "",
-
-        spanOfLoading: "2",
-
-        openingValue: "5",
-
-        closingValue: "4",
-      },
-    ],
+    spans: [],
+    supports: [],
+    loadings: [],
   },
   // beamProperties: {
   //   spans: [
   //     {
-  //       id: "4c3224d7-3f46-43f1-b91a-ec3fce894bb4",
+  //       id: "840b36f7-a9da-4b4f-a10e-81b78e036d3a",
 
-  //       length: "13",
+  //       length: "4",
 
-  //       flexuralRigidity: "1",
+  //       flexuralRigidity: "2",
+  //     },
+
+  //     {
+  //       id: "061ca704-fbc3-432b-9b88-52f3c4b87966",
+
+  //       length: "3",
+
+  //       flexuralRigidity: "1.5",
+  //     },
+
+  //     {
+  //       id: "78e582cb-b303-4300-9e4b-a29791a2c916",
+
+  //       length: "5",
+
+  //       flexuralRigidity: "2.01",
   //     },
   //   ],
 
   //   supports: [
   //     {
-  //       id: "e1fb7217-fcbe-47f6-a17c-3d44ba53ae14",
+  //       id: "5db9cbdf-d05e-4aa5-bb37-8166ddef3a8f",
 
   //       type: "fixed",
 
@@ -160,7 +59,7 @@ const initialState = {
   //     },
 
   //     {
-  //       id: "da774b6c-219f-4b96-8df8-d5fdaebdbccc",
+  //       id: "312c8a57-f834-4734-841a-b32143cb68ae",
 
   //       type: "pinned",
 
@@ -172,54 +71,39 @@ const initialState = {
   //     },
 
   //     {
-  //       id: "82657d81-b1ce-4ac5-a2cf-ecf5e7403cfd",
+  //       id: "e19ac78b-7563-4784-afe9-aac71d0eb082",
 
-  //       type: "roller",
+  //       type: "pinned",
 
   //       sinking: false,
 
   //       sinkingValue: "",
 
-  //       distanceFromLeft: "10",
+  //       distanceFromLeft: "7",
   //     },
 
   //     {
-  //       id: "01b07b83-0354-42b1-b572-51a3c2ad8b05",
+  //       id: "bc029858-6e3f-4c01-90be-1d57be11648b",
 
-  //       type: "fixed",
+  //       type: "pinned",
 
   //       sinking: false,
 
   //       sinkingValue: "",
 
-  //       distanceFromLeft: "13",
+  //       distanceFromLeft: "12",
   //     },
   //   ],
 
   //   loadings: [
-  //           {
-  //       id: "de5e4ab8-4209-4aed-a11c-b4aca1e9bac0",
-
-  //       type: "uniform",
-
-  //       distanceFromLeft: "1",
-
-  //       valueOfLoading: "4",
-
-  //       spanOfLoading: "2",
-
-  //       openingValue: "",
-
-  //       closingValue: "",
-  //     },
   //     {
-  //       id: "45506a5e-5a56-4868-8d89-152f3327d374",
+  //       id: "18fcd1de-374b-41c3-9653-2307c31919a5",
 
   //       type: "single",
 
-  //       distanceFromLeft: "4",
+  //       distanceFromLeft: "2",
 
-  //       valueOfLoading: "5",
+  //       valueOfLoading: "24",
 
   //       spanOfLoading: "",
 
@@ -229,26 +113,37 @@ const initialState = {
   //     },
 
   //     {
-  //       id: "9639ef17-45dc-4a4f-8029-5baddcabfbbc",
+  //       id: "fd4e96c0-4a9e-48a7-8199-6682140387f1",
 
-  //       type: "varying",
+  //       type: "uniform",
 
-  //       distanceFromLeft: "8",
+  //       distanceFromLeft: "4",
 
-  //       valueOfLoading: "",
+  //       valueOfLoading: "12",
 
-  //       spanOfLoading: "4",
+  //       spanOfLoading: "3",
 
-  //       openingValue: "8",
+  //       openingValue: "",
 
-  //       closingValue: "10",
+  //       closingValue: "",
+  //     },
+
+  //     {
+  //       id: "042c1bf5-b2b2-487d-bc5d-c70dee4456f3",
+
+  //       type: "single",
+
+  //       distanceFromLeft: "10",
+
+  //       valueOfLoading: "25",
+
+  //       spanOfLoading: "",
+
+  //       openingValue: "",
+
+  //       closingValue: "",
   //     },
   //   ],
-  // },
-  // beamProperties: {
-  //   spans: [],
-  //   supports: [],
-  //   loadings: [],
   // },
 };
 
