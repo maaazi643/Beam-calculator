@@ -1,16 +1,22 @@
-import { section } from "motion/react-client";
+import { s, section } from "motion/react-client";
 import { loadingEnums } from "./beam-utils";
+import { sprintf } from "sprintf-js";
 
 const FEMformulas = {
   "single-pinned-equal": {
     leftToRight: (section, sectionLength, lr) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
-      const steps = [
-        // `M_{${rl}} = \\frac{${singleLoad?.valueOfLoading} \\cdot ${sectionLength}}{8}`,
-      ];
 
-      const fem = -(singleLoad?.valueOfLoading * sectionLength) / 8;
+      const w = +singleLoad?.valueOfLoading;
+      const divisor = 8;
+      const fem = -(w * sectionLength) / divisor;
+
+      const steps = [
+        sprintf("`M_(F%s) = -(w * l)/%f`", lr, divisor),
+        sprintf("`M_(F%s) = -((%f)(%f))/8`", lr, w, sectionLength, divisor),
+        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+      ];
 
       return {
         fem: fem,
@@ -20,11 +26,16 @@ const FEMformulas = {
     rightToLeft: (section, sectionLength, rl) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
-      const steps = [
-        // `M_{${rl}} = \\frac{${singleLoad?.valueOfLoading} \\cdot ${sectionLength}}{8}`,
-      ];
 
-      const fem = (singleLoad?.valueOfLoading * sectionLength) / 8;
+      const w = +singleLoad?.valueOfLoading;
+      const divisor = 8;
+      const fem = (w * sectionLength) / divisor;
+
+      const steps = [
+        sprintf("`M_(F%s) = (w * l)/%f`", rl, divisor),
+        sprintf("`M_(F%s) = ((%f)(%f))/8`", rl, w, sectionLength, divisor),
+        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+      ];
 
       return {
         fem: fem,
@@ -49,15 +60,35 @@ const FEMformulas = {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
-      const steps = [];
 
+      const w = +singleLoad?.valueOfLoading;
       const a = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
       const b = sectionLength - a;
+      const bPow = 2;
+      const sectionLengthPow = 2;
+      const fem = -(w * a * b ** bPow) / sectionLength ** sectionLengthPow;
 
-      const fem =
-        -(singleLoad?.valueOfLoading * b ** 2 * a) / sectionLength ** 2;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = -(w * a * b^%f) / l^%f`",
+          lr,
+          bPow,
+          sectionLengthPow
+        ),
+        sprintf(
+          "`M_(F%s) = -((%f)(%f)(%f^%f))/(%f^%f)`",
+          lr,
+          w,
+          a,
+          b,
+          bPow,
+          sectionLength,
+          sectionLengthPow
+        ),
+        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+      ];
 
       return {
         fem: fem,
@@ -68,15 +99,35 @@ const FEMformulas = {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
-      const steps = [];
 
+      const w = +singleLoad?.valueOfLoading;
       const a = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
       const b = sectionLength - a;
+      const aPow = 2;
+      const sectionLengthPow = 2;
+      const fem = (w * a ** aPow * b) / sectionLength ** sectionLengthPow;
 
-      const fem =
-        (singleLoad?.valueOfLoading * b * a ** 2) / sectionLength ** 2;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = (w * a^%f * b)/(l^%f)`",
+          rl,
+          aPow,
+          sectionLengthPow
+        ),
+        sprintf(
+          "`M_(F%s) = ((%f)(%f^%f)(%f))/(%f^%f)`",
+          rl,
+          w,
+          a,
+          aPow,
+          b,
+          sectionLength,
+          sectionLengthPow
+        ),
+        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+      ];
 
       return {
         fem: fem,
@@ -102,9 +153,15 @@ const FEMformulas = {
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-      const steps = [];
 
-      const fem = -(uniformLoad?.valueOfLoading * sectionLength ** 2) / 12;
+      const w = +uniformLoad?.valueOfLoading;
+      const divisor = 12;
+      const fem = -(w * sectionLength ** 2) / divisor;
+
+      const steps = [
+        sprintf("`M_(F%s) = -((%f)(%f^2))/12`", lr, w, sectionLength),
+        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+      ];
 
       return {
         fem: fem,
@@ -116,9 +173,15 @@ const FEMformulas = {
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-      const steps = [];
 
-      const fem = (uniformLoad?.valueOfLoading * sectionLength ** 2) / 12;
+      const w = +uniformLoad?.valueOfLoading;
+      const divisor = 12;
+      const fem = (w * sectionLength ** 2) / divisor;
+
+      const steps = [
+        sprintf("`M_(F%s) = ((%f)(%f^2))/12`", rl, w, sectionLength),
+        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+      ];
 
       return {
         fem: fem,
@@ -140,10 +203,34 @@ const FEMformulas = {
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-      const steps = [];
+
+      const w = +uniformLoad?.valueOfLoading;
+      const sectionLengthPow = 2;
+      const divisor = 192;
+      const multiplier = 11;
 
       const fem =
-        -(11 * uniformLoad?.valueOfLoading * sectionLength ** 2) / 192;
+        -(multiplier * w * sectionLength ** sectionLengthPow) / divisor;
+
+      const steps = [
+        sprintf(
+          "`M_(F%s) = -(%f * w * l^%f) / %f`",
+          lr,
+          multiplier,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = -((%f)(%f)(%f^%f)) / (%f)`",
+          lr,
+          multiplier,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+      ];
 
       return {
         fem: fem,
@@ -155,9 +242,34 @@ const FEMformulas = {
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-      const steps = [];
 
-      const fem = (5 * uniformLoad?.valueOfLoading * sectionLength ** 2) / 192;
+      const w = +uniformLoad?.valueOfLoading;
+      const sectionLengthPow = 2;
+      const divisor = 192;
+      const multiplier = 5;
+
+      const fem =
+        (multiplier * w * sectionLength ** sectionLengthPow) / divisor;
+
+      const steps = [
+        sprintf(
+          "`M_(F%s) = (%f * w * l^%f) / %f`",
+          rl,
+          multiplier,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = ((%f)(%f)(%f^%f)) / (%f)`",
+          rl,
+          multiplier,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+      ];
 
       return {
         fem: fem,
@@ -225,7 +337,7 @@ export const getBeamAnalysis = (beam) => {
       +support?.distanceFromLeft,
     ]);
   });
-  // console.log(supportRanges);
+  console.log(supportRanges);
 
   // find members(supports/loading) that belong to a span section
   const sections = supportRanges?.map((range) => {
@@ -237,10 +349,15 @@ export const getBeamAnalysis = (beam) => {
       ?.sort((a, b) => +a.distanceFromLeft - +b.distanceFromLeft);
   });
 
+  console.log(sections);
+
   // find fixed ended moments for each section
   const fixedEndedMoments = sections?.map((fem, i) => {
-    const lr = `${i + 1}*${i + 2}`;
-    const rl = `${i + 2}*${i + 1}`;
+    console.log(fem);
+    const lr = `${i + 1}.${i + 2}`;
+    const rl = `${i + 2}.${i + 1}`;
+    // const lr = `${i + 1}${"\\"?.repeat(2)}*${i + 2}`;
+    // const rl = `${i + 2}${"\\"?.repeat(2)}*${i + 1}`;
     const supportRange = supportRanges[i];
     const [p1, p2] = supportRange;
     const sectionLength = Math.abs(p2 - p1);
@@ -250,10 +367,12 @@ export const getBeamAnalysis = (beam) => {
     );
     if (formI != -1) {
       const formula = formulas[formI][1];
+      console.log({ formula });
       const resultLtR = formula.leftToRight(fem, sectionLength, lr);
-      // console.log(i, resultLtR);
+      console.log(i, resultLtR);
       const resultRtL = formula.rightToLeft(fem, sectionLength, rl);
-      // console.log(i, resultRtL);
+      console.log(i, resultRtL);
+
       return {
         lr: {
           fem: resultLtR.fem,
@@ -269,12 +388,14 @@ export const getBeamAnalysis = (beam) => {
       };
     } else {
       console.log(fem);
-      return {
-        lr: { fem: null, steps: [], name: lr },
-        rl: { fem: null, steps: [], name: rl },
-        section: fem,
-      };
-      // throw new Error("FEM formula not found");
+      throw new Error(
+        "FEM formula not found for section " + JSON.stringify(supportRange)
+      );
+      // return {
+      //   lr: { fem: null, steps: [], name: lr },
+      //   rl: { fem: null, steps: [], name: rl },
+      //   section: fem,
+      // };
     }
   });
 

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { getBeamAnalysis } from "../../store/beam-fem";
 import { useDispatch, useSelector } from "react-redux";
 import { MathJaxProvider, MathJaxFormula } from "mathjax3-react";
+import { MathJax } from "better-react-mathjax";
+import { escapeTex } from "../../utils/tex";
+import { v4 as uuidv4 } from "uuid";
+import { sprintf } from "sprintf-js";
 
 export default function StepsPage() {
   const dispatch = useDispatch();
@@ -12,58 +16,25 @@ export default function StepsPage() {
   console.log(analysis);
 
   return (
-    <div>
-      <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-        <thead className="bg-gray-200">
-          <tr className="text-left text-gray-700">
-            <th></th>
-            {analysis?.fixedEndedMoments?.map((el, ind) => (
-              <>
-                <th
-                  key={el?.lr?.name + ind}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  {el?.lr?.name}
-                </th>
-                <th
-                  key={el?.rl?.name + ind}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  {el?.rl?.name}
-                </th>
-              </>
+    <div className="space-y-6">
+      {analysis?.fixedEndedMoments?.map((el, i1) => {
+        return (
+          <div key={uuidv4()} className="space-y-6">
+            <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+              Fixed End Moment For Span {el?.lr?.name} (left to right)
+            </h3>
+            {el?.lr?.steps?.map((step) => (
+              <MathJax key={uuidv4()}>{step}</MathJax>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-            <td>Fixed End Moments</td>
-            {analysis?.fixedEndedMoments?.map((el, ind) => (
-              <>
-                <td
-                  key={el?.lr?.name + ind}
-                  className="px-4 py-2 border border-gray-300"
-                >
-                  {el?.lr?.fem}
-                </td>
-                <td
-                  key={el?.rl?.name + ind}
-                  className="px-4 py-2 border border-gray-300"
-                >
-                  {el?.rl?.fem}
-                </td>
-              </>
+            <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+              Fixed End Moment For Span {el?.rl?.name} (right to left)
+            </h3>
+            {el?.rl?.steps?.map((step) => (
+              <MathJax key={uuidv4()}>{step}</MathJax>
             ))}
-          </tr>
-        </tbody>
-      </table>
+          </div>
+        );
+      })}
     </div>
   );
-  // return (
-  //   <>
-  //     <MathJaxProvider>
-  //       <MathJaxFormula formula="M_{2} = \frac{24 \cdot 4}{8}" />
-  //     </MathJaxProvider>
-  //   </>
-  // );
 }

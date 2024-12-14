@@ -1,4 +1,4 @@
-const question1 = {
+export const question1 = {
   spans: [
     {
       id: "5f1e6fe5-a1e4-433b-aa57-65b8d0504498",
@@ -90,7 +90,7 @@ const question1 = {
   ],
 };
 
-const question2 = {
+export const question2 = {
   spans: [
     {
       id: "f6637dc3-4275-4ed0-ad46-5195c0ce4ea5",
@@ -218,7 +218,7 @@ const question2 = {
   ],
 };
 
-const question3 = {
+export const question3 = {
   spans: [
     {
       id: "9ed42c73-b77e-4438-9a02-59ed76d99e70",
@@ -310,7 +310,7 @@ const question3 = {
   ],
 };
 
-const question4 = {
+export const question4 = {
   spans: [
     {
       id: "840b36f7-a9da-4b4f-a10e-81b78e036d3a",
@@ -438,7 +438,7 @@ const question4 = {
   ],
 };
 
-const question5 = {
+export const question5 = {
   spans: [
     {
       id: "6c54426c-9a0a-49b5-98d1-f76d16d46f8b",
