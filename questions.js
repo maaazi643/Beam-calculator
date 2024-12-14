@@ -97,7 +97,7 @@ export const question2 = {
 
       length: "4",
 
-      flexuralRigidity: "0",
+      flexuralRigidity: "2",
     },
 
     {
@@ -105,7 +105,7 @@ export const question2 = {
 
       length: "5",
 
-      flexuralRigidity: "0",
+      flexuralRigidity: "1.5",
     },
 
     {
@@ -113,7 +113,7 @@ export const question2 = {
 
       length: "4",
 
-      flexuralRigidity: "0",
+      flexuralRigidity: "0.8",
     },
   ],
 
