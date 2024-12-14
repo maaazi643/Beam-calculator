@@ -13,9 +13,9 @@ const FEMformulas = {
       const fem = -(w * sectionLength) / divisor;
 
       const steps = [
-        sprintf("`M_(F%s) = -(w * l)/%f`", lr, divisor),
-        sprintf("`M_(F%s) = -((%f)(%f))/8`", lr, w, sectionLength, divisor),
-        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+        sprintf("`M_(F%s) = -(w * l)/%.2f`", lr, divisor),
+        sprintf("`M_(F%s) = -((%.2f)(%.2f))/%.2f`", lr, w, sectionLength, divisor),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
       ];
 
       return {
@@ -32,9 +32,9 @@ const FEMformulas = {
       const fem = (w * sectionLength) / divisor;
 
       const steps = [
-        sprintf("`M_(F%s) = (w * l)/%f`", rl, divisor),
-        sprintf("`M_(F%s) = ((%f)(%f))/8`", rl, w, sectionLength, divisor),
-        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+        sprintf("`M_(F%s) = (w * l)/%.2f`", rl, divisor),
+        sprintf("`M_(F%s) = ((%.2f)(%.2f))/8`", rl, w, sectionLength, divisor),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
       ];
 
       return {
@@ -72,13 +72,13 @@ const FEMformulas = {
 
       const steps = [
         sprintf(
-          "`M_(F%s) = -(w * a * b^%f) / l^%f`",
+          "`M_(F%s) = -(w * a * b^%.2f) / l^%.2f`",
           lr,
           bPow,
           sectionLengthPow
         ),
         sprintf(
-          "`M_(F%s) = -((%f)(%f)(%f^%f))/(%f^%f)`",
+          "`M_(F%s) = -((%.2f)(%.2f)(%.2f^%.2f))/(%.2f^%.2f)`",
           lr,
           w,
           a,
@@ -87,7 +87,7 @@ const FEMformulas = {
           sectionLength,
           sectionLengthPow
         ),
-        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
       ];
 
       return {
@@ -111,13 +111,13 @@ const FEMformulas = {
 
       const steps = [
         sprintf(
-          "`M_(F%s) = (w * a^%f * b)/(l^%f)`",
+          "`M_(F%s) = (w * a^%.2f * b)/(l^%.2f)`",
           rl,
           aPow,
           sectionLengthPow
         ),
         sprintf(
-          "`M_(F%s) = ((%f)(%f^%f)(%f))/(%f^%f)`",
+          "`M_(F%s) = ((%.2f)(%.2f^%.2f)(%.2f))/(%.2f^%.2f)`",
           rl,
           w,
           a,
@@ -126,7 +126,7 @@ const FEMformulas = {
           sectionLength,
           sectionLengthPow
         ),
-        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
       ];
 
       return {
@@ -156,11 +156,20 @@ const FEMformulas = {
 
       const w = +uniformLoad?.valueOfLoading;
       const divisor = 12;
-      const fem = -(w * sectionLength ** 2) / divisor;
+      const sectionLengthPow = 2;
+      const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
 
       const steps = [
-        sprintf("`M_(F%s) = -((%f)(%f^2))/12`", lr, w, sectionLength),
-        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+        sprintf("`M_(F%s) = -(w * l^%.2f)/%.2f`", lr, sectionLengthPow, divisor),
+        sprintf(
+          "`M_(F%s) = -((%.2f)(%.2f^%.2f))/%.2f`",
+          lr,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
       ];
 
       return {
@@ -176,11 +185,20 @@ const FEMformulas = {
 
       const w = +uniformLoad?.valueOfLoading;
       const divisor = 12;
-      const fem = (w * sectionLength ** 2) / divisor;
+      const sectionLengthPow = 2;
+      const fem = (w * sectionLength ** sectionLengthPow) / divisor;
 
       const steps = [
-        sprintf("`M_(F%s) = ((%f)(%f^2))/12`", rl, w, sectionLength),
-        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+        sprintf("`M_(F%s) = (w * l^%.2f)/%.2f`", rl, sectionLengthPow, divisor),
+        sprintf(
+          "`M_(F%s) = ((%.2f)(%.2f^%.2f))/%.2f`",
+          rl,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
       ];
 
       return {
@@ -214,14 +232,14 @@ const FEMformulas = {
 
       const steps = [
         sprintf(
-          "`M_(F%s) = -(%f * w * l^%f) / %f`",
+          "`M_(F%s) = -(%.2f * w * l^%.2f) / %.2f`",
           lr,
           multiplier,
           sectionLengthPow,
           divisor
         ),
         sprintf(
-          "`M_(F%s) = -((%f)(%f)(%f^%f)) / (%f)`",
+          "`M_(F%s) = -((%.2f)(%.2f)(%.2f^%.2f)) / (%.2f)`",
           lr,
           multiplier,
           w,
@@ -229,7 +247,7 @@ const FEMformulas = {
           sectionLengthPow,
           divisor
         ),
-        sprintf("`M_(F%s) = %f N/m`", lr, fem),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
       ];
 
       return {
@@ -253,14 +271,14 @@ const FEMformulas = {
 
       const steps = [
         sprintf(
-          "`M_(F%s) = (%f * w * l^%f) / %f`",
+          "`M_(F%s) = (%.2f * w * l^%.2f) / %.2f`",
           rl,
           multiplier,
           sectionLengthPow,
           divisor
         ),
         sprintf(
-          "`M_(F%s) = ((%f)(%f)(%f^%f)) / (%f)`",
+          "`M_(F%s) = ((%.2f)(%.2f)(%.2f^%.2f)) / (%.2f)`",
           rl,
           multiplier,
           w,
@@ -268,7 +286,7 @@ const FEMformulas = {
           sectionLengthPow,
           divisor
         ),
-        sprintf("`M_(F%s) = %f N/m`", rl, fem),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
       ];
 
       return {
@@ -285,40 +303,167 @@ const FEMformulas = {
       return +uniformLoad?.spanOfLoading === +sectionLength / 2;
     },
   },
+  "varying-triangular-fully-covered-positive-slope": {
+    leftToRight: (section, sectionLength, lr) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+
+      const w = +varyingLoad?.closingValue;
+      const sectionLengthPow = 2;
+      const divisor = 30;
+      const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = -(w * l^%.2f) / %.2f`",
+          lr,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = -((%.2f)(%.2f^%.2f)) / (%.2f)`",
+          lr,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
+      ];
+
+      return {
+        fem: fem,
+        steps: steps,
+      };
+    },
+    rightToLeft: (section, sectionLength, rl) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+
+      const w = +varyingLoad?.closingValue;
+      const sectionLengthPow = 2;
+      const divisor = 20;
+      const fem = +(w * sectionLength ** sectionLengthPow) / divisor;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = +(w * l^%.2f) / %.2f`",
+          rl,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = +((%.2f)(%.2f^%.2f)) / (%.2f)`",
+          rl,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
+      ];
+
+      return {
+        fem: fem,
+        steps: steps,
+      };
+    },
+    isType: (section, sectionLength) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      if (varyingLoads.length !== 1) return false;
+      const [varyingLoad] = varyingLoads;
+      const sameLengthAsSection =
+        +varyingLoad?.spanOfLoading === +sectionLength;
+      const openingIsZero = +varyingLoad?.openingValue === 0;
+      const closingIsGreaterThanZero = +varyingLoad?.closingValue > 0;
+      return sameLengthAsSection && openingIsZero && closingIsGreaterThanZero;
+    },
+  },
+  "varying-triangular-fully-covered-negative-slope": {
+    leftToRight: (section, sectionLength, lr) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+
+      const w = +varyingLoad?.openingValue;
+      const sectionLengthPow = 2;
+      const divisor = 20;
+      const fem = (w * sectionLength ** sectionLengthPow) / divisor;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = (w * l^%.2f) / %.2f`",
+          lr,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = ((%.2f)(%.2f^%.2f)) / (%.2f)`",
+          lr,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", lr, fem),
+      ];
+
+      return {
+        fem: fem,
+        steps: steps,
+      };
+    },
+    rightToLeft: (section, sectionLength, rl) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+
+      const w = +varyingLoad?.openingValue;
+      const sectionLengthPow = 2;
+      const divisor = 30;
+      const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
+      const steps = [
+        sprintf(
+          "`M_(F%s) = -(w * l^%.2f) / %.2f`",
+          rl,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf(
+          "`M_(F%s) = -((%.2f)(%.2f^%.2f)) / (%.2f)`",
+          rl,
+          w,
+          sectionLength,
+          sectionLengthPow,
+          divisor
+        ),
+        sprintf("`M_(F%s) = %.2f N/m`", rl, fem),
+      ];
+
+      return {
+        fem: fem,
+        steps: steps,
+      };
+    },
+    isType: (section, sectionLength) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      if (varyingLoads.length !== 1) return false;
+      const [varyingLoad] = varyingLoads;
+      const sameLengthAsSection =
+        +varyingLoad?.spanOfLoading === +sectionLength;
+      const closingIsZero = +varyingLoad?.closingValue === 0;
+      const openingIsGreaterThanZero = +varyingLoad?.openingValue > 0;
+      return sameLengthAsSection && closingIsZero && openingIsGreaterThanZero;
+    },
+  },
 };
-
-// FEMformulas["uniform-fully-covered"].isType(
-//   [
-//     {
-//       id: "312c8a57-f834-4734-841a-b32143cb68ae",
-
-//       type: "pinned",
-
-//       sinking: false,
-
-//       sinkingValue: "",
-
-//       distanceFromLeft: "4",
-//     },
-
-//     {
-//       id: "fd4e96c0-4a9e-48a7-8199-6682140387f1",
-
-//       type: "uniform",
-
-//       distanceFromLeft: "4",
-
-//       valueOfLoading: "12",
-
-//       spanOfLoading: "3",
-
-//       openingValue: "",
-
-//       closingValue: "",
-//     },
-//   ],
-//   3
-// );
 
 export const getBeamAnalysis = (beam) => {
   // find ranges of true spans using supports
@@ -352,26 +497,20 @@ export const getBeamAnalysis = (beam) => {
   console.log(sections);
 
   // find fixed ended moments for each section
-  const fixedEndedMoments = sections?.map((fem, i) => {
-    console.log(fem);
+  const fixedEndedMoments = sections?.map((section, i) => {
     const lr = `${i + 1}.${i + 2}`;
     const rl = `${i + 2}.${i + 1}`;
-    // const lr = `${i + 1}${"\\"?.repeat(2)}*${i + 2}`;
-    // const rl = `${i + 2}${"\\"?.repeat(2)}*${i + 1}`;
     const supportRange = supportRanges[i];
     const [p1, p2] = supportRange;
     const sectionLength = Math.abs(p2 - p1);
     const formulas = Object.entries(FEMformulas);
     const formI = formulas?.findIndex((formula) =>
-      formula[1]?.isType(fem, sectionLength)
+      formula[1]?.isType(section, sectionLength)
     );
     if (formI != -1) {
       const formula = formulas[formI][1];
-      console.log({ formula });
-      const resultLtR = formula.leftToRight(fem, sectionLength, lr);
-      console.log(i, resultLtR);
-      const resultRtL = formula.rightToLeft(fem, sectionLength, rl);
-      console.log(i, resultRtL);
+      const resultLtR = formula.leftToRight(section, sectionLength, lr);
+      const resultRtL = formula.rightToLeft(section, sectionLength, rl);
 
       return {
         lr: {
@@ -384,10 +523,11 @@ export const getBeamAnalysis = (beam) => {
           steps: resultRtL.steps,
           name: rl,
         },
-        section: fem,
+        section: section,
       };
     } else {
-      console.log(fem);
+      console.log(section)
+      console.log(section);
       throw new Error(
         "FEM formula not found for section " + JSON.stringify(supportRange)
       );

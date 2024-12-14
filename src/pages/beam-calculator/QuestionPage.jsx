@@ -78,6 +78,7 @@ const LoadIcon = ({ load, beam, beamPixelLength }) => {
           // transform: `translate(-${left}%, 0)`,
         }}
         bigToSmall={+load?.openingValue > +load?.closingValue}
+        triangular={+load?.openingValue === 0 || +load?.closingValue === 0}
       />
     );
   }
