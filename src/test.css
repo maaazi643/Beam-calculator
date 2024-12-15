@@ -1,5 +1,6 @@
 .ppp {
-    @apply text-[#444] text-base not-italic font-semibold leading-[133%];
+    @apply text-[#444] text-xs not-italic font-normal leading-[133%];
+    /* Typography@12/400 */
     font-family: Inter;
-    /* 1.33rem */
+    /* 0.9975rem */
 }

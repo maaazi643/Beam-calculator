@@ -1,5 +1,7 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
+import linear from "linear-solve";
+import { steps } from "motion";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -722,8 +724,6 @@ export const getBeamAnalysis = (beam) => {
     };
   });
 
-  console.log(slopesDeflectionEquations);
-
   const equilibriumEquations = [];
   supports?.forEach((sup, i) => {
     const prevSup = supports?.[i - 1];
@@ -766,91 +766,311 @@ export const getBeamAnalysis = (beam) => {
 
   const momentNameToEquationMap = {};
   slopesDeflectionEquations?.forEach((sde) => {
-    momentNameToEquationMap[sde.lr.name] = sde.lr.equation;
-    momentNameToEquationMap[sde.rl.name] = sde.rl.equation;
-  });
-
-  console.log(momentNameToEquationMap);
-
-  const extraEquations = equilibriumEquations?.map((equalEq) => {
-    const { equation } = equalEq;
-    const [first, second] = equation;
-    const [l, r] = first.split(".");
-
-    const firstEquation = momentNameToEquationMap[first];
-    const [fe1, fe2, fe3, fe4] = firstEquation;
-
-    if (!second) {
-      const ans = [fe1, fe2, fe3, fe4 * -1];
-      const [a1, a2, a3, a4] = ans;
-      const steps = [
-        sprintf("`M_%s = 0`", first),
-        sprintf(
-          "`%s %s %s %s = 0`",
-          fe1 == 0 ? "" : sprintf("%.2f EIθ_%s", fe1, l),
-          fe2 == 0 ? "" : sprintf("+ %.2f EIθ_%s", fe2, r),
-          fe3 == 0 ? "" : sprintf("+ %.2f EI", fe3),
-          fe4 == 0 ? "" : sprintf("+ %.2f", fe4)
-        ),
-        sprintf(
-          "`%s %s %s = %s`",
-          a1 == 0 ? "" : sprintf("%.2f EIθ_%s", a1, l),
-          a2 == 0 ? "" : sprintf("+ %.2f EIθ_%s ", a2, r),
-          a3 == 0 ? "" : sprintf("+ %.2f EI", a3),
-          a4 == 0 ? "" : sprintf("%.2f ", a4)
-        ),
-      ];
+    const nameSplit = sde.lr.name.split(".");
+    const l = nameSplit[0];
+    const r = nameSplit[1];
+    momentNameToEquationMap[sde.lr.name] = sde.lr.equation?.map((eq, i) => {
+      let v = null;
+      if (i == 0) v = l;
+      if (i == 1) v = r;
 
       return {
-        equation: ans,
-        steps: steps,
+        num: eq,
+        v: v,
       };
-    }
+    });
+    momentNameToEquationMap[sde.rl.name] = sde.rl.equation?.map((eq, i) => {
+      let v = null;
+      if (i == 0) v = r;
+      if (i == 1) v = l;
 
-    const secondEquation = momentNameToEquationMap[second];
-    const [se1, se2, se3, se4] = secondEquation;
-    const [fs1, fs2, fs3, fs4] = [
-      fe1 + se1,
-      fe2 + se2,
-      fe3 + se3,
-      (fe4 + se4) * -1,
-    ];
+      return {
+        num: eq,
+        v: v,
+      };
+    });
+  });
 
-    const newEquation = [fs1, fs2, fs3, fs4];
+  let extraEquations = equilibriumEquations.map((ee) => {
+    const [firstKey, secondKey] = ee.equation;
 
+    const firstEquation = momentNameToEquationMap[firstKey];
+    const secondEquation = secondKey
+      ? momentNameToEquationMap[secondKey]
+      : firstEquation?.map((eq) => ({ num: 0, v: eq?.v ? eq?.v : null }));
+    const [balancedFirstEquation, balancedSecondEquation] = ensureMatchingVs(
+      firstEquation,
+      secondEquation
+    );
+    const sortedFirstEquation = sortArrayByV(balancedFirstEquation);
+    const sortedSecondEquation = sortArrayByV(balancedSecondEquation);
+
+    // PLEASE DO A CHECK HERE FOR COMPATIBILITY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // if (newFirstEquation?.length != newSecondEquation?.length) {
+    //   throw new Error("invalid simultaneous moment equations");
+    //   console.log("ERRR");
+    // }
+
+    const newEquation = [];
     const steps = [
-      sprintf("`M_%s + M_%s = 0`", first, second),
+      ee?.steps[0],
       sprintf(
-        "`%s %s %s %s %s %s %s %s = 0`",
-        fe1 == 0 ? "" : sprintf("%.2f EIθ_%s", fe1, l),
-        fe2 == 0 ? "" : sprintf("+ %.2f EIθ_%s", fe2, r),
-        fe3 == 0 ? "" : sprintf("+ %.2f EI", fe3),
-        fe4 == 0 ? "" : sprintf("+ %.2f", fe4),
-        se1 == 0 ? "" : sprintf("+ %.2f EIθ_%s", se1, l),
-        se2 == 0 ? "" : sprintf("+ %.2f EIθ_%s", se2, r),
-        se3 == 0 ? "" : sprintf("+ %.2f EI", se3),
-        se4 == 0 ? "" : sprintf("+ %.2f", se4)
-      ),
-      sprintf(
-        "`%s %s %s = %s`",
-        fs1 == 0 ? "" : sprintf("%.2f EIθ_%s", fs1, l),
-        fs2 == 0 ? "" : sprintf("+ %.2f EIθ_%s ", fs2, r),
-        fs3 == 0 ? "" : sprintf("+ %.2f EI", fs3),
-        fs4 == 0 ? "" : sprintf("%.2f ", fs4)
+        "`%s + %s = 0`",
+        sortedFirstEquation
+          ?.map((item, i) =>
+            item?.num
+              ? `${i !== 0 ? "+" : ""} ${item.num}${
+                  item.v ? `θ_${item.v} ` : ""
+                }`
+              : ""
+          )
+          .join(""),
+        sortedSecondEquation
+          ?.map((item, i) =>
+            item?.num
+              ? `${i !== 0 ? "+" : ""} ${item.num}${
+                  item.v ? `θ_${item.v} ` : ""
+                }`
+              : ""
+          )
+          .join("")
       ),
     ];
+
+    let lastStep = "";
+
+    console.log(sortedFirstEquation);
+    sortedFirstEquation.forEach((_, i) => {
+      const fi = sortedFirstEquation[i];
+      const si = sortedSecondEquation[i];
+      const v = fi?.v;
+      const newNum = fi?.num + si?.num;
+
+      newEquation?.push({ num: fi?.num + si?.num, v: v });
+
+      if (i == 0) {
+        lastStep =
+          +newNum == 0
+            ? sprintf("`%s ", lastStep)
+            : sprintf("`%s + %.2f%s", lastStep, newNum, v ? `θ_${v} ` : "");
+      } else if (i == sortedFirstEquation.length - 1) {
+        lastStep =
+          +newNum == 0
+            ? sprintf("%s = 0`", lastStep)
+            : sprintf("%s + %.2f%s = 0`", lastStep, newNum, v ? `θ_${v} ` : "");
+      } else {
+        lastStep =
+          +newNum == 0
+            ? sprintf("%s ", lastStep)
+            : sprintf("%s + %.2f%s", lastStep, newNum, v ? `θ_${v} ` : "");
+      }
+    });
+
+    steps.push(lastStep);
 
     return {
+      steps,
       equation: newEquation,
-      steps: steps,
     };
   });
-  console.log(equilibriumEquations);
+
+  console.log(extraEquations)
+
+  // linear.
+  const leftHandSide = [];
+  const rightHandSide = [];
+
+  const draggedEquations = ensureMatchingVs(
+    ...extraEquations.map((eq) => eq?.equation)
+  )?.map((eq) => sortArrayByV(eq));
+  console.log(draggedEquations);
+  extraEquations = extraEquations?.map((eq, i) => ({
+    ...eq,
+    equation: draggedEquations[i],
+  }));
+  console.log(extraEquations)
+  extraEquations?.map((eq) => {
+    const equation = eq?.equation;
+    const nums = equation?.map((eq) => eq?.num);
+    const lhs = nums?.slice(0, -2);
+    const rhs = nums?.slice(-1)?.map((num) => num * -1);
+
+    leftHandSide.push(lhs);
+    rightHandSide.push(rhs[0]);
+  });
+  const slopeValuesMap = {};
+
+  console.log(leftHandSide);
+  console.log(rightHandSide);
+
+  // Singular matrix detected
+  if (leftHandSide?.length === 1 && rightHandSide?.length == 1) {
+    const lhs1 = leftHandSide[0];
+    const numerator = rightHandSide[0];
+    lhs1?.forEach((num, i) => {
+      if (num == 0) {
+        slopeValuesMap[`EIθ${i + 1}`] = { value: 0, steps: [] };
+      } else {
+        const slope = numerator / num;
+        slopeValuesMap[`EIθ${i + 1}`] = {
+          value: slope,
+          steps: [sprintf("`EIθ_%d = %.2f`", i + 1, slope)],
+        };
+      }
+    });
+  } else {
+    const [first] = leftHandSide;
+    const filteredLeftHandSide = leftHandSide.map(lhs => lhs.filter(num => num !== null));
+    console.log(filteredLeftHandSide);
+    console.log(rightHandSide)
+
+    try {
+      const slopesValues = linear?.solve(filteredLeftHandSide, rightHandSide);
+      first?.forEach((num, i) => {
+        if(!num){
+        slopeValuesMap[`EIθ${i + 1}`] = { value: 0, steps: [] };
+        }else{
+        const slope = slopesValues?.shift()
+        slopeValuesMap[`EIθ${i + 1}`] = {
+          value: slope,
+          steps: [sprintf("`EIθ_%d = %.2f`", i + 1, slope)],
+        };        }
+      })
+    } catch (error) {
+      console.log(error);
+      throw new Error("Cant solve simultaneous equations")
+    }
+  }
 
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
     equilibriumEquations,
     extraEquations,
+    slopeValuesMap,
   };
 };
+
+//  '`M_2.1 + M_2.3 = 0`' ], equation: [ '2.1', '2.3' ]
+
+// {
+
+//   '1.2': [
+
+//     { num: 0, v: 'θ_1' },
+
+//     { num: 0.4, v: 'θ_2' },
+
+//     { num: -0, v: null },
+
+//     { num: -36, v: null }
+
+//   ],
+
+//   '2.1': [
+
+//     { num: 0.8, v: 'θ_2' },
+
+//     { num: 0, v: 'θ_1' },
+
+//     { num: -0, v: null },
+
+//     { num: 24, v: null }
+
+//   ],
+
+//   '2.3': [
+
+//     { num: 0.8, v: 'θ_2' },
+
+//     { num: 0, v: 'θ_3' },
+
+//     { num: -0, v: null },
+
+//     { num: -50, v: null }
+
+//   ],
+
+//   '3.2': [
+
+//     { num: 0, v: 'θ_3' },
+
+//     { num: 0.4, v: 'θ_2' },
+
+//     { num: -0, v: null },
+
+//     { num: 50, v: null }
+
+//   ]
+
+// }
+
+function sortArrayByV(array) {
+  return [...array].sort((a, b) => {
+    if (a.v === null && b.v === null) return 0; // Both null, no change
+    if (a.v === null) return 1; // Null goes after non-null
+    if (b.v === null) return -1; // Non-null goes before null
+    return a.v - b.v; // Compare numeric values
+  });
+}
+
+// function ensureMatchingVs(arr1, arr2) {
+//   // Clone the arrays to avoid modifying the originals
+//   const newArr1 = [...arr1];
+//   const newArr2 = [...arr2];
+
+//   // Add missing `v` values from `arr1` into `arr2`
+//   arr1?.forEach((el1) => {
+//     const v = el1?.v;
+
+//     if (!v) return; // Skip null or undefined `v`
+
+//     const isFound = arr2?.find((el2) => +el2?.v === +v);
+//     if (!isFound) {
+//       newArr2.push({ num: 0, v });
+//     }
+//   });
+
+//   // Add missing `v` values from `arr2` into `arr1`
+//   arr2?.forEach((el2) => {
+//     const v = el2?.v;
+
+//     if (!v) return; // Skip null or undefined `v`
+
+//     const isFound = arr1?.find((el1) => +el1?.v === +v);
+//     if (!isFound) {
+//       newArr1.push({ num: 0, v });
+//     }
+//   });
+
+//   return [newArr1, newArr2];
+// }
+
+function ensureMatchingVs(...arrays) {
+  // Collect all unique `v` values from all arrays
+  const allVs = new Set();
+
+  arrays.forEach((arr) => {
+    arr?.forEach((el) => {
+      if (el?.v != null) {
+        allVs.add(+el.v); // Ensure numeric comparison consistency
+      }
+    });
+  });
+
+  // Clone and synchronize each array with all unique `v` values
+  const updatedArrays = arrays.map((arr) => {
+    const newArr = [...arr];
+
+    allVs.forEach((v) => {
+      const isFound = newArr.find((el) => +el?.v === +v);
+      if (!isFound) {
+        newArr.push({ num: 0, v });
+      }
+    });
+
+    return newArr;
+  });
+
+  return updatedArrays;
+}

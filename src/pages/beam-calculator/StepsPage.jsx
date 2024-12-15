@@ -18,7 +18,7 @@ export default function StepsPage() {
 
     return (
       <div className="space-y-6">
-        <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+        {/* <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
           (Step 1). Find Fixed Ended Moments(FEM) For Each Span:
         </h2>
         {analysis?.fixedEndedMoments?.map((el, i1) => {
@@ -38,7 +38,7 @@ export default function StepsPage() {
               ))}
             </div>
           );
-        })}
+        })} */}
         <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
           (Step 2). Find Slope Deflection Equation For Each Span:
         </h2>
@@ -80,6 +80,15 @@ export default function StepsPage() {
           );
         })}
         {analysis?.extraEquations?.map((el) => {
+          return (
+            <div key={uuidv4()} className="space-y-6">
+              {el?.steps?.map((step) => (
+                <MathJax key={uuidv4()}>{step}</MathJax>
+              ))}
+            </div>
+          );
+        })}
+        {Object.values(analysis?.slopeValuesMap)?.filter(el => +el?.value !== 0)?.map((el) => {
           return (
             <div key={uuidv4()} className="space-y-6">
               {el?.steps?.map((step) => (
