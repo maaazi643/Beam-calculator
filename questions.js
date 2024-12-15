@@ -225,7 +225,7 @@ export const question3 = {
 
       length: "6",
 
-      flexuralRigidity: "",
+      flexuralRigidity: "1.5",
     },
 
     {
@@ -233,7 +233,7 @@ export const question3 = {
 
       length: "4",
 
-      flexuralRigidity: "",
+      flexuralRigidity: "2",
     },
   ],
 
