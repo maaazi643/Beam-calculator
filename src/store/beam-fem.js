@@ -594,9 +594,16 @@ export const getBeamAnalysis = (beam) => {
     const equationR = [pr1, pr2, pr3, pr4];
 
     // VERY IMPORTANT TO SIMULTANEOUS EQUATIONS
-    const filledEquationL = fillEquationAtHoles(equationL, lr, MAXIMUM_NUMBER_OF_SLOPES);
-    const filledEquationR = fillEquationAtHoles(equationR, lr, MAXIMUM_NUMBER_OF_SLOPES);
-
+    const filledEquationL = fillEquationAtHoles(
+      equationL,
+      lr,
+      MAXIMUM_NUMBER_OF_SLOPES
+    );
+    const filledEquationR = fillEquationAtHoles(
+      equationR,
+      lr,
+      MAXIMUM_NUMBER_OF_SLOPES
+    );
 
     const stepsLr = [
       sprintf("`M_%s = ((2EI)/l)(2θ_%s + θ_%s - 3φ) + M_(F%s)`", lr, l, r, lr),
@@ -665,16 +672,69 @@ export const getBeamAnalysis = (beam) => {
     ];
 
     return {
-      lr: { name: lr, steps: stepsLr, equation: equationL, filled: filledEquationL },
-      rl: { name: rl, steps: stepsRl, equation: equationR, filled: filledEquationR },
+      lr: {
+        name: lr,
+        steps: stepsLr,
+        equation: equationL,
+        filled: filledEquationL,
+      },
+      rl: {
+        name: rl,
+        steps: stepsRl,
+        equation: equationR,
+        filled: filledEquationR,
+      },
     };
   });
+
+  // find all equilibrium equations
+  const equilibriumEquations = [];
+  supports?.forEach((sup, i) => {
+    const prevSup = supports?.[i - 1];
+    const nextSup = supports?.[i + 1];
+    const isFixed = sup?.type === supportEnums?.fixed;
+    const forward = `${i + 1}.${i + 2}`;
+    const backward = `${i + 1}.${i}`;
+
+    if (isFixed) {
+      return;
+    }
+
+    if (!prevSup) {
+      const steps = [sprintf("`M_%s = 0`", forward)];
+
+      equilibriumEquations?.push({
+        steps: steps,
+        equation: [forward, null],
+      });
+      return;
+    }
+
+    if (!nextSup) {
+      const steps = [sprintf("`M_%s = 0`", backward)];
+
+      equilibriumEquations?.push({
+        steps: steps,
+        equation: [backward, null],
+      });
+      return;
+    }
+
+    const steps = [sprintf("`M_%s + M_%s = 0`", backward, forward)];
+
+    equilibriumEquations?.push({
+      steps: steps,
+      equation: [backward, forward],
+    });
+  });
+
 
   //
 
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
+    equilibriumEquations,
   };
 };
 
