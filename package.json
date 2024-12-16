@@ -20,6 +20,7 @@
     "linear-equation-system": "^1.1.1",
     "linear-solve": "^1.2.1",
     "mathjax3-react": "^1.2.0",
+    "mathjs": "^14.0.1",
     "motion": "^11.13.1",
     "printf": "^0.6.1",
     "react": "^18.3.1",

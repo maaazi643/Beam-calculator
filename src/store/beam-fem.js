@@ -1,6 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import linear from "linear-solve";
+import { lusolve } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -505,8 +505,6 @@ export const getBeamAnalysis = (beam) => {
       ?.sort((a, b) => +a.distanceFromLeft - +b.distanceFromLeft);
   });
 
-  console.log(sections?.length);
-
   // find fixed ended moments for each section
   const fixedEndedMoments = sections?.map((section, i) => {
     const lr = `${i + 1}.${i + 2}`;
@@ -544,6 +542,8 @@ export const getBeamAnalysis = (beam) => {
   });
 
   const MAXIMUM_NUMBER_OF_SLOPES = sections?.length + 1;
+  const momentEquationMap = {};
+
   // making slope deflection equations for each span
   const slopesDeflectionEquations = supportRanges.map((supportRange, i) => {
     // supportRanges.forEach((supportRange, i) => {
@@ -561,7 +561,7 @@ export const getBeamAnalysis = (beam) => {
       );
     }
     const span = spans?.[i];
-    const spanLength = span?.length;
+    const spanLength = +span?.length;
     const lr = fixedEndedMoments?.[i]?.lr?.name;
     const rl = fixedEndedMoments?.[i]?.rl?.name;
     const [l, r] = lr.split(".");
@@ -576,7 +576,10 @@ export const getBeamAnalysis = (beam) => {
     const sinkingAtRight = supportAtRightPoint?.sinking
       ? +supportAtRightPoint?.sinkingValue
       : 0;
-    const EI = span?.flexuralRigidity == "" ? 1 : +span?.flexuralRigidity;
+    const EI =
+      span?.flexuralRigidity == "" || span?.flexuralRigidity == "0"
+        ? 1
+        : +span?.flexuralRigidity;
     const multiplier = (2 * EI) / spanLength;
     const [pl1, pl2, pl3, pl4] = [
       multiplier * 2 * slopeAtLeft,
@@ -604,6 +607,8 @@ export const getBeamAnalysis = (beam) => {
       lr,
       MAXIMUM_NUMBER_OF_SLOPES
     );
+    momentEquationMap[lr] = filledEquationL;
+    momentEquationMap[rl] = filledEquationR;
 
     const stepsLr = [
       sprintf("`M_%s = ((2EI)/l)(2θ_%s + θ_%s - 3φ) + M_(F%s)`", lr, l, r, lr),
@@ -621,7 +626,7 @@ export const getBeamAnalysis = (beam) => {
       sprintf(
         "`M_%s = ((2*%.2fEI)/%.2f)(2%s + %s - 3*%.2f) + %.2f`",
         lr,
-        EI == 1 ? "" : EI,
+        EI,
         spanLength,
         slopeAtLeft == 0 ? `*0` : `*θ_${l}`,
         slopeAtRight == 0 ? `0` : `θ_${r}`,
@@ -654,7 +659,7 @@ export const getBeamAnalysis = (beam) => {
       sprintf(
         "`M_%s = ((2*%.2fEI)/%.2f)(%s + 2%s - 3*%.2f) + %.2f`",
         rl,
-        EI == 1 ? "" : EI,
+        EI,
         spanLength,
         slopeAtLeft == 0 ? `0` : `θ_${l}`,
         slopeAtRight == 0 ? `*0` : `*θ_${r}`,
@@ -728,13 +733,168 @@ export const getBeamAnalysis = (beam) => {
     });
   });
 
+  // find all simultaneous equations
+  const coefficients = [];
+  const constants = [];
+  const extraEquations = equilibriumEquations?.map((eqeq, ind) => {
+    const equation = eqeq?.equation;
+    const [firstEq, secondEq] = equation;
 
-  //
+    const firstEquation = momentEquationMap?.[firstEq];
+    const secondEquation = secondEq
+      ? momentEquationMap?.[secondEq]
+      : firstEquation?.map((num) => (!isNaN(num) ? num : null));
+
+    const combination = firstEquation?.map((num1, i) => {
+      const num2 = secondEquation?.[i];
+
+      return +num1 + +num2;
+    });
+
+    const coefficient = combination?.slice(0, -2);
+    const constant = combination
+      ?.slice(-2)
+      .map((num) => +num * -1)
+      .reduce((acc, num) => acc + num, 0);
+    coefficients.push(coefficient);
+    constants.push(constant);
+
+    const steps = [
+      sprintf(
+        "`M_%s %s = 0`",
+        firstEq,
+        secondEq ? sprintf("+ M_%s", secondEq) : ""
+      ),
+      sprintf(
+        "`%s + %s = 0`",
+        firstEquation
+          ?.map((num, i) => {
+            if (!num) return "";
+            const isLastOrSecondToLastNum =
+              i === firstEquation?.length - 1 ||
+              i === firstEquation?.length - 2;
+            const unit = isLastOrSecondToLastNum ? "" : `EIθ_${i + 1}`;
+            return sprintf("+ %.2f%s", num, unit);
+          })
+          ?.join(""),
+        secondEquation
+          ?.map((num, i) => {
+            if (!num) return "";
+            const isLastOrSecondToLastNum =
+              i === secondEquation?.length - 1 ||
+              i === secondEquation?.length - 2;
+            const unit = isLastOrSecondToLastNum ? "" : `EIθ_${i + 1}`;
+            return sprintf("+ %.2f%s", num, unit);
+          })
+          ?.join("")
+      ),
+      sprintf(
+        "`%s = 0 ~ eq.%d`",
+        combination
+          ?.map((num, i) => {
+            if (!num) return "";
+            const isLastOrSecondToLastNum =
+              i === firstEquation?.length - 1 ||
+              i === firstEquation?.length - 2;
+            const unit = isLastOrSecondToLastNum ? "" : `EIθ_${i + 1}`;
+            return sprintf("+ %.2f%s", num, unit);
+          })
+          ?.join(""),
+        ind + 1
+      ),
+    ];
+
+    return {
+      steps,
+    };
+  });
+
+  // solving simultaneous equations
+  const [coefficientWithoutZeroColumns, zeroColumnsIndexesRemoved] =
+    removeZeroColumns(coefficients);
+
+  const slopeValues = lusolve(coefficientWithoutZeroColumns, constants);
+  const slopeValuesCopy = [...slopeValues];
+
+  // find all slopes
+  // adds slope to their appropriate place
+  const slopeValuesMap = {};
+  for (let i = 0; i < MAXIMUM_NUMBER_OF_SLOPES; i++) {
+    const indexWasRemoved = zeroColumnsIndexesRemoved?.includes(i);
+    const position = i + 1;
+    if (indexWasRemoved) {
+      slopeValuesMap[position] = {
+        value: 0,
+        steps: [sprintf("`EIθ_%s = 0`", position)],
+      };
+    } else {
+      const value = slopeValuesCopy?.shift()[0];
+      slopeValuesMap[position] = {
+        value,
+        steps: [sprintf("`EIθ_%s = %.2f`", position, value)],
+      };
+    }
+  }
+
+  // finding all moments
+  const momentsMap = {};
+  const moments = 
+  Object?.entries(momentEquationMap)
+  // ?.slice(0,1)
+  ?.map((entry) => {
+    const [name, equation] = entry;
+    const [l, r] = name.split(".");
+    let slopeAtLeft = slopeValuesMap?.[l]?.value;
+    let slopeAtRight = slopeValuesMap?.[r]?.value;
+
+    if(+l > +r){
+      slopeAtLeft = slopeValuesMap?.[r]?.value;
+      slopeAtRight = slopeValuesMap?.[l]?.value;
+    }
+
+    const filteredEquation = equation?.filter((num) => num !== null);
+
+    if(filteredEquation?.length !== 4){
+      throw new Error("Invalid moment equation")
+    }
+
+    const [firstCoefficient, secondCoefficient] = filteredEquation;
+    const constant = filteredEquation
+      ?.slice(-2)
+      ?.reduce((acc, num) => acc + num, 0);
+    const p1 = slopeAtLeft * firstCoefficient;
+    const p2 = slopeAtRight * secondCoefficient;
+    const moment = p1 + p2 + constant;
+    momentsMap[name] = moment;
+
+    const steps = [
+      sprintf(
+        "`M_%s = %s %s %s`",
+        name,
+        firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "",
+        secondCoefficient ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r) : "",
+        constant ? sprintf("+ %.2f", constant) : ""
+      ),
+      sprintf(
+        "`M_%s = %s %s %s`",
+        name,
+        firstCoefficient ? sprintf("+ %.2f * %.2f", firstCoefficient, slopeAtLeft) : "",
+        secondCoefficient ? sprintf("+ %.2f * %.2f", secondCoefficient, slopeAtRight) : "",
+        constant ? sprintf("+ %.2f", constant) : ""
+      ),
+      sprintf("`M_%s = %.2f Nm`", name, moment),
+    ];
+
+    return { steps };
+  });
 
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
     equilibriumEquations,
+    extraEquations,
+    slopeValuesMap,
+    moments,
   };
 };
 
@@ -752,10 +912,44 @@ function fillEquationAtHoles(array, point, maxLength) {
       newArray?.push(array[1]);
       continue;
     }
-    newArray?.push(0);
+    newArray?.push(null);
   }
 
   newArray?.push(...array.slice(-2));
 
   return newArray;
+}
+
+function removeZeroColumns(matrix) {
+  // Initialize an array to store indexes of columns to remove
+  let columnsToRemove = [];
+
+  // Determine the number of rows and columns
+  const rows = matrix.length;
+  const cols = matrix[0]?.length || 0;
+
+  // Loop through each column
+  for (let col = 0; col < cols; col++) {
+    let isZeroColumn = true;
+
+    // Check if all elements in the column are zero
+    for (let row = 0; row < rows; row++) {
+      if (matrix[row][col] !== 0) {
+        isZeroColumn = false;
+        break;
+      }
+    }
+
+    // If column is all zeros, mark it for removal
+    if (isZeroColumn) {
+      columnsToRemove.push(col);
+    }
+  }
+
+  // Create a new matrix without the zero columns
+  const newMatrix = matrix.map((row) =>
+    row.filter((_, colIndex) => !columnsToRemove.includes(colIndex))
+  );
+
+  return [newMatrix, columnsToRemove];
 }

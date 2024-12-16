@@ -17,13 +17,13 @@ export default function StepsPage() {
     console.log(analysis);
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
           (Step 1). Find Fixed Ended Moments(FEM) For Each Span:
         </h2>
         {analysis?.fixedEndedMoments?.map((el, i1) => {
           return (
-            <div key={uuidv4()} className="space-y-6">
+            <div key={uuidv4()} className="space-y-4">
               <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
                 Fixed End Moment For Span {el?.lr?.name} (left to right)
               </h3>
@@ -44,7 +44,7 @@ export default function StepsPage() {
         </h2>
         {analysis?.slopesDeflectionEquations?.map((el, i1) => {
           return (
-            <div key={uuidv4()} className="space-y-6">
+            <div key={uuidv4()} className="space-y-4">
               <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
                 Slope Deflection Equation For Span {el?.lr?.name} (left to
                 right)
@@ -63,6 +63,59 @@ export default function StepsPage() {
               ))}
               <p>{JSON.stringify(el?.rl?.equation)}</p>
               <p>{JSON.stringify(el?.rl?.filled)}</p>
+            </div>
+          );
+        })}
+        <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+          (Step 3). Find All Equilibrium Equations
+        </h2>
+        {analysis?.equilibriumEquations?.map((el, i) => {
+          return (
+            <div key={uuidv4()} className="flex gap-x-2">
+              {el?.steps?.map((step) => (
+                <>
+                  <span>{i + 1}. </span>
+                  <MathJax key={uuidv4()}>{step}</MathJax>
+                </>
+              ))}
+            </div>
+          );
+        })}
+        <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+          Substituting Moment Equations
+        </h3>
+        {analysis?.extraEquations?.map((el, i) => {
+          return (
+            <div key={uuidv4()} className="space-y-4">
+              {el?.steps?.map((step) => (
+                <>
+                  <MathJax key={uuidv4()}>{step}</MathJax>
+                </>
+              ))}
+            </div>
+          );
+        })}
+        <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+          Solve simultaneous equations
+        </h3>
+        {Object.values(analysis?.slopeValuesMap)?.map((el) => {
+          // {Object.values(analysis?.slopeValuesMap)?.filter(el => +el?.value !== 0)?.map((el) => {
+          return (
+            <div key={uuidv4()} className="space-y-4">
+              {el?.steps?.map((step) => (
+                <MathJax key={uuidv4()}>{step}</MathJax>
+              ))}
+            </div>
+          );
+        })}
+        {analysis?.moments?.map((el) => {
+          return (
+            <div key={uuidv4()} className="space-y-4">
+              {el?.steps?.map((step) => (
+                <>
+                  <MathJax key={uuidv4()}>{step}</MathJax>
+                </>
+              ))}
             </div>
           );
         })}
