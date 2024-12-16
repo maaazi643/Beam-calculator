@@ -40,7 +40,7 @@ export default function StepsPage() {
           );
         })}
         <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
-          (Step 2). Find Slope Deflection Equation For Each Span:
+          (Step 2). Find Slope Deflection Equations For Each Span:
         </h2>
         {analysis?.slopesDeflectionEquations?.map((el, i1) => {
           return (
@@ -53,6 +53,7 @@ export default function StepsPage() {
                 <MathJax key={uuidv4()}>{step}</MathJax>
               ))}
               <p>{JSON.stringify(el?.lr?.equation)}</p>
+              <p>{JSON.stringify(el?.lr?.filled)}</p>
               <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
                 Slope Deflection Equation For Span {el?.rl?.name} (right to
                 left)
@@ -61,42 +62,10 @@ export default function StepsPage() {
                 <MathJax key={uuidv4()}>{step}</MathJax>
               ))}
               <p>{JSON.stringify(el?.rl?.equation)}</p>
+              <p>{JSON.stringify(el?.rl?.filled)}</p>
             </div>
           );
         })}
-        {/* <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
-          (Step 3). Find Equilibrium Equations
-        </h2>
-        {analysis?.equilibriumEquations?.map((el, i) => {
-          return (
-            <div key={uuidv4()} className="flex gap-x-2">
-              {el?.steps?.map((step) => (
-                <>
-                  <span>{i + 1}. </span>
-                  <MathJax key={uuidv4()}>{step}</MathJax>
-                </>
-              ))}
-            </div>
-          );
-        })} */}
-        {/* {analysis?.extraEquations?.map((el) => {
-          return (
-            <div key={uuidv4()} className="space-y-6">
-              {el?.steps?.map((step) => (
-                <MathJax key={uuidv4()}>{step}</MathJax>
-              ))}
-            </div>
-          );
-        })}
-        {Object.values(analysis?.slopeValuesMap)?.filter(el => +el?.value !== 0)?.map((el) => {
-          return (
-            <div key={uuidv4()} className="space-y-6">
-              {el?.steps?.map((step) => (
-                <MathJax key={uuidv4()}>{step}</MathJax>
-              ))}
-            </div>
-          );
-        })} */}
       </div>
     );
   } catch (error) {

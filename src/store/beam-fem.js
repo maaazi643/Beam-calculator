@@ -505,6 +505,8 @@ export const getBeamAnalysis = (beam) => {
       ?.sort((a, b) => +a.distanceFromLeft - +b.distanceFromLeft);
   });
 
+  console.log(sections?.length);
+
   // find fixed ended moments for each section
   const fixedEndedMoments = sections?.map((section, i) => {
     const lr = `${i + 1}.${i + 2}`;
@@ -541,8 +543,7 @@ export const getBeamAnalysis = (beam) => {
     }
   });
 
-  console.log(fixedEndedMoments);
-
+  const MAXIMUM_NUMBER_OF_SLOPES = sections?.length + 1;
   // making slope deflection equations for each span
   const slopesDeflectionEquations = supportRanges.map((supportRange, i) => {
     // supportRanges.forEach((supportRange, i) => {
@@ -591,6 +592,11 @@ export const getBeamAnalysis = (beam) => {
       femRl,
     ];
     const equationR = [pr1, pr2, pr3, pr4];
+
+    // VERY IMPORTANT TO SIMULTANEOUS EQUATIONS
+    const filledEquationL = fillEquationAtHoles(equationL, lr, MAXIMUM_NUMBER_OF_SLOPES);
+    const filledEquationR = fillEquationAtHoles(equationR, lr, MAXIMUM_NUMBER_OF_SLOPES);
+
 
     const stepsLr = [
       sprintf("`M_%s = ((2EI)/l)(2θ_%s + θ_%s - 3φ) + M_(F%s)`", lr, l, r, lr),
@@ -659,10 +665,12 @@ export const getBeamAnalysis = (beam) => {
     ];
 
     return {
-      lr: { name: lr, steps: stepsLr, equation: equationL },
-      rl: { name: rl, steps: stepsRl, equation: equationR },
+      lr: { name: lr, steps: stepsLr, equation: equationL, filled: filledEquationL },
+      rl: { name: rl, steps: stepsRl, equation: equationR, filled: filledEquationR },
     };
   });
+
+  //
 
   return {
     fixedEndedMoments,
@@ -670,126 +678,24 @@ export const getBeamAnalysis = (beam) => {
   };
 };
 
-//  '`M_2.1 + M_2.3 = 0`' ], equation: [ '2.1', '2.3' ]
+function fillEquationAtHoles(array, point, maxLength) {
+  const newArray = [];
 
-// {
+  const [l, r] = point.split(".");
 
-//   '1.2': [
+  for (let i = 0; i < maxLength; i++) {
+    if (i + 1 === +l) {
+      newArray?.push(array[0]);
+      continue;
+    }
+    if (i + 1 === +r) {
+      newArray?.push(array[1]);
+      continue;
+    }
+    newArray?.push(0);
+  }
 
-//     { num: 0, v: 'θ_1' },
+  newArray?.push(...array.slice(-2));
 
-//     { num: 0.4, v: 'θ_2' },
-
-//     { num: -0, v: null },
-
-//     { num: -36, v: null }
-
-//   ],
-
-//   '2.1': [
-
-//     { num: 0.8, v: 'θ_2' },
-
-//     { num: 0, v: 'θ_1' },
-
-//     { num: -0, v: null },
-
-//     { num: 24, v: null }
-
-//   ],
-
-//   '2.3': [
-
-//     { num: 0.8, v: 'θ_2' },
-
-//     { num: 0, v: 'θ_3' },
-
-//     { num: -0, v: null },
-
-//     { num: -50, v: null }
-
-//   ],
-
-//   '3.2': [
-
-//     { num: 0, v: 'θ_3' },
-
-//     { num: 0.4, v: 'θ_2' },
-
-//     { num: -0, v: null },
-
-//     { num: 50, v: null }
-
-//   ]
-
-// }
-
-function sortArrayByV(array) {
-  return [...array].sort((a, b) => {
-    if (a.v === null && b.v === null) return 0; // Both null, no change
-    if (a.v === null) return 1; // Null goes after non-null
-    if (b.v === null) return -1; // Non-null goes before null
-    return a.v - b.v; // Compare numeric values
-  });
-}
-
-// function ensureMatchingVs(arr1, arr2) {
-//   // Clone the arrays to avoid modifying the originals
-//   const newArr1 = [...arr1];
-//   const newArr2 = [...arr2];
-
-//   // Add missing `v` values from `arr1` into `arr2`
-//   arr1?.forEach((el1) => {
-//     const v = el1?.v;
-
-//     if (!v) return; // Skip null or undefined `v`
-
-//     const isFound = arr2?.find((el2) => +el2?.v === +v);
-//     if (!isFound) {
-//       newArr2.push({ num: 0, v });
-//     }
-//   });
-
-//   // Add missing `v` values from `arr2` into `arr1`
-//   arr2?.forEach((el2) => {
-//     const v = el2?.v;
-
-//     if (!v) return; // Skip null or undefined `v`
-
-//     const isFound = arr1?.find((el1) => +el1?.v === +v);
-//     if (!isFound) {
-//       newArr1.push({ num: 0, v });
-//     }
-//   });
-
-//   return [newArr1, newArr2];
-// }
-
-function ensureMatchingVs(...arrays) {
-  // Collect all unique `v` values from all arrays
-  const allVs = new Set();
-
-  arrays.forEach((arr) => {
-    arr?.forEach((el) => {
-      if (el?.v != null) {
-        allVs.add(+el.v); // Ensure numeric comparison consistency
-      }
-    });
-  });
-
-  // Clone and synchronize each array with all unique `v` values
-  const updatedArrays = arrays.map((arr) => {
-    const newArr = [...arr];
-
-    allVs.forEach((v) => {
-      const isFound = newArr.find((el) => +el?.v === +v);
-      if (!isFound) {
-        newArr.push({ num: 0, v });
-      }
-    });
-
-    return newArr;
-  });
-
-  return updatedArrays;
+  return newArray;
 }
