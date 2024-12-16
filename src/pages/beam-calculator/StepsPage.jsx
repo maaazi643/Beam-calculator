@@ -96,7 +96,7 @@ export default function StepsPage() {
           );
         })}
         <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
-          Solve simultaneous equations
+          Solve the simultaneous equations
         </h3>
         {Object.values(analysis?.slopeValuesMap)?.map((el) => {
           // {Object.values(analysis?.slopeValuesMap)?.filter(el => +el?.value !== 0)?.map((el) => {
