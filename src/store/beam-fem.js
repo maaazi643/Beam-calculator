@@ -1,6 +1,7 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import { lusolve, } from "mathjs";
+import { lusolve } from "mathjs";
+import { s, section } from "motion/react-client";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -15,6 +16,13 @@ const FEMformulas = {
       const halfLength = sectionLength / 2;
 
       return relativeLengthOfSingleLoad === halfLength;
+    },
+    shearForce: (section, sectionLength) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+
+      const w = +singleLoad?.valueOfLoading;
+      return w;
     },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
@@ -126,6 +134,13 @@ const FEMformulas = {
       const halfLength = sectionLength / 2;
 
       return relativeLengthOfSingleLoad !== halfLength;
+    },
+    shearForce: (section, sectionLength) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+
+      const w = +singleLoad?.valueOfLoading;
+      return w;
     },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const [firstItem] = section;
@@ -268,6 +283,14 @@ const FEMformulas = {
       const [uniformLoad] = uniformLoads;
       return +uniformLoad?.spanOfLoading === +sectionLength;
     },
+    shearForce: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      return w * sectionLength;
+    },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
@@ -395,6 +418,14 @@ const FEMformulas = {
       if (uniformLoads.length !== 1) return false;
       const [uniformLoad] = uniformLoads;
       return +uniformLoad?.spanOfLoading === +sectionLength / 2;
+    },
+    shearForce: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      return (w * sectionLength) / 2;
     },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const uniformLoads = section.filter(
@@ -543,6 +574,14 @@ const FEMformulas = {
       const closingIsGreaterThanZero = +varyingLoad?.closingValue > 0;
       return sameLengthAsSection && openingIsZero && closingIsGreaterThanZero;
     },
+    shearForce: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      return (w * sectionLength) / 2;
+    },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
@@ -677,6 +716,14 @@ const FEMformulas = {
       const closingIsZero = +varyingLoad?.closingValue === 0;
       const openingIsGreaterThanZero = +varyingLoad?.openingValue > 0;
       return sameLengthAsSection && closingIsZero && openingIsGreaterThanZero;
+    },
+    shearForce: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      return (w * sectionLength) / 2;
     },
     leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const varyingLoads = section.filter(
@@ -1314,7 +1361,7 @@ export const getBeamAnalysis = (beam) => {
   });
 
   // balance the above reaction force, sum duplicates
-  const finalReactionMaps = {}
+  const finalReactionMaps = {};
   for (const [key, value] of Object.entries(reactionsMap)) {
     const point = key;
     const [main] = point.split(".");
@@ -1326,6 +1373,69 @@ export const getBeamAnalysis = (beam) => {
     }
   }
 
+  // find all vertical forces
+  const verticalForces = [];
+  sections?.forEach((section, i) => {
+    const supportRange = supportRanges[i];
+    const [p1, p2] = supportRange;
+    const sectionLength = Math.abs(p2 - p1);
+    const formulas = Object.entries(FEMformulas);
+    const formI = formulas?.findIndex((formula) =>
+      formula[1]?.isType(section, sectionLength)
+    );
+
+    const reactionForce1 = {
+      force: finalReactionMaps[`${i + 1}`],
+      distanceFromLeft: p1,
+    };
+    const formula = formulas[formI][1];
+    const shearBetweenSpan = formula?.shearForce(section, sectionLength);
+    const reactionForce2 = { force: -shearBetweenSpan, distanceFromLeft: p2 };
+
+    verticalForces?.push(reactionForce1, reactionForce2);
+    if (i === sections.length - 1) {
+      const reactionForce1 = {
+        force: finalReactionMaps[`${i + 2}`],
+        distanceFromLeft: p2,
+      };
+      verticalForces?.push(reactionForce1);
+    }
+  });
+
+  // find shear forces
+  const shearForces = [];
+  verticalForces?.reduce((acc, force, i) => {
+    const isOdd = i % 2 !== 0;
+
+    const currentForce = force?.force;
+    const currentDistance = force?.distanceFromLeft;
+    const shearForce = acc + currentForce;
+
+    const steps = [
+      sprintf(
+        "`S.F %s = %.2f + %.2f N`",
+        isOdd ? `" before " ${currentDistance}m` : `" at " ${currentDistance}m`,
+        acc,
+        currentForce
+      ),
+      sprintf(
+        "`S.F %s = %.2f N`",
+        isOdd ? `" before " ${currentDistance}m` : `" at " ${currentDistance}m`,
+        shearForce
+      ),
+    ];
+
+    shearForces?.push({
+      force: shearForce,
+      steps: steps,
+    });
+
+    return shearForce;
+  }, 0);
+
+  console.log(verticalForces);
+  console.log(shearForces);
+
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
@@ -1335,6 +1445,7 @@ export const getBeamAnalysis = (beam) => {
     moments,
     reactions,
     finalReactionMaps,
+    shearForces,
   };
 };
 

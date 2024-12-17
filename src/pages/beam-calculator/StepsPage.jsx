@@ -141,7 +141,7 @@ export default function StepsPage() {
         );
       })}
       <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 3). Find All reaction forces
+        (Step 4). Find All reaction forces
       </h2>
       {solutionAnalysis?.reactions?.map((el, i1) => {
         return (
@@ -171,6 +171,22 @@ export default function StepsPage() {
             );
           }
         )}
+      </div>
+      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+        (Step 5). Find shear forces
+      </h2>
+      <div className="space-y-4">
+        {solutionAnalysis?.shearForces?.map((el) => {
+          return (
+            <div key={uuidv4()} className="space-y-2">
+              {el?.steps?.map((step) => (
+                <>
+                  <MathJax key={uuidv4()}>{step}</MathJax>
+                </>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
