@@ -140,6 +140,24 @@ export default function StepsPage() {
           </div>
         );
       })}
+      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+        (Step 3). Find All reaction forces
+      </h2>
+      {solutionAnalysis?.reactions?.map((el, i1) => {
+        return (
+          <div key={uuidv4()} className="space-y-4">
+            <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+              Take moment about Point: {el?.lr?.name?.split(".")[0]}
+            </h3>
+            {el?.lr?.steps?.map((step) => (
+              <MathJax key={uuidv4()}>{step}</MathJax>
+            ))}
+            {el?.rl?.steps?.map((step) => (
+              <MathJax key={uuidv4()}>{step}</MathJax>
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }

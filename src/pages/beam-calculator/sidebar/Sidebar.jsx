@@ -6,6 +6,7 @@ import LoadingSection from "./LoadingSection";
 import SupportSection from "./SupportSection";
 import SolveButton from "../../../components/buttons/SolveButton";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { beamActions } from "../../../store/beam";
 import { getBeamAnalysis } from "../../../store/beam-fem";
 
@@ -13,15 +14,21 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 export default function Sidebar() {
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const { beamProperties } = useSelector((state) => state.beam);
 
   const solveHandler = async () => {
     try {
+      navigate("/beam-calculator/steps")
       dispatch(beamActions?.set({ key: "solutionIsLoading", value: true }));
-      await sleep(1000)
+      // const num = randomInteger(1500, 2500);
+      // await sleep(num);
       const analysis = getBeamAnalysis(beamProperties);
       dispatch(
         beamActions?.set([{ key: "solutionAnalysis", value: analysis }])

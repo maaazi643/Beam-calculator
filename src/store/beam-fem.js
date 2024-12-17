@@ -4,6 +4,18 @@ import { lusolve } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
+    isType: (section, sectionLength) => {
+      const [firstItem] = section;
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      if (singleLoads.length != 1) return false;
+      const [singleLoad] = singleLoads;
+      const relativeLengthOfSingleLoad = Math.abs(
+        +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
+      );
+      const halfLength = sectionLength / 2;
+
+      return relativeLengthOfSingleLoad === halfLength;
+    },
     leftToRight: (section, sectionLength, lr) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
@@ -48,6 +60,61 @@ const FEMformulas = {
         steps: steps,
       };
     },
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
+      const [firstItem] = section;
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+      const leftToCenterLength = Math.abs(
+        +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
+      );
+      const centerToRightLength = Math.abs(sectionLength - leftToCenterLength);
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+      const w = +singleLoad?.valueOfLoading;
+
+      const p1 = -1 * w * centerToRightLength;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-w*b + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-%.2f*%.2f + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            centerToRightLength,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+      const w = +singleLoad?.valueOfLoading;
+
+      const reaction = w - reactionL;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, w, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+  },
+  "single-pinned-unequal": {
     isType: (section, sectionLength) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
@@ -58,10 +125,8 @@ const FEMformulas = {
       );
       const halfLength = sectionLength / 2;
 
-      return relativeLengthOfSingleLoad === halfLength;
+      return relativeLengthOfSingleLoad !== halfLength;
     },
-  },
-  "single-pinned-unequal": {
     leftToRight: (section, sectionLength, lr) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
@@ -140,20 +205,69 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    isType: (section, sectionLength) => {
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
-      if (singleLoads.length != 1) return false;
       const [singleLoad] = singleLoads;
-      const relativeLengthOfSingleLoad = Math.abs(
+      const leftToCenterLength = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
-      const halfLength = sectionLength / 2;
+      const centerToRightLength = Math.abs(sectionLength - leftToCenterLength);
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+      const w = +singleLoad?.valueOfLoading;
 
-      return relativeLengthOfSingleLoad !== halfLength;
+      const p1 = -1 * w * centerToRightLength;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-w*b + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-%.2f*%.2f + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            centerToRightLength,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+      const w = +singleLoad?.valueOfLoading;
+
+      const reaction = w - reactionL;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, w, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
     },
   },
   "uniform-fully-covered": {
+    isType: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      if (uniformLoads.length !== 1) return false;
+      const [uniformLoad] = uniformLoads;
+      return +uniformLoad?.spanOfLoading === +sectionLength;
+    },
     leftToRight: (section, sectionLength, lr) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
@@ -217,13 +331,62 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    isType: (section, sectionLength) => {
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
-      if (uniformLoads.length !== 1) return false;
       const [uniformLoad] = uniformLoads;
-      return +uniformLoad?.spanOfLoading === +sectionLength;
+      const w = +uniformLoad?.valueOfLoading;
+      const loadSpan = +uniformLoad?.spanOfLoading;
+      const loadSpanHalved = loadSpan / 2;
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+      const p1 = -1 * w * loadSpan * loadSpanHalved;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-w*l*(l/2) + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-%.2f*%.2f*%.2f + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            loadSpan,
+            loadSpanHalved,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      console.log(w)
+      const loadSpan = +uniformLoad?.spanOfLoading;
+      console.log(loadSpan)
+      const p1 = w * loadSpan;
+      console.log(p1)
+      const reaction = p1 - reactionL;
+      console.log(reaction)
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, w, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+      };
     },
   },
   "uniform-half-covered": {
@@ -839,52 +1002,115 @@ export const getBeamAnalysis = (beam) => {
   // finding all moments
   const momentsMap = {};
   const moments = Object?.entries(momentEquationMap)
-  // ?.slice(0,1)
-  ?.map((entry) => {
-    const [name, equation] = entry;
-    const [l, r] = name.split(".");
-    let slopeAtLeft = slopeValuesMap?.[l]?.value;
-    let slopeAtRight = slopeValuesMap?.[r]?.value;
+    // ?.slice(0,1)
+    ?.map((entry) => {
+      const [name, equation] = entry;
+      const [l, r] = name.split(".");
+      let slopeAtLeft = slopeValuesMap?.[l]?.value;
+      let slopeAtRight = slopeValuesMap?.[r]?.value;
 
-    if(+l > +r){
-      slopeAtLeft = slopeValuesMap?.[r]?.value;
-      slopeAtRight = slopeValuesMap?.[l]?.value;
+      if (+l > +r) {
+        slopeAtLeft = slopeValuesMap?.[r]?.value;
+        slopeAtRight = slopeValuesMap?.[l]?.value;
+      }
+
+      const filteredEquation = equation?.filter((num) => num !== null);
+
+      if (filteredEquation?.length !== 4) {
+        throw new Error("Invalid moment equation");
+      }
+
+      const [firstCoefficient, secondCoefficient] = filteredEquation;
+      const constant = filteredEquation
+        ?.slice(-2)
+        ?.reduce((acc, num) => acc + num, 0);
+      const p1 = slopeAtLeft * firstCoefficient;
+      const p2 = slopeAtRight * secondCoefficient;
+      const moment = p1 + p2 + constant;
+      momentsMap[name] = moment;
+
+      const steps = [
+        sprintf(
+          "`M_%s = %s %s %s`",
+          name,
+          firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "",
+          secondCoefficient
+            ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r)
+            : "",
+          constant ? sprintf("+ %.2f", constant) : ""
+        ),
+        sprintf(
+          "`M_%s = %s %s %s`",
+          name,
+          firstCoefficient
+            ? sprintf("+ %.2f * %.2f", firstCoefficient, slopeAtLeft)
+            : "",
+          secondCoefficient
+            ? sprintf("+ %.2f * %.2f", secondCoefficient, slopeAtRight)
+            : "",
+          constant ? sprintf("+ %.2f", constant) : ""
+        ),
+        sprintf("`M_%s = %.2f Nm`", name, moment),
+      ];
+
+      return { steps };
+    });
+
+  // finding reaction forces
+  const reactionsMap = {};
+  const reactions = sections.map((section, i) => {
+    if (i !== 1) return;
+    const momentKeys = Object.keys(momentsMap);
+    const l = `${i + 1}`
+    const lName = momentKeys?.filter(k => k?.startsWith(l))?.length > 1 ? `${l}.${i+1}` : l;
+    const r = `${i + 2}`
+    const rName = momentKeys?.filter(k => k?.startsWith(r))?.length > 1 ? `${r}.${i+1}` : r;
+    const lr = `${l}.${r}`;
+    const rl = `${r}.${l}`;
+    const supportRange = supportRanges[i];
+    const [p1, p2] = supportRange;
+    const sectionLength = Math.abs(p2 - p1);
+    const formulas = Object.entries(FEMformulas);
+    const formI = formulas?.findIndex((formula) =>
+      formula[1]?.isType(section, sectionLength)
+    );
+
+    if (formI === -1) {
+      throw new Error("Cant find reactions at: ", JSON.stringify(section));
     }
 
-    const filteredEquation = equation?.filter((num) => num !== null);
+    const formula = formulas[formI][1];
 
-    if(filteredEquation?.length !== 4){
-      throw new Error("Invalid moment equation")
-    }
+    const reactionLR = formula.reactionLeftToRight(
+      section,
+      sectionLength,
+      lr,
+      rl,
+      momentsMap,
+      lName
+    );
+    reactionsMap[lName] = reactionLR.reaction;
+    const reactionRL = formula.reactionRightToLeft(
+      section,
+      lr,
+      reactionLR.reaction,
+      rName
+    );
+    reactionsMap[rName] = reactionRL.reaction;
 
-    const [firstCoefficient, secondCoefficient] = filteredEquation;
-    const constant = filteredEquation
-      ?.slice(-2)
-      ?.reduce((acc, num) => acc + num, 0);
-    const p1 = slopeAtLeft * firstCoefficient;
-    const p2 = slopeAtRight * secondCoefficient;
-    const moment = p1 + p2 + constant;
-    momentsMap[name] = moment;
-
-    const steps = [
-      sprintf(
-        "`M_%s = %s %s %s`",
-        name,
-        firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "",
-        secondCoefficient ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r) : "",
-        constant ? sprintf("+ %.2f", constant) : ""
-      ),
-      sprintf(
-        "`M_%s = %s %s %s`",
-        name,
-        firstCoefficient ? sprintf("+ %.2f * %.2f", firstCoefficient, slopeAtLeft) : "",
-        secondCoefficient ? sprintf("+ %.2f * %.2f", secondCoefficient, slopeAtRight) : "",
-        constant ? sprintf("+ %.2f", constant) : ""
-      ),
-      sprintf("`M_%s = %.2f Nm`", name, moment),
-    ];
-
-    return { steps };
+    return {
+      lr: {
+        reaction: reactionLR.reaction,
+        steps: reactionLR.steps,
+        name: lr,
+      },
+      rl: {
+        reaction: reactionRL.reaction,
+        steps: reactionRL.steps,
+        name: rl,
+      },
+      section: section,
+    };
   });
 
   return {
@@ -894,6 +1120,7 @@ export const getBeamAnalysis = (beam) => {
     extraEquations,
     slopeValuesMap,
     moments,
+    reactions,
   };
 };
 
