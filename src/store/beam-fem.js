@@ -371,19 +371,15 @@ const FEMformulas = {
       );
       const [uniformLoad] = uniformLoads;
       const w = +uniformLoad?.valueOfLoading;
-      console.log(w)
       const loadSpan = +uniformLoad?.spanOfLoading;
-      console.log(loadSpan)
       const p1 = w * loadSpan;
-      console.log(p1)
       const reaction = p1 - reactionL;
-      console.log(reaction)
 
       return {
         reaction: reaction,
         steps: [
           sprintf("`∑ V = 0`"),
-          sprintf("`R_%s = %.2f - %.2f`", name, w, reactionL),
+          sprintf("`R_%s = %.2f - %.2f`", name, p1, reactionL),
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
       };
