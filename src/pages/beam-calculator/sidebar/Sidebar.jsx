@@ -23,6 +23,8 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   const { beamProperties } = useSelector((state) => state.beam);
 
+  console.log(beamProperties);
+
   const solveHandler = async () => {
     try {
       navigate("/beam-calculator/steps")

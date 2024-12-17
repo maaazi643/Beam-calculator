@@ -1,6 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import { lusolve } from "mathjs";
+import { lusolve, } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -16,7 +16,7 @@ const FEMformulas = {
 
       return relativeLengthOfSingleLoad === halfLength;
     },
-    leftToRight: (section, sectionLength, lr) => {
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
@@ -41,7 +41,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
@@ -127,7 +127,7 @@ const FEMformulas = {
 
       return relativeLengthOfSingleLoad !== halfLength;
     },
-    leftToRight: (section, sectionLength, lr) => {
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
@@ -166,7 +166,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
@@ -268,7 +268,7 @@ const FEMformulas = {
       const [uniformLoad] = uniformLoads;
       return +uniformLoad?.spanOfLoading === +sectionLength;
     },
-    leftToRight: (section, sectionLength, lr) => {
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
@@ -302,7 +302,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
@@ -363,6 +363,7 @@ const FEMformulas = {
           ),
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
+        name: name,
       };
     },
     reactionRightToLeft: (section, lr, reactionL, name) => {
@@ -382,11 +383,20 @@ const FEMformulas = {
           sprintf("`R_%s = %.2f - %.2f`", name, p1, reactionL),
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
+        name: name,
       };
     },
   },
-  "uniform-half-covered": {
-    leftToRight: (section, sectionLength, lr) => {
+  "uniform-half-covered-at-beginning": {
+    isType: (section, sectionLength) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      if (uniformLoads.length !== 1) return false;
+      const [uniformLoad] = uniformLoads;
+      return +uniformLoad?.spanOfLoading === +sectionLength / 2;
+    },
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
@@ -425,7 +435,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
@@ -464,17 +474,76 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    isType: (section, sectionLength) => {
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
-      if (uniformLoads.length !== 1) return false;
       const [uniformLoad] = uniformLoads;
-      return +uniformLoad?.spanOfLoading === +sectionLength / 2;
+      const w = +uniformLoad?.valueOfLoading;
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+
+      const p1 = (-1 * (3 * w * sectionLength ** 2)) / 8;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-3w*l*(l/8) + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-3(%.2f*%.2f*%.2f)/8 + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            sectionLength,
+            sectionLength,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      const loadSpan = +uniformLoad?.spanOfLoading;
+      const sectionLength = loadSpan * 2;
+      const p1 = w * sectionLength;
+      const reaction = p1 - reactionL;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, p1, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
     },
   },
   "varying-triangular-fully-covered-positive-slope": {
-    leftToRight: (section, sectionLength, lr) => {
+    isType: (section, sectionLength) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      if (varyingLoads.length !== 1) return false;
+      const [varyingLoad] = varyingLoads;
+      const sameLengthAsSection =
+        +varyingLoad?.spanOfLoading === +sectionLength;
+      const openingIsZero = +varyingLoad?.openingValue === 0;
+      const closingIsGreaterThanZero = +varyingLoad?.closingValue > 0;
+      return sameLengthAsSection && openingIsZero && closingIsGreaterThanZero;
+    },
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
@@ -507,7 +576,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
@@ -540,6 +609,63 @@ const FEMformulas = {
         steps: steps,
       };
     },
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+
+      const p1 = (-1 * (w * sectionLength ** 2)) / 6;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-w*l*(l/6) + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-(%.2f*%.2f*%.2f)/6 + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            sectionLength,
+            sectionLength,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      const loadSpan = +uniformLoad?.spanOfLoading;
+      const sectionLength = loadSpan * 2;
+      const p1 = (w * sectionLength) / 2;
+      const reaction = p1 - reactionL;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, p1, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+  },
+  "varying-triangular-fully-covered-negative-slope": {
     isType: (section, sectionLength) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
@@ -548,13 +674,11 @@ const FEMformulas = {
       const [varyingLoad] = varyingLoads;
       const sameLengthAsSection =
         +varyingLoad?.spanOfLoading === +sectionLength;
-      const openingIsZero = +varyingLoad?.openingValue === 0;
-      const closingIsGreaterThanZero = +varyingLoad?.closingValue > 0;
-      return sameLengthAsSection && openingIsZero && closingIsGreaterThanZero;
+      const closingIsZero = +varyingLoad?.closingValue === 0;
+      const openingIsGreaterThanZero = +varyingLoad?.openingValue > 0;
+      return sameLengthAsSection && closingIsZero && openingIsGreaterThanZero;
     },
-  },
-  "varying-triangular-fully-covered-negative-slope": {
-    leftToRight: (section, sectionLength, lr) => {
+    leftToRight: (section, sectionLength, lr, isOverhanging) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
@@ -587,7 +711,7 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl) => {
+    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
@@ -620,17 +744,60 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    isType: (section, sectionLength) => {
-      const varyingLoads = section.filter(
-        (s) => s.type === loadingEnums.varying
+    reactionLeftToRight: (section, sectionLength, lr, rl, momentsMap, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
       );
-      if (varyingLoads.length !== 1) return false;
-      const [varyingLoad] = varyingLoads;
-      const sameLengthAsSection =
-        +varyingLoad?.spanOfLoading === +sectionLength;
-      const closingIsZero = +varyingLoad?.closingValue === 0;
-      const openingIsGreaterThanZero = +varyingLoad?.openingValue > 0;
-      return sameLengthAsSection && closingIsZero && openingIsGreaterThanZero;
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      const momentLR = momentsMap[lr];
+      const momentRl = momentsMap[rl];
+
+      const p1 = (-1 * (w * sectionLength ** 2)) / 3;
+      const p2 = momentLR;
+      const p3 = momentRl;
+      const numerator = p1 + p2 + p3;
+      const reaction = -numerator / sectionLength;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`R_%s = -(-w*l*(l/3) + M_%s + M_%s)/l`", name, lr, rl),
+          sprintf(
+            "`R_%s = -(-(%.2f*%.2f*%.2f)/3 + %.2f + %.2f)/%.2f`",
+            name,
+            w,
+            sectionLength,
+            sectionLength,
+            momentLR,
+            momentRl,
+            sectionLength
+          ),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
+    },
+    reactionRightToLeft: (section, lr, reactionL, name) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const w = +uniformLoad?.valueOfLoading;
+      const loadSpan = +uniformLoad?.spanOfLoading;
+      const sectionLength = loadSpan * 2;
+      const p1 = (w * sectionLength) / 2;
+      const reaction = p1 - reactionL;
+
+      return {
+        reaction: reaction,
+        steps: [
+          sprintf("`∑ V = 0`"),
+          sprintf("`R_%s = %.2f - %.2f`", name, p1, reactionL),
+          sprintf("`R_%s = %.2f N`", name, reaction),
+        ],
+        name: name,
+      };
     },
   },
 };
@@ -654,8 +821,18 @@ export const getBeamAnalysis = (beam) => {
     ]);
   });
 
+  if (spans?.length > supportRanges?.length) {
+    const lastSpan = spans?.at(-1);
+    const lastSupportRange = supportRanges?.at(-1);
+    supportRanges?.push([
+      lastSupportRange[1],
+      lastSupportRange[1] + +lastSpan?.length,
+    ]);
+  }
+  const lengthOfBeam = supportRanges?.at(-1)[1] - supportRanges[0][0];
+
   // find members(supports/loading) that belong to a span section
-  const sections = supportRanges?.map((range) => {
+  const sections = supportRanges?.map((range, i) => {
     const [p1, p2] = range;
     return supportsAndLoading
       ?.filter(
@@ -675,29 +852,50 @@ export const getBeamAnalysis = (beam) => {
     const formI = formulas?.findIndex((formula) =>
       formula[1]?.isType(section, sectionLength)
     );
-    if (formI != -1) {
-      const formula = formulas[formI][1];
-      const resultLtR = formula.leftToRight(section, sectionLength, lr);
-      const resultRtL = formula.rightToLeft(section, sectionLength, rl);
 
-      return {
-        lr: {
-          fem: resultLtR.fem,
-          steps: resultLtR.steps,
-          name: lr,
-        },
-        rl: {
-          fem: resultRtL.fem,
-          steps: resultRtL.steps,
-          name: rl,
-        },
-        section: section,
-      };
-    } else {
+    if (formI === -1) {
       throw new Error(
         "FEM formula not found for section " + JSON.stringify(supportRange)
       );
     }
+
+    let isOverhanging = false;
+    if (i == 0) {
+      const supportAtExtremeLeft = supports?.find(
+        (support) => +support?.distanceFromLeft === 0
+      );
+      isOverhanging = !supportAtExtremeLeft ? true : false;
+    }
+    if (i == sections?.length - 1) {
+      const supportAtExtremeRight = supports?.find(
+        (support) => +support?.distanceFromLeft === lengthOfBeam
+      );
+      isOverhanging = !supportAtExtremeRight ? true : false;
+    }
+
+    if (isOverhanging) {
+      throw new Error(
+        "sorry cant solve overhanging beams, dkm i don try 🙃🙃🙃"
+      );
+    }
+
+    const formula = formulas[formI][1];
+    const resultLtR = formula.leftToRight(section, sectionLength, lr);
+    const resultRtL = formula.rightToLeft(section, sectionLength, rl);
+
+    return {
+      lr: {
+        fem: resultLtR.fem,
+        steps: resultLtR.steps,
+        name: lr,
+      },
+      rl: {
+        fem: resultRtL.fem,
+        steps: resultRtL.steps,
+        name: rl,
+      },
+      section: section,
+    };
   });
 
   const MAXIMUM_NUMBER_OF_SLOPES = sections?.length + 1;
@@ -714,6 +912,7 @@ export const getBeamAnalysis = (beam) => {
     const supportAtRightPoint = supports?.find(
       (support) => +support?.distanceFromLeft === +rightPoint
     );
+
     if (!supportAtLeftPoint || !supportAtRightPoint) {
       throw new Error(
         "Support not found for section: " + JSON.stringify(supportRange)
@@ -1055,12 +1254,17 @@ export const getBeamAnalysis = (beam) => {
   // finding reaction forces
   const reactionsMap = {};
   const reactions = sections.map((section, i) => {
-    if (i !== 1) return;
     const momentKeys = Object.keys(momentsMap);
-    const l = `${i + 1}`
-    const lName = momentKeys?.filter(k => k?.startsWith(l))?.length > 1 ? `${l}.${i+1}` : l;
-    const r = `${i + 2}`
-    const rName = momentKeys?.filter(k => k?.startsWith(r))?.length > 1 ? `${r}.${i+1}` : r;
+    const l = `${i + 1}`;
+    const lName =
+      momentKeys?.filter((k) => k?.startsWith(l))?.length > 1
+        ? `${l}.${i + 1}`
+        : l;
+    const r = `${i + 2}`;
+    const rName =
+      momentKeys?.filter((k) => k?.startsWith(r))?.length > 1
+        ? `${r}.${i + 1}`
+        : r;
     const lr = `${l}.${r}`;
     const rl = `${r}.${l}`;
     const supportRange = supportRanges[i];
@@ -1109,6 +1313,19 @@ export const getBeamAnalysis = (beam) => {
     };
   });
 
+  // balance the above reaction force, sum duplicates
+  const finalReactionMaps = {}
+  for (const [key, value] of Object.entries(reactionsMap)) {
+    const point = key;
+    const [main] = point.split(".");
+
+    if (finalReactionMaps[main]) {
+      finalReactionMaps[main] += value;
+    } else {
+      finalReactionMaps[main] = value;
+    }
+  }
+
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
@@ -1117,6 +1334,7 @@ export const getBeamAnalysis = (beam) => {
     slopeValuesMap,
     moments,
     reactions,
+    finalReactionMaps,
   };
 };
 

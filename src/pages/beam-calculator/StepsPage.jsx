@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { getBeamAnalysis } from "../../store/beam-fem";
 import { useSelector } from "react-redux";
 import { MathJax } from "better-react-mathjax";
 import { v4 as uuidv4 } from "uuid";
 import { Bars } from "react-loader-spinner";
 import { COLORS } from "../../../tailwind.config";
+import { sprintf } from "sprintf-js";
 
 export default function StepsPage() {
   const {
@@ -35,8 +35,8 @@ export default function StepsPage() {
   }
 
   const noAnalysis = Object.keys(solutionAnalysis).length === 0;
-  if(noAnalysis){
-    return <div>Please solve a question</div>
+  if (noAnalysis) {
+    return <div>Please solve a question</div>;
   }
 
   return (
@@ -158,6 +158,20 @@ export default function StepsPage() {
           </div>
         );
       })}
+      <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+        Final Reaction Forces
+      </h3>
+      <div className="flex gap-x-4">
+        {Object.entries(solutionAnalysis?.finalReactionMaps)?.map(
+          ([key, value]) => {
+            return (
+              <MathJax key={uuidv4()} className="">
+                {sprintf("`R_%d = %.2f N`", key, value)}
+              </MathJax>
+            );
+          }
+        )}
+      </div>
     </div>
   );
 }

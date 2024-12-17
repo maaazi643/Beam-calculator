@@ -19,6 +19,7 @@
     "json-formatter-js": "^2.5.18",
     "linear-equation-system": "^1.1.1",
     "linear-solve": "^1.2.1",
+    "lodash": "^4.17.21",
     "mathjax3-react": "^1.2.0",
     "mathjs": "^14.0.1",
     "motion": "^11.13.1",

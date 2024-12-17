@@ -21,6 +21,7 @@ export const supportEnums = Object.freeze({
   pinned: "pinned",
   roller: "roller",
   fixed: "fixed",
+  none: "none",
 });
 
 export const createNewSupport = (

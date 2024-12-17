@@ -6,6 +6,7 @@ import {
   question3,
   question4,
   question5,
+  question8
 } from "../../questions";
 
 const initialState = {
@@ -20,7 +21,7 @@ const initialState = {
   activeSupportType: null,
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
-  beamProperties: question3,
+  beamProperties: question5,
   // beamProperties: {
   //   spans: [],
   //   supports: [],

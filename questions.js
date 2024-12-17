@@ -529,3 +529,83 @@ export const question5 = {
     },
   ],
 };
+
+export const question8 = {
+  spans: [
+    {
+      id: "23039db4-d1b0-4813-b757-b3540e10d35e",
+
+      length: "4",
+
+      flexuralRigidity: "1",
+    },
+
+    {
+      id: "603e23d4-5d7b-4af3-a074-de086a4ead1b",
+
+      length: "3",
+
+      flexuralRigidity: "1",
+    },
+  ],
+
+  supports: [
+    {
+      id: "67acabe4-a1f8-4705-8c28-21190fae379f",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "0",
+    },
+
+    {
+      id: "e7d79789-d29b-4267-b255-cdd20a7252c9",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "4",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "fb3951db-d083-47d4-a9d9-568fa5993ad8",
+
+      type: "single",
+
+      distanceFromLeft: "2",
+
+      valueOfLoading: "50000",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "8381cf6b-5e58-427b-8c22-b58762654988",
+
+      type: "uniform",
+
+      distanceFromLeft: "4",
+
+      valueOfLoading: "20",
+
+      spanOfLoading: "3",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+  ],
+};
