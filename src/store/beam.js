@@ -20,12 +20,15 @@ const initialState = {
   activeSupportType: null,
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
-  beamProperties: question4,
-  // beamProperties: {
-  //   spans: [],
-  //   supports: [],
-  //   loadings: [],
-  // },
+  // beamProperties: question4,
+  solutionAnalysis: {},
+  solutionAnalysisErrorMessage: null,
+  solutionIsLoading: false,
+  beamProperties: {
+    spans: [],
+    supports: [],
+    loadings: [],
+  },
 };
 
 export const beamSlice = createSlice({

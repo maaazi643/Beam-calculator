@@ -838,8 +838,7 @@ export const getBeamAnalysis = (beam) => {
 
   // finding all moments
   const momentsMap = {};
-  const moments = 
-  Object?.entries(momentEquationMap)
+  const moments = Object?.entries(momentEquationMap)
   // ?.slice(0,1)
   ?.map((entry) => {
     const [name, equation] = entry;
