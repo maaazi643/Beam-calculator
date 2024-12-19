@@ -599,7 +599,7 @@ export const question8 = {
 
       distanceFromLeft: "4",
 
-      valueOfLoading: "20",
+      valueOfLoading: "20000",
 
       spanOfLoading: "3",
 

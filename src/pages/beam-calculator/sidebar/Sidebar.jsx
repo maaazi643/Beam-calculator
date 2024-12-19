@@ -28,7 +28,15 @@ export default function Sidebar() {
   const solveHandler = async () => {
     try {
       navigate("/beam-calculator/steps")
-      dispatch(beamActions?.set({ key: "solutionIsLoading", value: true }));
+      dispatch(
+        beamActions?.set([
+          { key: "solutionIsLoading", value: true },
+          {
+            key: "solutionAnalysisErrorMessage",
+            value: "",
+          },
+        ])
+      );
       // const num = randomInteger(1500, 2500);
       // await sleep(num);
       const analysis = getBeamAnalysis(beamProperties);

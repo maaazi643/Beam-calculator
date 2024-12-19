@@ -21,7 +21,7 @@ const initialState = {
   activeSupportType: null,
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
-  beamProperties: question4,
+  beamProperties: question8,
   // beamProperties: {
   //   spans: [],
   //   supports: [],

@@ -1,7 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
 import { lusolve } from "mathjs";
-import { s, section } from "motion/react-client";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -24,11 +23,37 @@ const FEMformulas = {
       const w = +singleLoad?.valueOfLoading;
       return w;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
       const w = +singleLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const fem = w * sectionLength;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l) Nm`", lr),
+            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const divisor = 8;
       const fem = -(w * sectionLength) / divisor;
 
@@ -49,11 +74,37 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
       const w = +singleLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        const fem = w * sectionLength;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l) Nm`", rl),
+            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const divisor = 8;
       const fem = (w * sectionLength) / divisor;
 
@@ -142,12 +193,38 @@ const FEMformulas = {
       const w = +singleLoad?.valueOfLoading;
       return w;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
       const w = +singleLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const fem = w * sectionLength;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l) Nm`", lr),
+            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const a = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
@@ -181,12 +258,38 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const [firstItem] = section;
       const singleLoads = section.filter((s) => s.type === loadingEnums.single);
       const [singleLoad] = singleLoads;
 
       const w = +singleLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        const fem = w * sectionLength;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l) Nm`", rl),
+            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const a = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
@@ -291,13 +394,38 @@ const FEMformulas = {
       const w = +uniformLoad?.valueOfLoading;
       return w * sectionLength;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-
       const w = +uniformLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const fem = -(w * sectionLength * sectionLength) / 2;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = -(w*l^2)/2 Nm`", lr),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/2 Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const divisor = 12;
       const sectionLengthPow = 2;
       const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
@@ -325,13 +453,38 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
-
       const w = +uniformLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        const fem = -(w * sectionLength * sectionLength) / 2;
+        return {
+          fem: w * sectionLength,
+          steps: [
+            sprintf("`M_(F%s) = -(w*l^2)/2 Nm`", rl),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/2 Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const divisor = 12;
       const sectionLengthPow = 2;
       const fem = (w * sectionLength ** sectionLengthPow) / divisor;
@@ -427,13 +580,45 @@ const FEMformulas = {
       const w = +uniformLoad?.valueOfLoading;
       return (w * sectionLength) / 2;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
 
       const w = +uniformLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const sectionLengthHalved = sectionLength / 2;
+        const fem = (3 * w * sectionLengthHalved * sectionLengthHalved) / 8;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = 3(w*l^2)/8 Nm`", lr),
+            sprintf(
+              "`M_(F%s) = 3(%.2f*%.2f^2)/8 Nm`",
+              lr,
+              w,
+              sectionLengthHalved
+            ),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 192;
       const multiplier = 11;
@@ -466,13 +651,45 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const uniformLoads = section.filter(
         (s) => s.type === loadingEnums.uniform
       );
       const [uniformLoad] = uniformLoads;
 
       const w = +uniformLoad?.valueOfLoading;
+
+      if (isOverhangingAtLeft) {
+        const sectionLengthHalved = sectionLength / 2;
+        const fem = (3 * w * sectionLengthHalved * sectionLengthHalved) / 8;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = 3(w*l^2)/8 Nm`", rl),
+            sprintf(
+              "`M_(F%s) = 3(%.2f*%.2f^2)/8 Nm`",
+              rl,
+              w,
+              sectionLengthHalved
+            ),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 192;
       const multiplier = 5;
@@ -582,13 +799,39 @@ const FEMformulas = {
       const w = +uniformLoad?.valueOfLoading;
       return (w * sectionLength) / 2;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
       const [varyingLoad] = varyingLoads;
 
       const w = +varyingLoad?.closingValue;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const fem = (w * sectionLength * sectionLength) / 6;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l^2)/6 Nm`", lr),
+            sprintf("`M_(F%s) = (%.2f*%.2f^2)/6 Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 30;
       const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
@@ -615,13 +858,39 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
       const [varyingLoad] = varyingLoads;
 
       const w = +varyingLoad?.closingValue;
+
+      if (isOverhangingAtLeft) {
+        const fem = (w * sectionLength * sectionLength) / 3;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l^2)/3 Nm`", rl),
+            sprintf("`M_(F%s) = (%.2f*%.2f^2)/3 Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 20;
       const fem = +(w * sectionLength ** sectionLengthPow) / divisor;
@@ -725,13 +994,39 @@ const FEMformulas = {
       const w = +uniformLoad?.valueOfLoading;
       return (w * sectionLength) / 2;
     },
-    leftToRight: (section, sectionLength, lr, isOverhanging) => {
+    leftToRight: (
+      section,
+      sectionLength,
+      lr,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
       const [varyingLoad] = varyingLoads;
 
       const w = +varyingLoad?.openingValue;
+
+      if (isOverhangingAtLeft) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", lr)],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        const fem = (w * sectionLength * sectionLength) / 6;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l^2)/6 Nm`", lr),
+            sprintf("`M_(F%s) = (%.2f*%.2f^2)/6 Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
+          ],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 20;
       const fem = (w * sectionLength ** sectionLengthPow) / divisor;
@@ -758,13 +1053,39 @@ const FEMformulas = {
         steps: steps,
       };
     },
-    rightToLeft: (section, sectionLength, rl, isOverhanging) => {
+    rightToLeft: (
+      section,
+      sectionLength,
+      rl,
+      isOverhangingAtLeft,
+      isOverhangingAtRight
+    ) => {
       const varyingLoads = section.filter(
         (s) => s.type === loadingEnums.varying
       );
       const [varyingLoad] = varyingLoads;
 
       const w = +varyingLoad?.openingValue;
+
+      if (isOverhangingAtLeft) {
+        const fem = (w * sectionLength * sectionLength) / 3;
+        return {
+          fem: fem,
+          steps: [
+            sprintf("`M_(F%s) = (w*l^2)/3 Nm`", rl),
+            sprintf("`M_(F%s) = (%.2f*%.2f^2)/3 Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
+          ],
+        };
+      }
+
+      if (isOverhangingAtRight) {
+        return {
+          fem: 0,
+          steps: [sprintf("`M_(F%s) = 0 Nm`", rl)],
+        };
+      }
+
       const sectionLengthPow = 2;
       const divisor = 30;
       const fem = -(w * sectionLength ** sectionLengthPow) / divisor;
@@ -906,29 +1227,50 @@ export const getBeamAnalysis = (beam) => {
       );
     }
 
-    let isOverhanging = false;
+    let isOverHangingAtLeft = false;
+    let isOverhangingAtRight = false;
     if (i == 0) {
       const supportAtExtremeLeft = supports?.find(
         (support) => +support?.distanceFromLeft === 0
       );
-      isOverhanging = !supportAtExtremeLeft ? true : false;
+      isOverHangingAtLeft = !supportAtExtremeLeft;
     }
     if (i == sections?.length - 1) {
       const supportAtExtremeRight = supports?.find(
         (support) => +support?.distanceFromLeft === lengthOfBeam
       );
-      isOverhanging = !supportAtExtremeRight ? true : false;
+      isOverhangingAtRight = !supportAtExtremeRight;
     }
 
-    if (isOverhanging) {
-      throw new Error(
-        "sorry cant solve overhanging beams, dkm i don try 🙃🙃🙃"
-      );
+    if (isOverHangingAtLeft) {
+      console.log("lwft");
     }
+
+    if (isOverhangingAtRight) {
+      console.log("right");
+    }
+
+    // if (isOverHangingAtLeft || isOverhangingAtRight) {
+    //   throw new Error(
+    //     "sorry cant solve overhanging beams, dkm i don try 🙃🙃🙃"
+    //   );
+    // }
 
     const formula = formulas[formI][1];
-    const resultLtR = formula.leftToRight(section, sectionLength, lr);
-    const resultRtL = formula.rightToLeft(section, sectionLength, rl);
+    const resultLtR = formula.leftToRight(
+      section,
+      sectionLength,
+      lr,
+      isOverHangingAtLeft,
+      isOverhangingAtRight
+    );
+    const resultRtL = formula.rightToLeft(
+      section,
+      sectionLength,
+      rl,
+      isOverHangingAtLeft,
+      isOverhangingAtRight
+    );
 
     return {
       lr: {
@@ -950,9 +1292,16 @@ export const getBeamAnalysis = (beam) => {
 
   // making slope deflection equations for each span
   const slopesDeflectionEquations = supportRanges.map((supportRange, i) => {
-    // supportRanges.forEach((supportRange, i) => {
+    const span = spans?.[i];
+    const spanLength = +span?.length;
+    const lr = fixedEndedMoments?.[i]?.lr?.name;
+    const rl = fixedEndedMoments?.[i]?.rl?.name;
+    const [l, r] = lr.split(".");
     const leftPoint = supportRange[0];
     const rightPoint = supportRange[1];
+    const femLr = fixedEndedMoments?.[i]?.lr?.fem;
+    const femRl = fixedEndedMoments?.[i]?.rl?.fem;
+
     const supportAtLeftPoint = supports?.find(
       (support) => +support?.distanceFromLeft === +leftPoint
     );
@@ -960,27 +1309,27 @@ export const getBeamAnalysis = (beam) => {
       (support) => +support?.distanceFromLeft === +rightPoint
     );
 
-    if (!supportAtLeftPoint || !supportAtRightPoint) {
+    if (!supportAtLeftPoint && !supportAtRightPoint) {
       throw new Error(
-        "Support not found for section: " + JSON.stringify(supportRange)
+        "Supports not found for section: " + JSON.stringify(supportRange)
       );
     }
-    const span = spans?.[i];
-    const spanLength = +span?.length;
-    const lr = fixedEndedMoments?.[i]?.lr?.name;
-    const rl = fixedEndedMoments?.[i]?.rl?.name;
-    const [l, r] = lr.split(".");
-    const femLr = fixedEndedMoments?.[i]?.lr?.fem;
-    const femRl = fixedEndedMoments?.[i]?.rl?.fem;
-    const slopeAtLeft = supportAtLeftPoint?.type === supportEnums.fixed ? 0 : 1;
+
+    // MIGHT COME BACK TO FIX
+    const isOverHanging = !supportAtLeftPoint || !supportAtRightPoint;
+
+    const slopeAtLeft =
+      supportAtLeftPoint?.type === supportEnums.fixed || isOverHanging ? 0 : 1;
     const slopeAtRight =
-      supportAtRightPoint?.type === supportEnums.fixed ? 0 : 1;
-    const sinkingAtLeft = supportAtLeftPoint?.sinking
-      ? +supportAtLeftPoint?.sinkingValue
-      : 0;
-    const sinkingAtRight = supportAtRightPoint?.sinking
-      ? +supportAtRightPoint?.sinkingValue
-      : 0;
+      supportAtRightPoint?.type === supportEnums.fixed || isOverHanging ? 0 : 1;
+    const sinkingAtLeft =
+      supportAtLeftPoint?.sinking || isOverHanging
+        ? 0
+        : +supportAtLeftPoint?.sinkingValue;
+    const sinkingAtRight =
+      supportAtRightPoint?.sinking || isOverHanging
+        ? 0
+        : +supportAtRightPoint?.sinkingValue;
     const EI =
       span?.flexuralRigidity == "" || span?.flexuralRigidity == "0"
         ? 1
@@ -1000,6 +1349,18 @@ export const getBeamAnalysis = (beam) => {
       femRl,
     ];
     const equationR = [pr1, pr2, pr3, pr4];
+    // if (i == 1) {
+    //   console.log(supportAtLeftPoint);
+    //   console.log(supportAtRightPoint);
+    //   console.log(slopeAtLeft);
+    //   console.log(slopeAtRight);
+    //   console.log(sinkingAtLeft);
+    //   console.log(sinkingAtRight);
+    //   console.log(EI);
+    //   console.log(multiplier);
+    //   console.log(equationL);
+    //   console.log(equationR);
+    // }
 
     // VERY IMPORTANT TO SIMULTANEOUS EQUATIONS
     const filledEquationL = fillEquationAtHoles(
@@ -1100,17 +1461,19 @@ export const getBeamAnalysis = (beam) => {
   // find all equilibrium equations
   const equilibriumEquations = [];
   supports?.forEach((sup, i) => {
-    const prevSup = supports?.[i - 1];
-    const nextSup = supports?.[i + 1];
     const isFixed = sup?.type === supportEnums?.fixed;
     const forward = `${i + 1}.${i + 2}`;
     const backward = `${i + 1}.${i}`;
+    const lastSupportRange = supportRanges?.at(-1);
+    const beamLength = lastSupportRange[1];
+    const supportIsAtBeamEnd = +sup?.distanceFromLeft === +beamLength;
 
     if (isFixed) {
       return;
     }
 
-    if (!prevSup) {
+    if (i == 0) {
+      console.log("ihyt");
       const steps = [sprintf("`M_%s = 0`", forward)];
 
       equilibriumEquations?.push({
@@ -1120,7 +1483,8 @@ export const getBeamAnalysis = (beam) => {
       return;
     }
 
-    if (!nextSup) {
+    if (i == supports?.length - 1 && supportIsAtBeamEnd) {
+      console.log(sup);
       const steps = [sprintf("`M_%s = 0`", backward)];
 
       equilibriumEquations?.push({
@@ -1243,60 +1607,56 @@ export const getBeamAnalysis = (beam) => {
 
   // finding all moments
   const momentsMap = {};
-  const moments = Object?.entries(momentEquationMap)
-    // ?.slice(0,1)
-    ?.map((entry) => {
-      const [name, equation] = entry;
-      const [l, r] = name.split(".");
-      let slopeAtLeft = slopeValuesMap?.[l]?.value;
-      let slopeAtRight = slopeValuesMap?.[r]?.value;
+  const moments = Object?.entries(momentEquationMap)?.map((entry) => {
+    const [name, equation] = entry;
+    const [l, r] = name.split(".");
+    let slopeAtLeft = slopeValuesMap?.[l]?.value;
+    let slopeAtRight = slopeValuesMap?.[r]?.value;
 
-      if (+l > +r) {
-        slopeAtLeft = slopeValuesMap?.[r]?.value;
-        slopeAtRight = slopeValuesMap?.[l]?.value;
-      }
+    if (+l > +r) {
+      slopeAtLeft = slopeValuesMap?.[r]?.value;
+      slopeAtRight = slopeValuesMap?.[l]?.value;
+    }
 
-      const filteredEquation = equation?.filter((num) => num !== null);
+    const filteredEquation = equation?.filter((num) => num !== null);
 
-      if (filteredEquation?.length !== 4) {
-        throw new Error("Invalid moment equation");
-      }
+    if (filteredEquation?.length !== 4) {
+      throw new Error("Invalid moment equation");
+    }
 
-      const [firstCoefficient, secondCoefficient] = filteredEquation;
-      const constant = filteredEquation
-        ?.slice(-2)
-        ?.reduce((acc, num) => acc + num, 0);
-      const p1 = slopeAtLeft * firstCoefficient;
-      const p2 = slopeAtRight * secondCoefficient;
-      const moment = p1 + p2 + constant;
-      momentsMap[name] = moment;
+    const [firstCoefficient, secondCoefficient] = filteredEquation;
+    const constant = filteredEquation
+      ?.slice(-2)
+      ?.reduce((acc, num) => acc + num, 0);
+    const p1 = slopeAtLeft * firstCoefficient;
+    const p2 = slopeAtRight * secondCoefficient;
+    const moment = p1 + p2 + constant;
+    momentsMap[name] = moment;
 
-      const steps = [
-        sprintf(
-          "`M_%s = %s %s %s`",
-          name,
-          firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "",
-          secondCoefficient
-            ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r)
-            : "",
-          constant ? sprintf("+ %.2f", constant) : ""
-        ),
-        sprintf(
-          "`M_%s = %s %s %s`",
-          name,
-          firstCoefficient
-            ? sprintf("+ %.2f * %.2f", firstCoefficient, slopeAtLeft)
-            : "",
-          secondCoefficient
-            ? sprintf("+ %.2f * %.2f", secondCoefficient, slopeAtRight)
-            : "",
-          constant ? sprintf("+ %.2f", constant) : ""
-        ),
-        sprintf("`M_%s = %.2f Nm`", name, moment),
-      ];
+    const steps = [
+      sprintf(
+        "`M_%s = %s %s %s`",
+        name,
+        firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "+0",
+        secondCoefficient ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r) : "+0",
+        constant ? sprintf("+ %.2f", constant) : "+0"
+      ),
+      sprintf(
+        "`M_%s = %s %s %s`",
+        name,
+        firstCoefficient
+          ? sprintf("+ %.2f * %.2f", firstCoefficient, slopeAtLeft)
+          : "+0",
+        secondCoefficient
+          ? sprintf("+ %.2f * %.2f", secondCoefficient, slopeAtRight)
+          : "+0",
+        constant ? sprintf("+ %.2f", constant) : "+0"
+      ),
+      sprintf("`M_%s = %.2f Nm`", name, moment),
+    ];
 
-      return { steps };
-    });
+    return { steps };
+  });
 
   // finding reaction forces
   const reactionsMap = {};
@@ -1432,9 +1792,6 @@ export const getBeamAnalysis = (beam) => {
 
     return shearForce;
   }, 0);
-
-  console.log(verticalForces);
-  console.log(shearForces);
 
   return {
     fixedEndedMoments,
