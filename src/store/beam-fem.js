@@ -43,12 +43,12 @@ const FEMformulas = {
       }
 
       if (isOverhangingAtRight) {
-        const fem = w * sectionLength;
+        const fem = -w * sectionLength;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l) Nm`", lr),
-            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l) Nm`", lr),
+            sprintf("`M_(F%s) = -(%.2f*%.2f) Nm`", lr, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
           ],
         };
@@ -87,12 +87,12 @@ const FEMformulas = {
       const w = +singleLoad?.valueOfLoading;
 
       if (isOverhangingAtLeft) {
-        const fem = w * sectionLength;
+        const fem = -w * sectionLength;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l) Nm`", rl),
-            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l) Nm`", rl),
+            sprintf("`M_(F%s) = -(%.2f*%.2f) Nm`", rl, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
           ],
         };
@@ -214,12 +214,12 @@ const FEMformulas = {
       }
 
       if (isOverhangingAtRight) {
-        const fem = w * sectionLength;
+        const fem = -w * sectionLength;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l) Nm`", lr),
-            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l) Nm`", lr),
+            sprintf("`M_(F%s) = -(%.2f*%.2f) Nm`", lr, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
           ],
         };
@@ -272,12 +272,12 @@ const FEMformulas = {
       const w = +singleLoad?.valueOfLoading;
 
       if (isOverhangingAtLeft) {
-        const fem = w * sectionLength;
+        const fem = -w * sectionLength;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l) Nm`", rl),
-            sprintf("`M_(F%s) = (%.2f*%.2f) Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l) Nm`", rl),
+            sprintf("`M_(F%s) = -(%.2f*%.2f) Nm`", rl, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
           ],
         };
@@ -603,13 +603,13 @@ const FEMformulas = {
 
       if (isOverhangingAtRight) {
         const sectionLengthHalved = sectionLength / 2;
-        const fem = (3 * w * sectionLengthHalved * sectionLengthHalved) / 8;
+        const fem = -(w * sectionLengthHalved * sectionLengthHalved) / 8;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = 3(w*l^2)/8 Nm`", lr),
+            sprintf("`M_(F%s) = -(w*l^2)/8 Nm`", lr),
             sprintf(
-              "`M_(F%s) = 3(%.2f*%.2f^2)/8 Nm`",
+              "`M_(F%s) = -(%.2f*%.2f^2)/8 Nm`",
               lr,
               w,
               sectionLengthHalved
@@ -667,13 +667,13 @@ const FEMformulas = {
 
       if (isOverhangingAtLeft) {
         const sectionLengthHalved = sectionLength / 2;
-        const fem = (3 * w * sectionLengthHalved * sectionLengthHalved) / 8;
+        const fem = -(3 * w * sectionLengthHalved * sectionLengthHalved) / 8;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = 3(w*l^2)/8 Nm`", rl),
+            sprintf("`M_(F%s) = -3(w*l^2)/8 Nm`", rl),
             sprintf(
-              "`M_(F%s) = 3(%.2f*%.2f^2)/8 Nm`",
+              "`M_(F%s) = -3(%.2f*%.2f^2)/8 Nm`",
               rl,
               w,
               sectionLengthHalved
@@ -821,12 +821,12 @@ const FEMformulas = {
       }
 
       if (isOverhangingAtRight) {
-        const fem = (w * sectionLength * sectionLength) / 6;
+        const fem = -(w * sectionLength * sectionLength) / 3;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l^2)/6 Nm`", lr),
-            sprintf("`M_(F%s) = (%.2f*%.2f^2)/6 Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l^2)/3 Nm`", lr),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/3 Nm`", lr, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
           ],
         };
@@ -873,12 +873,12 @@ const FEMformulas = {
       const w = +varyingLoad?.closingValue;
 
       if (isOverhangingAtLeft) {
-        const fem = (w * sectionLength * sectionLength) / 3;
+        const fem = -(w * sectionLength * sectionLength) / 6;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l^2)/3 Nm`", rl),
-            sprintf("`M_(F%s) = (%.2f*%.2f^2)/3 Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l^2)/6 Nm`", rl),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/6 Nm`", rl, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
           ],
         };
@@ -1016,12 +1016,12 @@ const FEMformulas = {
       }
 
       if (isOverhangingAtRight) {
-        const fem = (w * sectionLength * sectionLength) / 6;
+        const fem = -(w * sectionLength * sectionLength) / 3;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l^2)/6 Nm`", lr),
-            sprintf("`M_(F%s) = (%.2f*%.2f^2)/6 Nm`", lr, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l^2)/3 Nm`", lr),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/3 Nm`", lr, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", lr, fem),
           ],
         };
@@ -1068,12 +1068,12 @@ const FEMformulas = {
       const w = +varyingLoad?.openingValue;
 
       if (isOverhangingAtLeft) {
-        const fem = (w * sectionLength * sectionLength) / 3;
+        const fem = -(w * sectionLength * sectionLength) / 3;
         return {
           fem: fem,
           steps: [
-            sprintf("`M_(F%s) = (w*l^2)/3 Nm`", rl),
-            sprintf("`M_(F%s) = (%.2f*%.2f^2)/3 Nm`", rl, w, sectionLength),
+            sprintf("`M_(F%s) = -(w*l^2)/3 Nm`", rl),
+            sprintf("`M_(F%s) = -(%.2f*%.2f^2)/3 Nm`", rl, w, sectionLength),
             sprintf("`M_(F%s) = %.2f Nm`", rl, fem),
           ],
         };
@@ -1242,14 +1242,6 @@ export const getBeamAnalysis = (beam) => {
       isOverhangingAtRight = !supportAtExtremeRight;
     }
 
-    if (isOverHangingAtLeft) {
-      console.log("lwft");
-    }
-
-    if (isOverhangingAtRight) {
-      console.log("right");
-    }
-
     // if (isOverHangingAtLeft || isOverhangingAtRight) {
     //   throw new Error(
     //     "sorry cant solve overhanging beams, dkm i don try 🙃🙃🙃"
@@ -1349,18 +1341,6 @@ export const getBeamAnalysis = (beam) => {
       femRl,
     ];
     const equationR = [pr1, pr2, pr3, pr4];
-    // if (i == 1) {
-    //   console.log(supportAtLeftPoint);
-    //   console.log(supportAtRightPoint);
-    //   console.log(slopeAtLeft);
-    //   console.log(slopeAtRight);
-    //   console.log(sinkingAtLeft);
-    //   console.log(sinkingAtRight);
-    //   console.log(EI);
-    //   console.log(multiplier);
-    //   console.log(equationL);
-    //   console.log(equationR);
-    // }
 
     // VERY IMPORTANT TO SIMULTANEOUS EQUATIONS
     const filledEquationL = fillEquationAtHoles(
@@ -1473,7 +1453,6 @@ export const getBeamAnalysis = (beam) => {
     }
 
     if (i == 0) {
-      console.log("ihyt");
       const steps = [sprintf("`M_%s = 0`", forward)];
 
       equilibriumEquations?.push({
