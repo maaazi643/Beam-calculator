@@ -1,4 +1,3 @@
-import { p } from "motion/react-client";
 import { v4 as uuidv4 } from "uuid";
 
 export const createNewSpan = (length = "", flexuralRigidity = "") => {

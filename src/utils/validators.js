@@ -132,7 +132,7 @@ export const validateLoadingSpan = (loadingType, value) => {
 export const validateOpeningValue = (loadingType, value) => {
   // if (loadingType === loadingEnums.UNIFORM_DISTRIBUTED) return [true, ""];
   if (!isDecimal(value)) return [false, "Value must be a number."];
-  if (value <= 0) return [false, "Value must be greater than 0."];
+  if (value < 0) return [false, "Value must be greater than 0."];
   if (value > MaxSpanLength)
     return [false, `Value must be less than ${MaxLoadingValue}.`];
   return [true, ""];
@@ -141,7 +141,7 @@ export const validateOpeningValue = (loadingType, value) => {
 export const validateClosingValue = (loadingType, value) => {
   // if (loadingType === loadingEnums.UNIFORM_DISTRIBUTED) return [true, ""];
   if (!isDecimal(value)) return [false, "Value must be a number."];
-  if (value <= 0) return [false, "Value must be greater than 0."];
+  if (value < 0) return [false, "Value must be greater than 0."];
   if (value > MaxSpanLength)
     return [false, `Value must be less than ${MaxLoadingValue}.`];
   return [true, ""];

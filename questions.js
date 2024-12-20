@@ -445,7 +445,7 @@ export const question5 = {
 
       length: "10",
 
-      flexuralRigidity: "",
+      flexuralRigidity: "0",
     },
 
     {
@@ -453,7 +453,7 @@ export const question5 = {
 
       length: "8",
 
-      flexuralRigidity: "",
+      flexuralRigidity: "0",
     },
   ],
 
@@ -606,6 +606,238 @@ export const question8 = {
       openingValue: "",
 
       closingValue: "",
+    },
+  ],
+};
+
+export const question9 = {
+  spans: [
+    {
+      id: "161658cf-ff8f-4847-b791-bcc41c5d1557",
+
+      length: "4",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "7ed0b19d-9479-4e53-a5a3-50ec807a20df",
+
+      length: "5",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "541bf2db-2c90-489b-9fa6-0b81d8c7af91",
+
+      length: "2",
+
+      flexuralRigidity: "0",
+    },
+  ],
+
+  supports: [
+    {
+      id: "2d941714-4f6f-44e5-8690-1a2b1d11a76d",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "0",
+    },
+
+    {
+      id: "8550268f-c0c1-4665-aaab-86c2eed8f636",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "4",
+    },
+
+    {
+      id: "672d610a-3271-47e3-8443-e273b56446e8",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "9",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "4c9b41c7-fe35-4ea1-b19d-859b04a5b006",
+
+      type: "single",
+
+      distanceFromLeft: "2",
+
+      valueOfLoading: "72",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "467772cc-e4b3-4f39-86a8-98ff75aa5a4e",
+
+      type: "uniform",
+
+      distanceFromLeft: "4",
+
+      valueOfLoading: "24",
+
+      spanOfLoading: "5",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "c4f8802c-5ca3-4a6e-a1c7-8451652f5a4d",
+
+      type: "single",
+
+      distanceFromLeft: "11",
+
+      valueOfLoading: "15",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+  ],
+};
+
+export const question10 = {
+  spans: [
+    {
+      id: "ccaf017c-5f19-4e3f-8103-8927d1dc7c01",
+
+      length: "3",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "f162c4e4-9734-4617-98cd-952ecb769bdc",
+
+      length: "6",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "e0102a18-486d-439b-aa69-f0459f172843",
+
+      length: "4",
+
+      flexuralRigidity: "0",
+    },
+  ],
+
+  supports: [
+    {
+      id: "35f82571-1ff1-4d92-a792-9d8da5cfe948",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "3",
+    },
+
+    {
+      id: "85ca964e-e14d-4c86-a2e5-1072b434e60b",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "9",
+    },
+
+    {
+      id: "638ce73c-4877-4300-b063-2fe1c5e0698c",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "13",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "fa61adcd-8114-4de0-a168-00d3afe121b0",
+
+      type: "uniform",
+
+      distanceFromLeft: "0",
+
+      valueOfLoading: "12",
+
+      spanOfLoading: "3",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "49ddf168-71e5-4931-b537-9548c6f9fc2c",
+
+      type: "single",
+
+      distanceFromLeft: "6",
+
+      valueOfLoading: "48",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "b60c39ca-b245-4433-8c61-5926c1d513a5",
+
+      type: "varying",
+
+      distanceFromLeft: "9",
+
+      valueOfLoading: "",
+
+      spanOfLoading: "4",
+
+      openingValue: "0",
+
+      closingValue: "90",
     },
   ],
 };
