@@ -2,31 +2,37 @@ import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { beamActions } from "../../../store/beam";
-import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
-import MemberIndicator from "../../../components/indicators/MemberIndicator";
-import WrapperHeader from "../../../components/typography/WrapperHeader";
-import WrapperParagraph from "../../../components/typography/WrapperParagraph";
-import NumberInput from "../../../components/inputs/NumberInput";
-import WrapperButton from "../../../components/buttons/WrapperButton";
-import DeleteButton from "../../../components/buttons/DeleteButton";
-import UpArrow from "../../../icons/UpArrow";
-import Trash from "../../../icons/Trash";
-import RoundedPlus from "../../../icons/RoundedPlus";
-import { MetreUnit, NewtonUnit } from "../../../icons/units";
+import { beamActions } from "../../store/beam";
+import PropertyWrapper from "../../components/wrappers/PropertyWrapper";
+import MemberIndicator from "../../components/indicators/MemberIndicator";
+import WrapperHeader from "../../components/typography/WrapperHeader";
+import WrapperParagraph from "../../components/typography/WrapperParagraph";
+import NumberInput from "../../components/inputs/NumberInput";
+import WrapperButton from "../../components/buttons/WrapperButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
+import UpArrow from "../../icons/UpArrow";
+import Trash from "../../icons/Trash";
+import RoundedPlus from "../../icons/RoundedPlus";
+import { MetreUnit, NewtonUnit } from "../../icons/units";
 import {
   SinglePointLoadButton,
   UniformDistributedLoadButton,
   UniformVaryingLoadButton,
-} from "../../../icons/Properties";
-import { createNewLoad, loadingEnums } from "../../../store/beam-utils";
+} from "../../icons/Properties";
+import {
+  createNewLoad,
+  getBeamTotalLength,
+  loadingEnums,
+} from "../../store/beam-utils";
 import {
   validateLoadingDistanceFromLeft,
   validateLoadingValue,
   validateLoadingSpan,
   validateOpeningValue,
   validateClosingValue,
-} from "../../../utils/validators";
+  validateLoadings,
+} from "../../utils/validators";
+import { showNotification } from "./Sidebar";
 
 const loadingDropdownVariants = {
   hidden: {
@@ -82,6 +88,16 @@ export default function LoadingSection() {
   };
 
   const applyLoadingsHandler = () => {
+    const [loadingsAreValid, errorMessage] = validateLoadings(
+      loadings,
+      getBeamTotalLength(beamProperties)
+    );
+
+    if (!loadingsAreValid) {
+      showNotification(errorMessage);
+      return;
+    }
+
     const newBeamProperties = { ...beamProperties };
     newBeamProperties.loadings = loadings;
     dispatch(

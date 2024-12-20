@@ -1,9 +1,8 @@
 import React from "react";
-import Scroller from "../../../components/scrollers/Scroller";
+import Scroller from "../../components/scrollers/Scroller";
 import { Outlet } from "react-router";
-import { TypeAnimation } from "react-type-animation";
 import Navbar from "./Navbar";
-import BigHeader from "../../../components/typography/BigHeader";
+import BigHeader from "../../components/typography/BigHeader";
 import Tabs from "./Tabs";
 import ControlBar from "./ControlBar";
 

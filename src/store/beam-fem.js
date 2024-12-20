@@ -1,6 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import { lusolve } from "mathjs";
+import { distance, lusolve } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -1447,12 +1447,13 @@ export const getBeamAnalysis = (beam) => {
     const lastSupportRange = supportRanges?.at(-1);
     const beamLength = lastSupportRange[1];
     const supportIsAtBeamEnd = +sup?.distanceFromLeft === +beamLength;
+    const supportIsAtBeamStart = +sup?.distanceFromLeft === 0;
 
     if (isFixed) {
       return;
     }
 
-    if (i == 0) {
+    if (i == 0 && supportIsAtBeamStart) {
       const steps = [sprintf("`M_%s = 0`", forward)];
 
       equilibriumEquations?.push({
@@ -1463,7 +1464,6 @@ export const getBeamAnalysis = (beam) => {
     }
 
     if (i == supports?.length - 1 && supportIsAtBeamEnd) {
-      console.log(sup);
       const steps = [sprintf("`M_%s = 0`", backward)];
 
       equilibriumEquations?.push({
@@ -1617,7 +1617,9 @@ export const getBeamAnalysis = (beam) => {
         "`M_%s = %s %s %s`",
         name,
         firstCoefficient ? sprintf("+ %.2f EIθ_%s", firstCoefficient, l) : "+0",
-        secondCoefficient ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r) : "+0",
+        secondCoefficient
+          ? sprintf("+ %.2f EIθ_%s", secondCoefficient, r)
+          : "+0",
         constant ? sprintf("+ %.2f", constant) : "+0"
       ),
       sprintf(
@@ -1712,40 +1714,51 @@ export const getBeamAnalysis = (beam) => {
     }
   }
 
-  // find all vertical forces
-  const verticalForces = [];
-  sections?.forEach((section, i) => {
+  // find all vertical forces imposed by loadinss
+  const loadingVerticalForces = loadings?.map((load) => {
+    if (load?.type === loadingEnums.single) {
+      const w = -1 * +load?.valueOfLoading;
+      return { force: w, distanceFromLeft: +load?.distanceFromLeft };
+    }
+    if (load?.type === loadingEnums?.uniform) {
+      const w = -1 * +load?.valueOfLoading * load?.spanOfLoading;
+      const d = +load?.distanceFromLeft + load?.spanOfLoading / 2;
+      return { force: w, distanceFromLeft: d };
+    }
+    if (load?.type === loadingEnums?.varying) {
+      const w =
+        (-1 *
+          +load?.spanOfLoading *
+          (load?.openingValue + load?.closingValue)) /
+        2;
+      const d = +load?.openingValue > +load?.closingValue ? load?.spanOfLoading / 3 : 2 * load?.spanOfLoading / 3;
+      return { force: w, distanceFromLeft: d };
+    }
+  });
+
+  // add the - loadingVerticalForces plus the + reactions
+  const allVerticalForces = [];
+  sections?.forEach((_, i) => {
     const supportRange = supportRanges[i];
     const [p1, p2] = supportRange;
-    const sectionLength = Math.abs(p2 - p1);
-    const formulas = Object.entries(FEMformulas);
-    const formI = formulas?.findIndex((formula) =>
-      formula[1]?.isType(section, sectionLength)
+    const reaction1 = finalReactionMaps[`${i + 1}`];
+    const verticalReaction1 = { force: reaction1, distanceFromLeft: +p1, };
+    const verticalForcesInRange = loadingVerticalForces?.filter(
+      (vf) => +vf?.distanceFromLeft >= p1 && +vf?.distanceFromLeft < p2
     );
 
-    const reactionForce1 = {
-      force: finalReactionMaps[`${i + 1}`],
-      distanceFromLeft: p1,
-    };
-    const formula = formulas[formI][1];
-    const shearBetweenSpan = formula?.shearForce(section, sectionLength);
-    const reactionForce2 = { force: -shearBetweenSpan, distanceFromLeft: p2 };
+    allVerticalForces.push(verticalReaction1, ...verticalForcesInRange);
 
-    verticalForces?.push(reactionForce1, reactionForce2);
-    if (i === sections.length - 1) {
-      const reactionForce1 = {
-        force: finalReactionMaps[`${i + 2}`],
-        distanceFromLeft: p2,
-      };
-      verticalForces?.push(reactionForce1);
+    if (i == sections.length - 1) {
+      const reaction2 = finalReactionMaps[`${i + 2}`];
+      const verticalReaction2 = { force: reaction2, distanceFromLeft: +p2, };
+      allVerticalForces.push(verticalReaction2);
     }
   });
 
   // find shear forces
   const shearForces = [];
-  verticalForces?.reduce((acc, force, i) => {
-    const isOdd = i % 2 !== 0;
-
+  allVerticalForces?.reduce((acc, force, i) => {
     const currentForce = force?.force;
     const currentDistance = force?.distanceFromLeft;
     const shearForce = acc + currentForce;
@@ -1753,13 +1766,13 @@ export const getBeamAnalysis = (beam) => {
     const steps = [
       sprintf(
         "`S.F %s = %.2f + %.2f N`",
-        isOdd ? `" before " ${currentDistance}m` : `" at " ${currentDistance}m`,
+        sprintf(`" at %.2f (m)"`, currentDistance),
         acc,
         currentForce
       ),
       sprintf(
         "`S.F %s = %.2f N`",
-        isOdd ? `" before " ${currentDistance}m` : `" at " ${currentDistance}m`,
+        sprintf(`" at %.2f (m)"`, currentDistance),
         shearForce
       ),
     ];

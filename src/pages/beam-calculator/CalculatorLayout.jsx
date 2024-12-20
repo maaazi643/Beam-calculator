@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "./sidebar/Sidebar";
-import Output from "./sidebar/Output";
+import Sidebar from "./Sidebar";
+import Output from "./Output";
 
 export default function CalculatorLayout() {
   return (

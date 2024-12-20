@@ -2,29 +2,31 @@ import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { beamActions } from "../../../store/beam";
-import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
-import MemberIndicator from "../../../components/indicators/MemberIndicator";
-import WrapperHeader from "../../../components/typography/WrapperHeader";
-import WrapperParagraph from "../../../components/typography/WrapperParagraph";
-import NumberInput from "../../../components/inputs/NumberInput";
-import WrapperButton from "../../../components/buttons/WrapperButton";
-import WrapperToggle from "../../../components/toggles/WrapperToggle";
-import DeleteButton from "../../../components/buttons/DeleteButton";
-import UpArrow from "../../../icons/UpArrow";
-import Trash from "../../../icons/Trash";
-import RoundedPlus from "../../../icons/RoundedPlus";
-import { MetreUnit } from "../../../icons/units";
+import { beamActions } from "../../store/beam";
+import PropertyWrapper from "../../components/wrappers/PropertyWrapper";
+import MemberIndicator from "../../components/indicators/MemberIndicator";
+import WrapperHeader from "../../components/typography/WrapperHeader";
+import WrapperParagraph from "../../components/typography/WrapperParagraph";
+import NumberInput from "../../components/inputs/NumberInput";
+import WrapperButton from "../../components/buttons/WrapperButton";
+import WrapperToggle from "../../components/toggles/WrapperToggle";
+import DeleteButton from "../../components/buttons/DeleteButton";
+import UpArrow from "../../icons/UpArrow";
+import Trash from "../../icons/Trash";
+import RoundedPlus from "../../icons/RoundedPlus";
+import { MetreUnit } from "../../icons/units";
 import {
   PinnedSupportButton,
   RollerSupportButton,
   FixedSupportButton,
-} from "../../../icons/Properties";
-import { createNewSupport, supportEnums } from "../../../store/beam-utils";
+} from "../../icons/Properties";
+import { createNewSupport, getBeamTotalLength, supportEnums } from "../../store/beam-utils";
 import {
   validateSupportSinkingValue,
   validateSupportDistanceFromLeft,
-} from "../../../utils/validators";
+} from "../../utils/validators";
+import { validateSupports } from "../../utils/validators";
+import { showNotification } from "./Sidebar";
 
 const typeDropdownVariants = {
   hidden: {
@@ -78,6 +80,9 @@ export default function SupportSection() {
     beamProperties,
   } = useSelector((state) => state.beam);
 
+  const isBeamEndFixed =
+    supports?.at(-1)?.type === supportEnums.fixed && supports?.length > 1;
+
   const toggleShowSupportHandler = () => {
     dispatch(
       beamActions.set({ key: "showSupportConfig", value: !showSupportConfig })
@@ -93,7 +98,14 @@ export default function SupportSection() {
     );
   };
 
-  const applyLoadingHandler = () => {
+  const applySupportHandler = () => {
+    const [supportsAreValid, errorMessage] = validateSupports(supports, getBeamTotalLength(beamProperties));
+
+    if (!supportsAreValid) {
+      showNotification(errorMessage);
+      return;
+    }
+
     const newBeamProperties = { ...beamProperties };
     newBeamProperties.supports = supports;
     dispatch(
@@ -148,11 +160,21 @@ export default function SupportSection() {
             </motion.div>
           ))}
         </AnimatePresence>
-        <WrapperButton onClick={addSupportHandler}>
-          <span>Add New Support</span>
-          <RoundedPlus />
-        </WrapperButton>
-        <WrapperButton onClick={applyLoadingHandler}>Apply</WrapperButton>
+        <AnimatePresence>
+          {!isBeamEndFixed && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={configDropdownVariants}
+            >
+              <WrapperButton onClick={addSupportHandler}>
+                <span>Add New Support</span>
+                <RoundedPlus />
+              </WrapperButton>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <WrapperButton onClick={applySupportHandler}>Apply</WrapperButton>
       </motion.div>
     </PropertyWrapper>
   );

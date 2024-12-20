@@ -1,24 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { beamActions } from "../../../store/beam";
+import { beamActions } from "../../store/beam";
 import { motion, AnimatePresence } from "framer-motion";
-import PropertyWrapper from "../../../components/wrappers/PropertyWrapper";
-import MemberIndicator from "../../../components/indicators/MemberIndicator";
-import WrapperHeader from "../../../components/typography/WrapperHeader";
-import WrapperParagraph from "../../../components/typography/WrapperParagraph";
-import NumberInput from "../../../components/inputs/NumberInput";
-import WrapperButton from "../../../components/buttons/WrapperButton";
-import DeleteButton from "../../../components/buttons/DeleteButton";
-import UpArrow from "../../../icons/UpArrow";
-import Trash from "../../../icons/Trash";
-import { MetreUnit, EIUnit } from "../../../icons/units";
-import RoundedPlus from "../../../icons/RoundedPlus";
-import { createNewSpan } from "../../../store/beam-utils";
+import PropertyWrapper from "../../components/wrappers/PropertyWrapper";
+import MemberIndicator from "../../components/indicators/MemberIndicator";
+import WrapperHeader from "../../components/typography/WrapperHeader";
+import WrapperParagraph from "../../components/typography/WrapperParagraph";
+import NumberInput from "../../components/inputs/NumberInput";
+import WrapperButton from "../../components/buttons/WrapperButton";
+import DeleteButton from "../../components/buttons/DeleteButton";
+import UpArrow from "../../icons/UpArrow";
+import Trash from "../../icons/Trash";
+import { MetreUnit, EIUnit } from "../../icons/units";
+import RoundedPlus from "../../icons/RoundedPlus";
+import { createNewSpan } from "../../store/beam-utils";
 import {
   validateSpanLength,
   validateSpanFlexuralRigidity,
-} from "../../../utils/validators";
+  validateSpans,
+} from "../../utils/validators";
+import { showNotification } from "./Sidebar";
 
 const dropdownVariants = {
   hidden: {
@@ -67,6 +69,13 @@ export default function SpanSection() {
   };
 
   const applySpanHandler = () => {
+    const [spansAreValid, errorMessage] = validateSpans(spans)
+
+    if (!spansAreValid) {
+      showNotification(errorMessage);
+      return;
+    }
+
     const newBeamProperties = { ...beamProperties };
     newBeamProperties.spans = spans;
     dispatch(

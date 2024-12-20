@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { twMerge } from "tailwind-merge";
 import { useSelector, useDispatch } from "react-redux";
-import { beamActions } from "../../../store/beam";
-import ControlButton from "../../../components/buttons/ControlButton";
-import { Undo, Redo, Clear } from "../../../icons/controls";
+import { beamActions } from "../../store/beam";
+import ControlButton from "../../components/buttons/ControlButton";
+import { Undo, Redo, Clear } from "../../icons/controls";
 
 export default function ControlBar({ className }) {
   const dispatch = useDispatch();

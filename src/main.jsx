@@ -6,8 +6,9 @@ import { store } from "./store/store";
 import { Provider } from "react-redux";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { MathJaxContext } from "better-react-mathjax";
+import { Toaster } from "react-hot-toast";
 
-const theme = createTheme(); // Create a default theme
+const theme = createTheme();
 
 const config = {
   loader: { load: ["input/asciimath"] },
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <MathJaxContext config={config}>
+          <Toaster />
           <App />
         </MathJaxContext>
       </ThemeProvider>

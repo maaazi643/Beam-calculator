@@ -1,5 +1,5 @@
 import React from "react";
-import LeftArrow from "../../../icons/LeftArrow";
+import LeftArrow from "../../icons/LeftArrow";
 import { NavLink } from "react-router";
 
 export default function Navbar() {
