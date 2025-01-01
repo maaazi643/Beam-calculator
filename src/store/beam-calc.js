@@ -1415,10 +1415,10 @@ export const getBeamAnalysis = (beam) => {
   const equilibriumEquations = [];
   supports?.forEach((sup, i) => {
     // the is just to offset if the first support is not at zero
-    let balancer = 0
-    const firstSupport = supports[0]
-    if(+firstSupport?.distanceFromLeft !== 0){
-      balancer = 1
+    let balancer = 0;
+    const firstSupport = supports[0];
+    if (+firstSupport?.distanceFromLeft !== 0) {
+      balancer = 1;
     }
 
     const isFixed = sup?.type === supportEnums?.fixed;
@@ -1479,10 +1479,10 @@ export const getBeamAnalysis = (beam) => {
       return +num1 + +num2;
     });
 
-    if(ind == 0){
-      console.log(firstEquation)
-      console.log(secondEquation)
-      console.log(combination)
+    if (ind == 0) {
+      console.log(firstEquation);
+      console.log(secondEquation);
+      console.log(combination);
     }
 
     const coefficient = combination?.slice(0, -2);
@@ -1622,7 +1622,7 @@ export const getBeamAnalysis = (beam) => {
       sprintf("`M_%s = %.2f Nm`", name, moment),
     ];
 
-    return { steps };
+    return { steps, name, moment };
   });
 
   // finding reaction forces
@@ -1671,9 +1671,9 @@ export const getBeamAnalysis = (beam) => {
       rName
     );
     reactionsMap[rName] = reactionRL.reaction;
-    if(i == 0){
-      console.log(reactionLR)
-      console.log(reactionRL)
+    if (i == 0) {
+      console.log(reactionLR);
+      console.log(reactionRL);
     }
 
     return {
@@ -1690,7 +1690,6 @@ export const getBeamAnalysis = (beam) => {
       section: section,
     };
   });
-  console.log(reactionsMap)
 
   // balance the above reaction force, sum duplicates
   const finalReactionMaps = {};
@@ -1704,9 +1703,8 @@ export const getBeamAnalysis = (beam) => {
       finalReactionMaps[main] = value;
     }
   }
-  console.log(finalReactionMaps)
 
-  // find all vertical forces imposed by loadinss
+  // find all vertical forces imposed by loadings
   const loadingVerticalForces = loadings?.map((load) => {
     if (load?.type === loadingEnums.single) {
       const w = -1 * +load?.valueOfLoading;

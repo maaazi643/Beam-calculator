@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { beamActions } from "../../store/beam";
 import { uiActions } from "../../store/ui";
-import { getBeamAnalysis } from "../../store/beam-fem";
+import { getBeamAnalysis } from "../../store/beam-calc";
 import {
   validateSpans,
   validateSupports,
