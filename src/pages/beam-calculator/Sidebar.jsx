@@ -8,6 +8,7 @@ import SolveButton from "../../components/buttons/SolveButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { beamActions } from "../../store/beam";
+import { uiActions } from "../../store/ui";
 import { getBeamAnalysis } from "../../store/beam-fem";
 import {
   validateSpans,
@@ -17,6 +18,9 @@ import {
 import { getBeamTotalLength } from "../../store/beam-utils";
 import { toast } from "react-hot-toast";
 import { COLORS } from "../../../tailwind.config";
+import CloseIcon from "@mui/icons-material/Close";
+import { useMediaQuery } from "react-responsive";
+import { twMerge } from "tailwind-merge";
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,8 +50,19 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { beamProperties } = useSelector((state) => state.beam);
+  const { showSidebarOnMobile } = useSelector((state) => state.ui);
+  const isMobile = useMediaQuery({ maxWidth: 640 });
 
   // console.log(beamProperties);
+
+  const toggleSidebarHandler = () => {
+    dispatch(
+      uiActions.set({
+        key: "showSidebarOnMobile",
+        value: !showSidebarOnMobile,
+      })
+    );
+  };
 
   const solveHandler = async () => {
     const [spansAreValid, errorMessage1] = validateSpans(beamProperties.spans);
@@ -73,7 +88,8 @@ export default function Sidebar() {
     }
 
     try {
-      navigate("/beam-calculator/steps");
+      toggleSidebarHandler();
+      navigate("/beam-calculator/solution");
 
       dispatch(
         beamActions?.set([
@@ -87,7 +103,6 @@ export default function Sidebar() {
 
       if (!isLocalHost()) {
         const num = randomInteger(1500, 2500);
-        console.log(num);
         await sleep(num);
       }
 
@@ -117,10 +132,21 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col basis-[25%] min-w-[350px] py-12 px-8 justify-between gap-y-4 h-full max-h-full items-stretch">
+    <div
+      className={twMerge(
+        "bg-primary fixed top-0 w-full z-10 sm:static flex flex-col basis-[25%] sm:min-w-[350px] py-10 sm:py-12 px-6 sm:px-8 justify-between gap-y-4 h-full sm:max-h-full sm:items-stretch transition-all duration-300 ease-in-out",
+        `${showSidebarOnMobile ? "left-0" : "-left-full"}`
+      )}
+    >
       <Scroller className="grow space-y-[1.5rem] overflow-y-auto">
-        <div className="">
+        <div className="flex items-center justify-between">
           <SmallHeader>Beam Properties</SmallHeader>
+          {isMobile && (
+            <CloseIcon
+              className="text-secondary"
+              onClick={toggleSidebarHandler}
+            />
+          )}
         </div>
         <SpanSection />
         <SupportSection />

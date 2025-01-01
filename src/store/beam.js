@@ -8,7 +8,7 @@ import {
   question5,
   question8,
   question9,
-  question10
+  question10,
 } from "../../questions";
 
 const defaultBeamProperties = {
@@ -29,7 +29,7 @@ const initialState = {
   activeSupportType: null,
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
-  beamProperties: question5,
+  beamProperties: question2,
   // beamProperties: defaultBeamProperties,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,
@@ -57,6 +57,10 @@ export const beamSlice = createSlice({
     },
   },
 });
+
+export const isBeamEmpty = (beam) => {
+  return beam?.spans?.length === 0;
+};
 
 export const beamActions = beamSlice.actions;
 

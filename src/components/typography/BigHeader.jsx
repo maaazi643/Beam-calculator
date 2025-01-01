@@ -6,7 +6,7 @@ export default function BigHeader({ className, children }) {
   return (
     <h1
       className={twMerge(
-        "text-secondary text-[2rem] not-italic font-extrabold leading-[150%] font-inter",
+        "text-secondary text-xl sm:text-[2rem] not-italic font-extrabold leading-[150%] font-inter",
         className
       )}
     >

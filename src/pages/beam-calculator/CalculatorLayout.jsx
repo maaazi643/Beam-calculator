@@ -4,7 +4,7 @@ import Output from "./Output";
 
 export default function CalculatorLayout() {
   return (
-    <div className="flex flex-row w-full min-h-screen h-screen max-h-screen overflow-hidden">
+    <div className="sm:flex sm:flex-row w-full min-h-screen h-screen max-h-screen overflow-hidden">
       <Sidebar />
       <Output />
     </div>

@@ -139,7 +139,7 @@ export const getSupportPositionAndDimension = (
   return { left, top };
 };
 
-export const getMarkings = (beam) => {
+export const getDimensionMarkings = (beam) => {
   const totalBeamLength = getBeamTotalLength(beam);
 
   const supportsAndLoadings = [
@@ -204,4 +204,19 @@ export const getMarkings = (beam) => {
     ?.slice(0, -1);
 
   return markCoords;
+};
+
+export const getFlexuralRigidityMarkings = (beam) => {
+  const beamTotalLength = getBeamTotalLength(beam);
+
+  return beam?.spans?.map((span, i, arr) => {
+    const spacingInPercentage = (+span?.length / beamTotalLength) * 100;
+    const leftInPercentage =
+      (arr?.slice(0, i)?.reduce((acc, span) => acc + +span.length, 0) /
+        beamTotalLength) *
+      100;
+    const flexuralRigidity = +span?.flexuralRigidity;
+
+    return { spacingInPercentage, leftInPercentage, flexuralRigidity };
+  });
 };

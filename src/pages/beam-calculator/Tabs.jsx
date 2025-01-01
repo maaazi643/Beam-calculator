@@ -42,7 +42,7 @@ export default function Tabs() {
   return (
     <div className="pb-3 border-b border-b-secondary flex items-center gap-x-6">
       <Tab to="question">Question</Tab>
-      <Tab to="steps">Steps</Tab>
+      {/* <Tab to="steps">Steps</Tab> */}
       <Tab to="solution">Solution</Tab>
     </div>
   );

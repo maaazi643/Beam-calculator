@@ -9,7 +9,8 @@ import {
   PinnedSupportIcon,
   RollerSupportIcon,
   FixedSupportIcon,
-  Mark,
+  DimensionMark,
+  FlexuralRigidityMark,
 } from "../../icons/Properties";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -17,9 +18,12 @@ import {
   loadingEnums,
   getSupportPositionAndDimension,
   supportEnums,
-  getMarkings,
+  getDimensionMarkings,
+  getFlexuralRigidityMarkings,
 } from "../../store/beam-utils";
 import { beamActions } from "../../store/beam";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+import { isBeamEmpty } from "../../store/beam";
 // import JSONFormatter from "json-formatter-js";
 
 // const jsonStyle = {
@@ -139,11 +143,11 @@ SupportIcon.propTypes = {
   beamPixelLength: PropTypes.number.isRequired,
 };
 
-const Markings = ({ beam }) => {
-  let markings = getMarkings(beam);
+const DimensionMarkings = ({ beam }) => {
+  let markings = getDimensionMarkings(beam);
 
   return markings?.map((mark, i) => (
-    <Mark
+    <DimensionMark
       key={i}
       style={{
         top: "75%",
@@ -155,7 +159,27 @@ const Markings = ({ beam }) => {
   ));
 };
 
-Markings.propTypes = {
+DimensionMarkings.propTypes = {
+  beam: PropTypes.object,
+};
+
+const FlexuralRigidityMarkings = ({ beam }) => {
+  let markings = getFlexuralRigidityMarkings(beam);
+
+  return markings?.map((mark, i) => (
+    <FlexuralRigidityMark
+      key={i}
+      style={{
+        top: "51%",
+        width: `${mark?.spacingInPercentage}%`,
+        left: `${mark?.leftInPercentage}%`,
+      }}
+      flexuralRigidity={mark?.flexuralRigidity}
+    />
+  ));
+};
+
+FlexuralRigidityMarkings.propTypes = {
   beam: PropTypes.object,
 };
 
@@ -171,11 +195,28 @@ export default function QuestionPage() {
     dispatch(beamActions.set({ key: "beamPixelLength", value: length }));
   };
 
+  const showBeamImage = isBeamEmpty(beamProperties);
+
+  if (showBeamImage) {
+    return (
+      <div className="w-full h-full flex flex-col justify-center items-center">
+        <EngineeringIcon
+          className="text-secondary"
+          style={{ fontSize: "9rem" }}
+        />
+
+        <p className="text-xl font-medium text-secondary text-center">
+          Please apply at least one span.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <AnimatePresence>
       {canShowBeam && (
         <motion.div
-          className="w-full relative"
+          className="w-full relative min-w-[500px] sm:min-w-0"
           style={{ height: containerHeight }}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -202,7 +243,8 @@ export default function QuestionPage() {
               key={support.id}
             />
           ))}
-          <Markings beam={beamProperties} />
+          <DimensionMarkings beam={beamProperties} />
+          <FlexuralRigidityMarkings beam={beamProperties} />
         </motion.div>
       )}
     </AnimatePresence>

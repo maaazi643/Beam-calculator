@@ -8,8 +8,8 @@ import ControlBar from "./ControlBar";
 
 export default function Output() {
   return (
-    <div className="basis-[75%] bg-tertiary flex flex-col justify-between h-full max-h-full relative overflow-y-hidden">
-      <div className="flex flex-col gap-y-3 py-12 px-8 grow overflow-y-auto">
+    <div className="w-full sm:basis-[75%] bg-tertiary flex flex-col justify-between h-full max-h-full relative overflow-y-hidden">
+      <div className="flex flex-col gap-y-3 py-10 sm:py-12 px-6 sm:px-8 grow overflow-y-auto">
         <Navbar />
         <BigHeader className="min-h-9">Beam Calculator</BigHeader>
         <div className="grow bg-primary p-4 flex flex-col overflow-y-auto">

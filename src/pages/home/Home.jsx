@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import bannerImg from "../../assets/images/building-banner.png";
 import beamImg from "../../assets/images/beam-image.png";
 import frameImg from "../../assets/images/frame-image.png";
 import BigHeader from "../../components/typography/BigHeader";
 import { TypeAnimation } from "react-type-animation";
 import { NavLink } from "react-router";
+import { beamActions } from "../../store/beam";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(beamActions.reset());
+  }, [dispatch]);
+
   return (
     <div className="relative bg-primary flex flex-col h-screen">
       <img src={bannerImg} alt="banner" className="w-full" />
@@ -56,7 +63,7 @@ export default function Home() {
             speed={50}
             repeat={Infinity}
             cursor={false}
-            style={{minHeight: "3rem"}}
+            style={{ minHeight: "3rem" }}
           />
         </BigHeader>
         <p className="text-secondary text-center text-base not-italic font-normal leading-[150%] font-inter mb-16">

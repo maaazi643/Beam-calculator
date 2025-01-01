@@ -513,8 +513,13 @@ UniformDistributedLoadIcon.propTypes = {
   style: PropTypes.object,
 };
 
-export const VaryingDistributedLoadIcon = ({ style, bigToSmall, triangular, ...props }) => {
-  if(triangular && bigToSmall) {
+export const VaryingDistributedLoadIcon = ({
+  style,
+  bigToSmall,
+  triangular,
+  ...props
+}) => {
+  if (triangular && bigToSmall) {
     return (
       <svg
         viewBox="0 0 98 67"
@@ -549,7 +554,7 @@ export const VaryingDistributedLoadIcon = ({ style, bigToSmall, triangular, ...p
     );
   }
 
-  if(triangular && !bigToSmall) {
+  if (triangular && !bigToSmall) {
     return (
       <svg
         viewBox="0 0 98 67"
@@ -584,7 +589,7 @@ export const VaryingDistributedLoadIcon = ({ style, bigToSmall, triangular, ...p
     );
   }
 
-  if(!triangular && bigToSmall){
+  if (!triangular && bigToSmall) {
     return (
       <svg
         viewBox="0 0 98 67"
@@ -626,7 +631,7 @@ export const VaryingDistributedLoadIcon = ({ style, bigToSmall, triangular, ...p
     );
   }
 
-  if(!triangular && !bigToSmall) {
+  if (!triangular && !bigToSmall) {
     return (
       <svg
         viewBox="0 0 98 67"
@@ -668,9 +673,8 @@ export const VaryingDistributedLoadIcon = ({ style, bigToSmall, triangular, ...p
     );
   }
 
-  return null
-}
-
+  return null;
+};
 
 VaryingDistributedLoadIcon.propTypes = {
   style: PropTypes.object,
@@ -872,7 +876,7 @@ FixedSupportIcon.propTypes = {
   atStart: PropTypes.bool,
 };
 
-export const Mark = ({ style, mark, ...props }) => (
+export const DimensionMark = ({ style, mark, ...props }) => (
   <div className="border-x absolute h-[12%]" style={style} {...props}>
     <div className="w-full h-full relative text-[#ccc] text-xs not-italic font-normal leading-[133%]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-[#ccc] w-full" />
@@ -883,7 +887,24 @@ export const Mark = ({ style, mark, ...props }) => (
   </div>
 );
 
-Mark.propTypes = {
+DimensionMark.propTypes = {
   style: PropTypes.object.isRequired,
   mark: PropTypes.object.isRequired,
+};
+
+export const FlexuralRigidityMark = ({ style, flexuralRigidity, ...props }) => (
+  <div className="absolute h-[12%]" style={style} {...props}>
+    <div className="w-full h-full relative text-secondary text-base not-italic font-normal leading-[133%]">
+      {flexuralRigidity != "0" && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2">
+          ({flexuralRigidity}I)
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+FlexuralRigidityMark.propTypes = {
+  style: PropTypes.object.isRequired,
+  flexuralRigidity: PropTypes.number,
 };
