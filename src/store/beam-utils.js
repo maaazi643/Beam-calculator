@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-export const createNewSpan = (length = "", flexuralRigidity = "") => {
+export const createNewSpan = (length = "", flexuralRigidity = "0") => {
   return { id: uuidv4(), length: length, flexuralRigidity: flexuralRigidity };
 };
 
