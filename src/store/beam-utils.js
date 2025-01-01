@@ -220,3 +220,41 @@ export const getFlexuralRigidityMarkings = (beam) => {
     return { spacingInPercentage, leftInPercentage, flexuralRigidity };
   });
 };
+
+export const getLoadMarkings = (beam) => {
+  const beamTotalLength = getBeamTotalLength(beam);
+  const markings = [];
+
+  beam?.loadings?.forEach((load) => {
+    if (load?.type === loadingEnums?.single) {
+      const leftInPercentage =
+        (+load?.distanceFromLeft / beamTotalLength) * 100;
+      const valueOfLoading = +load?.valueOfLoading;
+      markings.push({ leftInPercentage, load: valueOfLoading });
+    }
+
+    if (load?.type === loadingEnums?.uniform) {
+      const left = +load?.distanceFromLeft;
+      const span = +load?.spanOfLoading;
+      const mid = left + span / 2;
+      const leftInPercentage = (mid / beamTotalLength) * 100;
+      const valueOfLoading = +load?.valueOfLoading;
+      markings.push({ leftInPercentage, load: valueOfLoading });
+    }
+
+    if (load?.type === loadingEnums?.varying) {
+      let leftInPercentage = (+load?.distanceFromLeft / beamTotalLength) * 100;
+      let valueOfLoading = +load?.openingValue;
+      markings.push({ leftInPercentage, load: valueOfLoading });
+
+      leftInPercentage =
+        ((+load?.spanOfLoading + +load?.distanceFromLeft) / beamTotalLength) *
+        100;
+
+      valueOfLoading = +load?.closingValue;
+      markings.push({ leftInPercentage, load: valueOfLoading });
+    }
+  });
+
+  return markings;
+};

@@ -29,7 +29,7 @@ const initialState = {
   activeSupportType: null,
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
-  beamProperties: question2,
+  beamProperties: question10,
   // beamProperties: defaultBeamProperties,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,

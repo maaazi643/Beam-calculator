@@ -11,6 +11,7 @@ import {
   FixedSupportIcon,
   DimensionMark,
   FlexuralRigidityMark,
+  LoadingMark,
 } from "../../icons/Properties";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -20,6 +21,7 @@ import {
   supportEnums,
   getDimensionMarkings,
   getFlexuralRigidityMarkings,
+  getLoadMarkings,
 } from "../../store/beam-utils";
 import { beamActions } from "../../store/beam";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -183,6 +185,26 @@ FlexuralRigidityMarkings.propTypes = {
   beam: PropTypes.object,
 };
 
+const LoadMarkings = ({ beam }) => {
+  let markings = getLoadMarkings(beam);
+  markings = markings?.filter((mark) => mark?.load > 0);
+
+  return markings?.map((mark, i) => (
+    <LoadingMark
+      key={i}
+      style={{
+        top: "12%",
+        left: `${mark?.leftInPercentage}%`,
+      }}
+      load={mark?.load}
+    />
+  ));
+};
+
+LoadMarkings.propTypes = {
+  beam: PropTypes.object,
+};
+
 export default function QuestionPage() {
   const dispatch = useDispatch();
   const { beamProperties, beamPixelLength } = useSelector(
@@ -216,7 +238,7 @@ export default function QuestionPage() {
     <AnimatePresence>
       {canShowBeam && (
         <motion.div
-          className="w-full relative min-w-[500px] sm:min-w-0"
+          className="w-full relative min-w-[800px] sm:min-w-0"
           style={{ height: containerHeight }}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -245,6 +267,7 @@ export default function QuestionPage() {
           ))}
           <DimensionMarkings beam={beamProperties} />
           <FlexuralRigidityMarkings beam={beamProperties} />
+          <LoadMarkings beam={beamProperties} />
         </motion.div>
       )}
     </AnimatePresence>
