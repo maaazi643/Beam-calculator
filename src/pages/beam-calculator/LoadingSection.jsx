@@ -278,7 +278,7 @@ function SinglePointLoadSettings({ load }) {
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Value of Loading</WrapperParagraph>
         <NumberInput
-          Icon={MetreUnit}
+          Icon={NewtonUnit}
           onChange={valueOfLoadingChangeHandler}
           value={valueOfLoading}
           isValid={valueOfLoadingIsValid}
