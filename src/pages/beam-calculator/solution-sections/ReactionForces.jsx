@@ -7,7 +7,7 @@ import { sprintf } from "sprintf-js";
 function ReactionForces({ solutionAnalysis }) {
   return (
     <>
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 4). Find All reaction forces
       </h2>
       {solutionAnalysis?.reactions?.map((el, i1) => {
@@ -57,7 +57,7 @@ function ReactionForces({ solutionAnalysis }) {
         </thead>
         <tbody>
           <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-            <td>Moments</td>
+            <td>Reactions</td>
             {Object.values(solutionAnalysis?.finalReactionMaps)?.map((el) => (
               <>
                 <td key={uuidv4()} className="px-4 py-2 border border-gray-300">

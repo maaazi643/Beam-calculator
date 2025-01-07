@@ -7,7 +7,7 @@ import { sprintf } from "sprintf-js";
 export default function FixedEndedMoments({ solutionAnalysis }) {
   return (
     <>
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 1). Find Fixed Ended Moments(FEM) For Each Span:
       </h2>
       {solutionAnalysis?.fixedEndedMoments?.map((el, i1) => {

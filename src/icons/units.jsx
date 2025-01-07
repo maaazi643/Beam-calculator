@@ -36,6 +36,14 @@ NewtonUnit.propTypes = {
   className: PropTypes.string,
 };
 
+export const NewtonPerMetreUnit = ({ className }) => {
+  return <UnitWrapper className={className}>N/m</UnitWrapper>;
+};
+
+NewtonPerMetreUnit.propTypes = {
+  className: PropTypes.string,
+};
+
 export const KiloNewtonUnit = ({ className }) => {
   return <UnitWrapper className={className}>kN</UnitWrapper>;
 };

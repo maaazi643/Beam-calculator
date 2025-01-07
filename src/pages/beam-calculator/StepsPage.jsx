@@ -41,7 +41,7 @@ export default function StepsPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 1). Find Fixed Ended Moments(FEM) For Each Span:
       </h2>
       {solutionAnalysis?.fixedEndedMoments?.map((el, i1) => {
@@ -62,7 +62,7 @@ export default function StepsPage() {
           </div>
         );
       })}
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 2). Find Slope Deflection Equations For Each Span:
       </h2>
       {solutionAnalysis?.slopesDeflectionEquations?.map((el, i1) => {
@@ -87,7 +87,7 @@ export default function StepsPage() {
           </div>
         );
       })}
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 3). Find All Equilibrium Equations
       </h2>
       {solutionAnalysis?.equilibriumEquations?.map((el, i) => {
@@ -140,7 +140,7 @@ export default function StepsPage() {
           </div>
         );
       })}
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 4). Find All reaction forces
       </h2>
       {solutionAnalysis?.reactions?.map((el, i1) => {
@@ -172,7 +172,7 @@ export default function StepsPage() {
           }
         )}
       </div>
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 5). Find shear forces
       </h2>
       <div className="space-y-4">

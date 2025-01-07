@@ -14,7 +14,7 @@ export default function Output() {
         <BigHeader className="min-h-9">Beam Calculator</BigHeader>
         <div className="grow bg-primary p-4 flex flex-col overflow-y-auto">
           <Tabs />
-          <Scroller className="grow overflow-y-auto py-4 px-6">
+          <Scroller className="grow overflow-y-auto py-4 px-2 sm:px-6">
             <Outlet />
           </Scroller>
         </div>

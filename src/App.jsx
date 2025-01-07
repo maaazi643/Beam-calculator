@@ -4,12 +4,14 @@ import CalculatorLayout from "./pages/beam-calculator/CalculatorLayout";
 import QuestionPage from "./pages/beam-calculator/QuestionPage";
 import SolutionPage from "./pages/beam-calculator/SolutionPage";
 import StepsPage from "./pages/beam-calculator/StepsPage";
+import TestPage from "./pages/beam-calculator/TestPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes key={location.pathname}>
         <Route path="/" element={<Home />} />
+        <Route path="test" element={<TestPage />} />
         <Route path="beam-calculator" element={<CalculatorLayout />}>
           <Route index path="question" element={<QuestionPage />} />
           {/* <Route path="steps" element={<StepsPage />} /> */}

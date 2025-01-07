@@ -6,7 +6,7 @@ import { MathJax } from "better-react-mathjax";
 function SlopeDeflectionEquations({ solutionAnalysis }) {
   return (
     <>
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 2). Find Slope Deflection Equations For Each Span:
       </h2>
       {solutionAnalysis?.slopesDeflectionEquations?.map((el, i1) => {

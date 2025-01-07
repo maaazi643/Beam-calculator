@@ -12,6 +12,7 @@ import {
   DimensionMark,
   FlexuralRigidityMark,
   LoadingMark,
+  FullDimensionMark,
 } from "../../icons/Properties";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -22,6 +23,7 @@ import {
   getDimensionMarkings,
   getFlexuralRigidityMarkings,
   getLoadMarkings,
+  getBeamTotalLength,
 } from "../../store/beam-utils";
 import { beamActions } from "../../store/beam";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -205,6 +207,17 @@ LoadMarkings.propTypes = {
   beam: PropTypes.object,
 };
 
+const BeamFullDimensionMarking = ({ beam }) => {
+  const fullWidth = getBeamTotalLength(beam);
+  console.log(fullWidth);
+
+  return <FullDimensionMark width={fullWidth} style={{ top: "95%" }} />;
+};
+
+BeamFullDimensionMarking.propTypes = {
+  beam: PropTypes.object,
+};
+
 export default function QuestionPage() {
   const dispatch = useDispatch();
   const { beamProperties, beamPixelLength } = useSelector(
@@ -212,6 +225,7 @@ export default function QuestionPage() {
   );
   const canShowBeam = beamProperties.spans.length > 0;
   const containerHeight = 325;
+  const canShowBeamFullWidthDimensions = beamProperties?.spans?.length > 1;
 
   const setBeamPixelLength = (length) => {
     dispatch(beamActions.set({ key: "beamPixelLength", value: length }));
@@ -268,6 +282,9 @@ export default function QuestionPage() {
           <DimensionMarkings beam={beamProperties} />
           <FlexuralRigidityMarkings beam={beamProperties} />
           <LoadMarkings beam={beamProperties} />
+          {canShowBeamFullWidthDimensions && (
+            <BeamFullDimensionMarking beam={beamProperties} />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

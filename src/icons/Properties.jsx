@@ -498,6 +498,7 @@ export const UniformDistributedLoadIcon = ({ style, ...props }) => (
     <path
       d="M30.9464 2C30.9464 1.61537 30.6346 1.30357 30.25 1.30357C29.8654 1.30357 29.5536 1.61537 29.5536 2H30.9464ZM29.7576 43.3496C30.0295 43.6216 30.4705 43.6216 30.7424 43.3496L35.1745 38.9176C35.4465 38.6456 35.4465 38.2046 35.1745 37.9327C34.9025 37.6607 34.4616 37.6607 34.1896 37.9327L30.25 41.8723L26.3104 37.9327C26.0384 37.6607 25.5975 37.6607 25.3255 37.9327C25.0535 38.2046 25.0535 38.6456 25.3255 38.9176L29.7576 43.3496ZM29.5536 2L29.5536 42.8572H30.9464L30.9464 2H29.5536Z"
       fill="black"
+      // stroke="black"
     />
     <path
       d="M59.5 2V42.8572L52.5357 35.5612"
@@ -881,7 +882,7 @@ export const DimensionMark = ({ style, mark, ...props }) => (
     <div className="w-full h-full relative text-[#ccc] text-xs not-italic font-normal leading-[133%]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-[#ccc] w-full" />
       <div className="absolute top-3/4 left-1/2 -translate-x-1/2">
-        {mark?.spacingInUnit}m
+        {mark?.spacingInUnit?.toFixed(2)}m
       </div>
     </div>
   </div>
@@ -897,7 +898,7 @@ export const FlexuralRigidityMark = ({ style, flexuralRigidity, ...props }) => (
     <div className="w-full h-full relative text-secondary text-base not-italic font-normal leading-[133%]">
       {flexuralRigidity != "0" && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2">
-          ({flexuralRigidity}I)
+          ({flexuralRigidity?.toFixed(2)}I)
         </div>
       )}
     </div>
@@ -915,11 +916,27 @@ export const LoadingMark = ({ style, load, ...props }) => (
     style={style}
     {...props}
   >
-    {load}N
+    {load?.toFixed(2)}N
   </span>
 );
 
 LoadingMark.propTypes = {
   style: PropTypes.object.isRequired,
   load: PropTypes.number,
+};
+
+export const FullDimensionMark = ({ style, width, ...props }) => (
+  <div className="border-x-2 absolute h-[8%] w-full" style={style} {...props}>
+    <div className="w-full h-full relative text-[#ccc] text-sm not-italic font-medium leading-[133%]">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-[#ccc] w-full" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-5 p-1 bg-primary">
+        {width?.toFixed(2)}m
+      </div>
+    </div>
+  </div>
+);
+
+FullDimensionMark.propTypes = {
+  style: PropTypes.object.isRequired,
+  width: PropTypes.number,
 };

@@ -13,7 +13,7 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import UpArrow from "../../icons/UpArrow";
 import Trash from "../../icons/Trash";
 import RoundedPlus from "../../icons/RoundedPlus";
-import { MetreUnit, NewtonUnit } from "../../icons/units";
+import { MetreUnit, NewtonUnit, NewtonPerMetreUnit } from "../../icons/units";
 import {
   SinglePointLoadButton,
   UniformDistributedLoadButton,
@@ -356,7 +356,7 @@ function UniformDistributedLoadSettings({ load }) {
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Value of Loading</WrapperParagraph>
         <NumberInput
-          Icon={NewtonUnit}
+          Icon={NewtonPerMetreUnit}
           onChange={valueOfLoadingChangeHandler}
           value={valueOfLoading}
           isValid={valueOfLoadingIsValid}
@@ -457,7 +457,7 @@ function UniformVaryingLoadSettings({ load }) {
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Opening Value</WrapperParagraph>
         <NumberInput
-          Icon={NewtonUnit}
+          Icon={NewtonPerMetreUnit}
           onChange={openingValueChangeHandler}
           value={openingValue}
           isValid={openingValueIsValid}
@@ -467,7 +467,7 @@ function UniformVaryingLoadSettings({ load }) {
       <div className="space-y-[0.5rem]">
         <WrapperParagraph>Closing Value</WrapperParagraph>
         <NumberInput
-          Icon={NewtonUnit}
+          Icon={NewtonPerMetreUnit}
           onChange={closingValueChangeHandler}
           value={closingValue}
           isValid={closingValueIsValid}

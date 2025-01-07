@@ -7,7 +7,7 @@ import { sprintf } from "sprintf-js";
 function EquilibriumEquations({ solutionAnalysis }) {
   return (
     <>
-      <h2 className="text-secondary text-2xl italic font-semibold leading-[normal] font-inter">
+      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
         (Step 3). Find All Equilibrium Equations
       </h2>
       {solutionAnalysis?.equilibriumEquations?.map((el, i) => {
