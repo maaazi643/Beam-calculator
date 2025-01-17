@@ -209,7 +209,6 @@ LoadMarkings.propTypes = {
 
 const BeamFullDimensionMarking = ({ beam }) => {
   const fullWidth = getBeamTotalLength(beam);
-  console.log(fullWidth);
 
   return <FullDimensionMark width={fullWidth} style={{ top: "95%" }} />;
 };
