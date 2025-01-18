@@ -9,7 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
-  ReferenceArea
+  ReferenceArea,
+  Area
 } from "recharts";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
@@ -18,14 +19,12 @@ import { COLORS } from "../../../../tailwind.config";
 
 
 const ShearForceDiagram = ({ data }) => {
-  const minY = Math.min(...data.map((d) => d.shearForce));
   return (
     <div>
       <h2 className="text-center">Shear Force Diagram</h2>
       <ResponsiveContainer width="100%" height={325}>
-        <LineChart
+        <AreaChart
           width="100%"
-          data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -44,26 +43,22 @@ const ShearForceDiagram = ({ data }) => {
               angle: -90,
               position: "insideLeft",
             }}
-            // domain={["dataMin", "dataMax"]}
             domain={["auto", "auto"]}
             allowDuplicatedCategory={false}
           />
           <Tooltip />
-          <Line
-            type="linear"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          {minY < 0 && (
-            <ReferenceLine
-              y={0}
+          {data?.map((d, i) => (
+            <Area
+              data={d.points}
+              key={i}
+              type={d?.type || "monotone"}
+              dataKey="force"
               stroke={COLORS["secondary-2"]}
-              strokeWidth={1.5}
-              strokeOpacity={0.65}
+              fill={COLORS["secondary"]}
+              // dot={{ r: 3 }}
             />
-          )}
-        </LineChart>
+          ))}
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
@@ -74,11 +69,8 @@ ShearForceDiagram.propTypes = {
 };
 
 function ShearForces({ solutionAnalysis }) {
-  const shearForces = useMemo(() => {
-    return solutionAnalysis?.shearForces?.map((el) => {
-      return { ...el, shearForce: +el?.force?.toFixed(2) };
-    });
-  }, [solutionAnalysis?.shearForces]);
+  const {shearForceDiagramPoints} = solutionAnalysis
+  console.log('shearForceDiagramPoints',shearForceDiagramPoints);
 
   return (
     <>
@@ -98,7 +90,7 @@ function ShearForces({ solutionAnalysis }) {
           );
         })}
       </div>
-      <ShearForceDiagram data={shearForces} />
+      <ShearForceDiagram data={shearForceDiagramPoints} />
     </>
   );
 }

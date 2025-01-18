@@ -916,7 +916,7 @@ export const LoadingMark = ({ style, load, ...props }) => (
     style={style}
     {...props}
   >
-    {load?.toFixed(2)}N
+    {load?.toFixed(2)}N/m
   </span>
 );
 

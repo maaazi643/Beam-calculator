@@ -1025,3 +1025,95 @@ export const question12 = {
     },
   ],
 };
+
+export const question13 = {
+  spans: [
+    {
+      id: "6ddd4611-e5fa-433e-a6df-f392bc31fd61",
+
+      length: "6",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "bc8e9beb-a5b4-414a-bdb8-266d9c5f5c6a",
+
+      length: "6",
+
+      flexuralRigidity: "0",
+    },
+  ],
+
+  supports: [
+    {
+      id: "bb73131b-7cf2-4999-92f7-8f550c72e867",
+
+      type: "pinned",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "0",
+    },
+
+    {
+      id: "f67617d4-ab18-4b8b-bc91-eff90461ab44",
+
+      type: "roller",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "6",
+    },
+
+    {
+      id: "6de043e0-f092-4b45-ac48-d21b7702af41",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "12",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "7df1f8f2-8a3f-4432-a043-159377d14df8",
+
+      type: "single",
+
+      distanceFromLeft: "2",
+
+      valueOfLoading: "250",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "b1aeb421-6499-40c4-b001-9c8e188f9df5",
+
+      type: "single",
+
+      distanceFromLeft: "9",
+
+      valueOfLoading: "120",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+  ],
+};

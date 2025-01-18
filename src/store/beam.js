@@ -11,6 +11,7 @@ import {
   question10,
   question11,
   question12,
+  question13,
 } from "../../questions";
 
 const defaultBeamProperties = {
@@ -32,7 +33,7 @@ const initialState = {
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
   // beamProperties: defaultBeamProperties,
-  beamProperties: question12,
+  beamProperties: question1,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,
   solutionIsLoading: false,

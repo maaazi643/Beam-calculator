@@ -1716,10 +1716,9 @@ export const getBeamAnalysis = (beam) => {
     }
     if (load?.type === loadingEnums?.uniform) {
       const w = -1 * +load?.valueOfLoading * load?.spanOfLoading;
-      const d = +load?.distanceFromLeft + load?.spanOfLoading / 2;
       return {
         force: w,
-        distanceFromLeft: d,
+        distanceFromLeft: +load?.distanceFromLeft,
         type: load?.type,
         isLoading: true,
       };
@@ -1728,15 +1727,11 @@ export const getBeamAnalysis = (beam) => {
       const w =
         (-1 *
           +load?.spanOfLoading *
-          (load?.openingValue + load?.closingValue)) /
+          (+load?.openingValue + +load?.closingValue)) /
         2;
-      const d =
-        +load?.openingValue > +load?.closingValue
-          ? load?.spanOfLoading / 3
-          : (2 * load?.spanOfLoading) / 3;
       return {
         force: w,
-        distanceFromLeft: d,
+        distanceFromLeft: +load?.distanceFromLeft,
         type: load?.type,
         isLoading: true,
       };
@@ -1755,7 +1750,7 @@ export const getBeamAnalysis = (beam) => {
       isLoading: false,
     };
     const verticalForcesInRange = loadingVerticalForces?.filter(
-      (vf) => +vf?.distanceFromLeft >= p1 && +vf?.distanceFromLeft <= p2
+      (vf) => +vf?.distanceFromLeft >= p1 && +vf?.distanceFromLeft < p2
     );
 
     allVerticalForces.push(verticalReaction1, ...verticalForcesInRange);
@@ -1843,7 +1838,7 @@ export const getBeamAnalysis = (beam) => {
 
       let steps = [
         sprintf(
-          '`S.F " art1 at just left of " %.2f m = %.2f N`',
+          '`S.F " just left of " %.2f m = %.2f N`',
           distanceFromLeft,
           resolvedForceLeft
         ),
@@ -1858,13 +1853,13 @@ export const getBeamAnalysis = (beam) => {
       const resolvedForceRight = acc + force;
       steps = [
         sprintf(
-          '`S.F " art2 just left of " %.2f m = %.2f + %.2f N`',
+          '`S.F " just right of " %.2f m = %.2f + %.2f N`',
           distanceFromLeft,
           acc,
           force
         ),
         sprintf(
-          '`S.F " art2 at just right of " %.2f m = %.2f N`',
+          '`S.F " at just right of " %.2f m = %.2f N`',
           distanceFromLeft,
           resolvedForceRight
         ),
@@ -1880,6 +1875,21 @@ export const getBeamAnalysis = (beam) => {
     }
   }, 0);
 
+  console.log(shearForces);
+
+  // [a, b, c, d, e] -> [[a,b], [b,c], [c,d], [d,e]]
+  const shearForceDiagramPoints = []
+  shearForces?.forEach((shearForce, i, arr) => {
+    if(i == arr.length - 1) return;
+    const nextShearForce = arr?.[i + 1];
+    shearForceDiagramPoints?.push({
+      type: "monotone",
+      points: [{...shearForce, force: +shearForce?.force?.toFixed(2)}, {...nextShearForce, force: +nextShearForce?.force?.toFixed(2)}],
+    });
+  })
+  console.log(shearForceDiagramPoints);
+
+
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
@@ -1890,6 +1900,7 @@ export const getBeamAnalysis = (beam) => {
     reactions,
     finalReactionMaps,
     shearForces,
+    shearForceDiagramPoints,
   };
 };
 
