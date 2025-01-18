@@ -224,7 +224,7 @@ export default function QuestionPage() {
   );
   const canShowBeam = beamProperties.spans.length > 0;
   const containerHeight = 325;
-  const canShowBeamFullWidthDimensions = beamProperties?.spans?.length > 1;
+  const canShowBeamFullWidthDimensions = beamProperties?.spans?.length >= 1;
 
   const setBeamPixelLength = (length) => {
     dispatch(beamActions.set({ key: "beamPixelLength", value: length }));

@@ -841,3 +841,187 @@ export const question10 = {
     },
   ],
 };
+
+export const question11 = {
+  spans: [
+    {
+      id: "a3afa23d-c3b0-4208-8d4b-0b75801d143f",
+
+      length: "4",
+
+      flexuralRigidity: "0",
+    },
+
+    {
+      id: "3fe1ea36-3401-4a80-8778-8a895ba2400a",
+
+      length: "4",
+
+      flexuralRigidity: "0",
+    },
+  ],
+
+  supports: [
+    {
+      id: "b5e7ce92-f692-414d-974e-50adcd658217",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "0",
+    },
+
+    {
+      id: "56d40ab5-385f-407e-bdd2-cf5c1e95f08c",
+
+      type: "roller",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "4",
+    },
+
+    {
+      id: "df5b7505-bedd-4bdb-ba86-eaff7e3451cc",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "8",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "3d688b0b-ea65-4e90-beb6-ea8ee0f32440",
+
+      type: "uniform",
+
+      distanceFromLeft: "0",
+
+      valueOfLoading: "65000",
+
+      spanOfLoading: "4",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+
+    {
+      id: "d3c8d9e4-6a4c-42f9-821c-088f02a727e8",
+
+      type: "uniform",
+
+      distanceFromLeft: "4",
+
+      valueOfLoading: "35000",
+
+      spanOfLoading: "4",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+  ],
+};
+
+export const question12 = {
+  spans: [
+    {
+      id: "99a2ab8f-96e9-420c-b0ce-fdc59c843ff3",
+
+      length: "12",
+
+      flexuralRigidity: "1",
+    },
+
+    {
+      id: "9532116b-c6df-4eab-8d26-ff35f9efa9b5",
+
+      length: "12",
+
+      flexuralRigidity: "3",
+    },
+  ],
+
+  supports: [
+    {
+      id: "78999e14-219a-4d65-bcd7-12e6884a2031",
+
+      type: "fixed",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "0",
+    },
+
+    {
+      id: "f534e16c-64aa-48e2-9fe0-085b58c35520",
+
+      type: "roller",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "12",
+    },
+
+    {
+      id: "440e6553-9329-4cf1-83ee-5cbdf29acc60",
+
+      type: "roller",
+
+      sinking: false,
+
+      sinkingValue: "",
+
+      distanceFromLeft: "24",
+    },
+  ],
+
+  loadings: [
+    {
+      id: "cf08fecd-54b8-4361-a221-fddc4fcb4031",
+
+      type: "varying",
+
+      distanceFromLeft: "0",
+
+      valueOfLoading: "",
+
+      spanOfLoading: "12",
+
+      openingValue: "4",
+
+      closingValue: "0",
+    },
+
+    {
+      id: "a26f29dc-8d4d-4ddf-9007-01cfb6281e0c",
+
+      type: "single",
+
+      distanceFromLeft: "18",
+
+      valueOfLoading: "24",
+
+      spanOfLoading: "",
+
+      openingValue: "",
+
+      closingValue: "",
+    },
+  ],
+};

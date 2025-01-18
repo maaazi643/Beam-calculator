@@ -1,101 +1,69 @@
 import React from "react";
 import {
-  CartesianGrid,
+  ComposedChart,
+  Area,
   Line,
-  LineChart,
-  ReferenceLine,
-  ResponsiveContainer,
   XAxis,
   YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from "recharts";
 
+// Merged data for the entire chart
 const data = [
-  { x: -50, y: -50 },
-  { x: 0, y: 0 },
-  { x: 50, y: 50 },
-  { x: 100, y: 100 },
-  { x: 150, y: 150 },
-  { x: 200, y: 200 },
-  { x: 250, y: 250 },
-  { x: 350, y: 350 },
-  { x: 400, y: 400 },
-  { x: 450, y: 450 },
-  { x: 500, y: 500 },
+  { distanceFromLeft: 0, areaMoment1: 25, lineMoment2: 0 },
+  { distanceFromLeft: 2, areaMoment1: null, lineMoment2: 60 },
+  { distanceFromLeft: 5, areaMoment1: 37, lineMoment2: 0 },
+  { distanceFromLeft: 10, areaMoment1: 56.5, lineMoment2: null },
 ];
 
-const minX = Math.min(...data.map((d) => d.x));
-const minY = Math.min(...data.map((d) => d.y));
-
-const Example = () => {
+const MixedChart = () => {
   return (
-    <ResponsiveContainer width={600} height={600}>
-      <LineChart
-        width={500}
-        height={300}
+    <ResponsiveContainer width="100%" height={400}>
+      <ComposedChart
+        data={data}
         margin={{
-          top: 5,
+          top: 10,
           right: 30,
-          left: 20,
-          bottom: 5,
+          left: 0,
+          bottom: 0,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <YAxis
-          dataKey="y"
-          domain={["auto", "auto"]}
-          type="number"
-          interval={0}
-          label={{
-            value: `y`,
-            style: { textAnchor: "middle" },
-            angle: -90,
-            position: "left",
-            offset: 0,
-          }}
-          // allowDataOverflow={true}
-          // strokeWidth={minX < 0 ? 0 : 1}
-        />
         <XAxis
-          dataKey="x"
-          domain={["auto", "auto"]}
-          interval={0}
-          type="number"
+          dataKey="distanceFromLeft"
           label={{
-            key: "xAxisLabel",
-            value: "x",
-            position: "bottom",
+            value: "Distance from Left (m)",
+            position: "insideBottom",
+            offset: -10,
           }}
-          // allowDataOverflow={true}
-          // strokeWidth={minY < 0 ? 0 : 1}
         />
-        {minY < 0 && (
-          <ReferenceLine
-            y={0}
-            stroke="gray"
-            strokeWidth={1.5}
-            strokeOpacity={0.65}
-          />
-        )}
-        {/* {minX < 0 && (
-          <ReferenceLine
-            x={0}
-            stroke="gray"
-            strokeWidth={1.5}
-            strokeOpacity={0.65}
-          />
-        )} */}
+        <YAxis />
+        <Tooltip />
+        <Legend />
+
+        {/* Triangular Area */}
         <Line
-          strokeWidth={2}
-          data={data}
-          dot={false}
-          type="monotone"
-          dataKey="y"
-          stroke="black"
-          tooltipType="none"
+          type="linear"
+          dataKey="areaMoment1"
+          stroke="#8884d8"
+          fill="#8884d8"
+          name="Area Moment"
         />
-      </LineChart>
+
+        {/* Parabolic Line */}
+        <Line
+          type="monotone"
+          dataKey="lineMoment2"
+          stroke="#82ca9d"
+          strokeWidth={2}
+          name="Line Moment"
+        />
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };
 
-export default Example;
+export default MixedChart;

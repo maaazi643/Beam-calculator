@@ -18,14 +18,11 @@ import { COLORS } from "../../../../tailwind.config";
 
 
 const ShearForceDiagram = ({ data }) => {
-  const minX = Math.min(...data.map((d) => d.distanceFromLeft));
   const minY = Math.min(...data.map((d) => d.shearForce));
-  const maxX = Math.max(...data.map((d) => d.distanceFromLeft));
-  const maxY = Math.max(...data.map((d) => d.shearForce));
   return (
     <div>
       <h2 className="text-center">Shear Force Diagram</h2>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={325}>
         <LineChart
           width="100%"
           data={data}
@@ -66,23 +63,6 @@ const ShearForceDiagram = ({ data }) => {
               strokeOpacity={0.65}
             />
           )}
-          {/* <ReferenceArea
-            x1={minX}
-            x2={0}
-            y1={0}
-            y2={maxY}
-            fill="lightblue"
-            opacity={0.3}
-          />
-
-          <ReferenceArea
-            x1={0}
-            x2={maxX}
-            y1={minY}
-            y2={0}
-            fill="lightgreen"
-            opacity={0.3}
-          /> */}
         </LineChart>
       </ResponsiveContainer>
     </div>
