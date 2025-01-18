@@ -1,15 +1,11 @@
 import React, { useMemo } from "react";
 import {
   AreaChart,
-  LineChart,
-  Line,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
-  ReferenceArea,
   Area
 } from "recharts";
 import PropTypes from "prop-types";
@@ -70,12 +66,11 @@ ShearForceDiagram.propTypes = {
 
 function ShearForces({ solutionAnalysis }) {
   const {shearForceDiagramPoints} = solutionAnalysis
-  console.log('shearForceDiagramPoints',shearForceDiagramPoints);
 
   return (
     <>
       <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 5). Find shear forces
+        (Step 5). Find shear forces And Shear Force Diagram.
       </h2>
       <div className="space-y-4">
         {solutionAnalysis?.shearForces?.map((el) => {

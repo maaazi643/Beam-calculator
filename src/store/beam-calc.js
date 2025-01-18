@@ -1,6 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import { lusolve } from "mathjs";
+import { lusolve, re } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
@@ -163,6 +163,34 @@ const FEMformulas = {
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
         name: name,
+      };
+    },
+    freeMoment: (section, sectionLength, lr) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+
+      const w = +singleLoad?.valueOfLoading;
+
+      const divisor = 4
+      const fm = (w * sectionLength) / divisor;
+
+      const steps = [
+        sprintf("`Span_(%s) = (w * l)/%.2f`", lr, divisor),
+        sprintf(
+          "`Span_(%s) = (%.2f * %.2f)/%.2f`",
+          lr,
+          w,
+          sectionLength,
+          divisor
+        ),
+        sprintf("`Span_(%s) = %.2f Nm`", lr, fm),
+      ];
+
+      return {
+        fm: fm,
+        steps: steps,
+        type: "linear",
+        distanceFromLeft: +singleLoad?.distanceFromLeft,
       };
     },
   },
@@ -362,6 +390,40 @@ const FEMformulas = {
         name: name,
       };
     },
+    freeMoment: (section, sectionLength, lr) => {
+      const singleLoads = section.filter((s) => s.type === loadingEnums.single);
+      const [singleLoad] = singleLoads;
+
+      const [firstItem] = section;
+      const w = +singleLoad?.valueOfLoading;
+      console.log(+firstItem?.distanceFromLeft);
+      const a = Math.abs(
+        +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
+      );
+      const b = sectionLength - a;
+
+      const fm = (w * a * b) / sectionLength;
+
+      const steps = [
+        sprintf("`Span_(%s) = (w * a * b)/l`", lr),
+        sprintf(
+          "`Span_(%s) = (%.2f * %.2f * %.2f)/%.2f`",
+          lr,
+          w,
+          a,
+          b,
+          sectionLength
+        ),
+        sprintf("`Span_(%s) = %.2f Nm`", lr, fm),
+      ];
+
+      return {
+        fm: fm,
+        steps: steps,
+        type: "linear",
+        distanceFromLeft: +singleLoad?.distanceFromLeft,
+      };
+    },
   },
   "uniform-fully-covered": {
     isType: (section, sectionLength) => {
@@ -538,6 +600,39 @@ const FEMformulas = {
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
         name: name,
+      };
+    },
+    freeMoment: (section, sectionLength, lr) => {
+      const uniformLoads = section.filter(
+        (s) => s.type === loadingEnums.uniform
+      );
+      const [uniformLoad] = uniformLoads;
+      const distanceFromLeft = +uniformLoad?.distanceFromLeft;
+      const distanceFromLeftFromPointLoad =
+        distanceFromLeft + distanceFromLeft / 2;
+
+      const w = +uniformLoad?.valueOfLoading;
+      const divisor = 8;
+
+      const fm = (w * sectionLength ** 2) / divisor;
+
+      const steps = [
+        sprintf("`Span_(%s) = (w * l^2)/%.2f`", lr, divisor),
+        sprintf(
+          "`Span_(%s) = (%.2f * %.2f ^ 2)/%.2f`",
+          lr,
+          w,
+          sectionLength,
+          divisor
+        ),
+        sprintf("`Span_(%s) = %.2f Nm`", lr, fm),
+      ];
+
+      return {
+        fm: fm,
+        steps: steps,
+        type: "monotone",
+        distanceFromLeft: distanceFromLeftFromPointLoad,
       };
     },
   },
@@ -1875,20 +1970,80 @@ export const getBeamAnalysis = (beam) => {
     }
   }, 0);
 
-  console.log(shearForces);
-
   // [a, b, c, d, e] -> [[a,b], [b,c], [c,d], [d,e]]
-  const shearForceDiagramPoints = []
+  const shearForceDiagramPoints = [];
   shearForces?.forEach((shearForce, i, arr) => {
-    if(i == arr.length - 1) return;
+    if (i == arr.length - 1) return;
     const nextShearForce = arr?.[i + 1];
     shearForceDiagramPoints?.push({
       type: "monotone",
-      points: [{...shearForce, force: +shearForce?.force?.toFixed(2)}, {...nextShearForce, force: +nextShearForce?.force?.toFixed(2)}],
+      points: [
+        { ...shearForce, force: +shearForce?.force?.toFixed(2) },
+        { ...nextShearForce, force: +nextShearForce?.force?.toFixed(2) },
+      ],
     });
-  })
-  console.log(shearForceDiagramPoints);
+  });
 
+  const freeMoments = sections?.map((section, i) => {
+    const lr = `${i + 1}.${i + 2}`;
+    const supportRange = supportRanges[i];
+    const [p1, p2] = supportRange;
+    const sectionLength = Math.abs(p2 - p1);
+    const formulas = Object.entries(FEMformulas);
+    const formI = formulas?.findIndex((formula) =>
+      formula[1]?.isType(section, sectionLength)
+    );
+
+    if (formI === -1) {
+      throw new Error(
+        "Free moment formula not found for section " +
+          JSON.stringify(supportRange)
+      );
+    }
+
+    const formula = formulas[formI][1];
+
+    const result = formula?.freeMoment(section, sectionLength, lr);
+
+    return {
+      fm: result?.fm?.toFixed(2),
+      steps: result?.steps,
+      name: lr,
+      type: result?.type,
+      distanceFromLeft: result?.distanceFromLeft,
+    };
+  });
+
+  const freeMomentsDiagram = freeMoments?.map((frm, i) => {
+    const supportRange = supportRanges[i];
+    const [p1, p2] = supportRange;
+    const { fm, type, distanceFromLeft } = frm;
+    return {
+      type: type,
+      points: [
+        { distanceFromLeft: p1, moment: 0 },
+        { distanceFromLeft: distanceFromLeft, moment: fm },
+        { distanceFromLeft: p2, moment: 0 },
+      ],
+    };
+  });
+
+  // { '1.2': -29.5, '2.1': 37, '2.3': -37, '3.2': 56.5 } -> { '1.2': -29.5, '3.2': 56.5 }
+  const combinedMomentsMap = {};
+  Object.entries(momentsMap)?.forEach(([key, value]) => {
+    const newKey = key.split(".")[0]; // Extract the first part of the key
+
+    if (!(newKey in combinedMomentsMap) || value > combinedMomentsMap[newKey]) {
+      combinedMomentsMap[newKey] = Math.abs(value);
+    }
+  });
+  const uniqueSupportRanges = flattenRanges(supportRanges);
+  if (uniqueSupportRanges.length !== Object.keys(combinedMomentsMap).length) {
+    throw new Error("Mismatch between support ranges and moments");
+  }
+  const endMomentsDiagram = uniqueSupportRanges?.map((distanceFromLeft, i) => {
+    return {distanceFromLeft: distanceFromLeft, moment: +combinedMomentsMap[i+1]?.toFixed(2)};
+  })
 
   return {
     fixedEndedMoments,
@@ -1901,6 +2056,9 @@ export const getBeamAnalysis = (beam) => {
     finalReactionMaps,
     shearForces,
     shearForceDiagramPoints,
+    freeMoments,
+    freeMomentsDiagram,
+    endMomentsDiagram,
   };
 };
 
@@ -1958,4 +2116,14 @@ function removeZeroColumns(matrix) {
   );
 
   return [newMatrix, columnsToRemove];
+}
+
+function flattenRanges(ranges) {
+  const result = new Set();
+
+  ranges.forEach(range => {
+    range.forEach(value => result.add(value));
+  });
+
+  return Array.from(result).sort((a, b) => a - b);
 }

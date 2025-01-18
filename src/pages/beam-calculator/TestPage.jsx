@@ -1,15 +1,11 @@
 import React from 'react'
 import {
   AreaChart,
-  LineChart,
-  Line,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
-  ReferenceArea,
   Area,
 } from "recharts";
 import PropTypes from 'prop-types'
@@ -22,7 +18,6 @@ const ShearForceDiagramQ1 = ({ data }) => {
       <ResponsiveContainer width="100%" height={325}>
         <AreaChart
           width="100%"
-          // data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -41,95 +36,49 @@ const ShearForceDiagramQ1 = ({ data }) => {
               angle: -90,
               position: "insideLeft",
             }}
-            // domain={["dataMin", "dataMax"]}
             domain={["auto", "auto"]}
             allowDuplicatedCategory={false}
           />
           <Tooltip />
-          {/* <Line
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          /> */}
+
           <Area
             data={[
               { distanceFromLeft: 0, shearForce: 0 },
-              { distanceFromLeft: 0, shearForce: 28.5 },
+              { distanceFromLeft: 2, shearForce: 60 },
+              { distanceFromLeft: 5, shearForce: 0 },
             ]}
-            type="monotone"
+            type="linear"
             dataKey="shearForce"
             stroke={COLORS["secondary-2"]}
+            fill={COLORS["secondary-2"]}
             dot={{ r: 3 }}
           />
+
           <Area
             data={[
-              { distanceFromLeft: 0, shearForce: 28.5 },
-              { distanceFromLeft: 2, shearForce: 28.5 },
-            ]}
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          <Area
-            data={[
-              { distanceFromLeft: 2, shearForce: 28.5 },
-              { distanceFromLeft: 2, shearForce: -21.5 },
-            ]}
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          <Area
-            data={[
-              { distanceFromLeft: 2, shearForce: -21.5 },
-              { distanceFromLeft: 5, shearForce: -21.5 },
-            ]}
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          <Area
-            data={[
-              { distanceFromLeft: 5, shearForce: -21.5 },
-              { distanceFromLeft: 5, shearForce: 56.1 },
-            ]}
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          <Area
-            data={[
-              { distanceFromLeft: 5, shearForce: 56.1 },
-              { distanceFromLeft: 10, shearForce: -63.9 },
-            ]}
-            type="monotone"
-            dataKey="shearForce"
-            stroke={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-          <Area
-            data={[
-              { distanceFromLeft: 10, shearForce: -63.9 },
+              { distanceFromLeft: 5, shearForce: 0 },
+              { distanceFromLeft: 7.5, shearForce: 75 },
               { distanceFromLeft: 10, shearForce: 0 },
             ]}
             type="monotone"
             dataKey="shearForce"
             stroke={COLORS["secondary-2"]}
+            fill={COLORS["secondary-2"]}
             dot={{ r: 3 }}
           />
-          {/* {(
-            <ReferenceLine
-              y={0}
-              stroke={COLORS["secondary-2"]}
-              strokeWidth={1.5}
-              strokeOpacity={0.65}
-            />
-          )} */}
+
+          <Area
+            data={[
+              { distanceFromLeft: 0, shearForce: 29.5 },
+              { distanceFromLeft: 5, shearForce: 37.5 },
+              { distanceFromLeft: 10, shearForce: 56.5 },
+            ]}
+            type="monotone"
+            dataKey="shearForce"
+            stroke={COLORS["secondary-2"]}
+            fill={COLORS["secondary-2"]}
+            dot={{ r: 3 }}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -267,7 +216,7 @@ const ShearForceDiagramQ2 = ({ data }) => {
               { distanceFromLeft: 9, shearForce: 23.6 },
               { distanceFromLeft: 13, shearForce: -24.4 },
             ]}
-            type="bump"
+            type="basisOpen"
             dataKey="shearForce"
             stroke={COLORS["secondary-2"]}
             dot={{ r: 3 }}
@@ -297,7 +246,7 @@ function TestPage(props) {
   return (
     <div>
       <ShearForceDiagramQ1/>
-      <ShearForceDiagramQ2/>
+      {/* <ShearForceDiagramQ2/> */}
     </div>
   )
 }

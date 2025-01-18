@@ -13,6 +13,7 @@ import SlopeDeflectionEquations from "./solution-sections/SlopeDeflectionEquatio
 import EquilibriumEquations from "./solution-sections/EquilibriumEquations";
 import ReactionForces from "./solution-sections/ReactionForces";
 import ShearForces from "./solution-sections/ShearForces";
+import FreeEndAndBendingMoment from "./solution-sections/FreeEndAndBendingMoment";
 
 export default function SolutionPage() {
   const randomSolutionFilename = `solution-${uuidv4()?.replaceAll(
@@ -82,51 +83,7 @@ export default function SolutionPage() {
       <EquilibriumEquations solutionAnalysis={solutionAnalysis} />
       <ReactionForces solutionAnalysis={solutionAnalysis} />
       <ShearForces solutionAnalysis={solutionAnalysis} />
+      <FreeEndAndBendingMoment solutionAnalysis={solutionAnalysis} />
     </div>
   );
 }
-
-  // <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-  //   <thead className="bg-gray-200">
-  //     <tr className="text-left text-gray-700">
-  //       <th></th>
-  //       {analysis?.fixedEndedMoments?.map((el, ind) => (
-  //         <>
-  //           <th
-  //             key={el?.lr?.name + ind}
-  //             className="px-4 py-2 border border-gray-300 font-semibold"
-  //           >
-  //             {el?.lr?.name}
-  //           </th>
-  //           <th
-  //             key={el?.rl?.name + ind}
-  //             className="px-4 py-2 border border-gray-300 font-semibold"
-  //           >
-  //             {el?.rl?.name}
-  //           </th>
-  //         </>
-  //       ))}
-  //     </tr>
-  //   </thead>
-  //   <tbody>
-  //     <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-  //       <td>Fixed End Moments</td>
-  //       {analysis?.fixedEndedMoments?.map((el, ind) => (
-  //         <>
-  //           <td
-  //             key={el?.lr?.name + ind}
-  //             className="px-4 py-2 border border-gray-300"
-  //           >
-  //             {el?.lr?.fem}
-  //           </td>
-  //           <td
-  //             key={el?.rl?.name + ind}
-  //             className="px-4 py-2 border border-gray-300"
-  //           >
-  //             {el?.rl?.fem}
-  //           </td>
-  //         </>
-  //       ))}
-  //     </tr>
-  //   </tbody>
-  // </table>
