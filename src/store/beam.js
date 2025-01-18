@@ -33,7 +33,7 @@ const initialState = {
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
   beamProperties: defaultBeamProperties,
-  // beamProperties: question13,
+  // beamProperties: question1,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,
   solutionIsLoading: false,

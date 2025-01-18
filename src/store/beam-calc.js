@@ -171,7 +171,7 @@ const FEMformulas = {
 
       const w = +singleLoad?.valueOfLoading;
 
-      const divisor = 4
+      const divisor = 4;
       const fm = (w * sectionLength) / divisor;
 
       const steps = [
@@ -1029,6 +1029,39 @@ const FEMformulas = {
         name: name,
       };
     },
+    freeMoment: (section, sectionLength, lr) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+      const [firstItem] = section;
+
+      const w = +varyingLoad?.valueOfLoading;
+      const distanceFromLeft =
+        firstItem.distanceFromLeft +
+        sectionLength -
+        sectionLength / Math.sqrt(3);
+
+      const fm = (w * sectionLength ** 2) / (9 * Math.sqrt(3));
+
+      const steps = [
+        sprintf("`Span_(%s) = (w * l ^ 2)/(9 * sqrt(3))`", lr),
+        sprintf(
+          "`Span_(%s) = (%.2f * %.2f ^ 2)/(9 * sqrt(3))`",
+          lr,
+          w,
+          sectionLength
+        ),
+        sprintf("`Span_(%s) = %.2f Nm`", lr, fm),
+      ];
+
+      return {
+        fm: fm,
+        steps: steps,
+        type: "monotone",
+        distanceFromLeft: distanceFromLeft,
+      };
+    },
   },
   "varying-triangular-fully-covered-negative-slope": {
     isType: (section, sectionLength) => {
@@ -1214,6 +1247,37 @@ const FEMformulas = {
           sprintf("`R_%s = %.2f N`", name, reaction),
         ],
         name: name,
+      };
+    },
+    freeMoment: (section, sectionLength, lr) => {
+      const varyingLoads = section.filter(
+        (s) => s.type === loadingEnums.varying
+      );
+      const [varyingLoad] = varyingLoads;
+      const [firstItem] = section;
+
+      const w = +varyingLoad?.valueOfLoading;
+      const distanceFromLeft =
+        firstItem.distanceFromLeft + sectionLength / Math.sqrt(3);
+
+      const fm = (w * sectionLength ** 2) / (9 * Math.sqrt(3));
+
+      const steps = [
+        sprintf("`Span_(%s) = (w * l ^ 2)/(9 * sqrt(3))`", lr),
+        sprintf(
+          "`Span_(%s) = (%.2f * %.2f ^ 2)/(9 * sqrt(3))`",
+          lr,
+          w,
+          sectionLength
+        ),
+        sprintf("`Span_(%s) = %.2f Nm`", lr, fm),
+      ];
+
+      return {
+        fm: fm,
+        steps: steps,
+        type: "monotone",
+        distanceFromLeft: distanceFromLeft,
       };
     },
   },
@@ -2042,8 +2106,11 @@ export const getBeamAnalysis = (beam) => {
     throw new Error("Mismatch between support ranges and moments");
   }
   const endMomentsDiagram = uniqueSupportRanges?.map((distanceFromLeft, i) => {
-    return {distanceFromLeft: distanceFromLeft, moment: +combinedMomentsMap[i+1]?.toFixed(2)};
-  })
+    return {
+      distanceFromLeft: distanceFromLeft,
+      moment: +combinedMomentsMap[i + 1]?.toFixed(2),
+    };
+  });
 
   return {
     fixedEndedMoments,
@@ -2121,8 +2188,8 @@ function removeZeroColumns(matrix) {
 function flattenRanges(ranges) {
   const result = new Set();
 
-  ranges.forEach(range => {
-    range.forEach(value => result.add(value));
+  ranges.forEach((range) => {
+    range.forEach((value) => result.add(value));
   });
 
   return Array.from(result).sort((a, b) => a - b);
