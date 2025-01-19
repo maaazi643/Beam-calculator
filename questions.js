@@ -1117,3 +1117,75 @@ export const question13 = {
     },
   ],
 };
+
+export const questionErr1 = {
+
+  spans: [
+
+    {
+
+      id: '8672576c-6e4c-4e41-98c4-cbc325f776a5',
+
+      length: '10',
+
+      flexuralRigidity: '0'
+
+    }
+
+  ],
+
+  supports: [
+
+    {
+
+      id: 'bb62305b-b41c-41e5-81e8-9daef00c1604',
+
+      type: 'fixed',
+
+      sinking: false,
+
+      sinkingValue: '',
+
+      distanceFromLeft: '0'
+
+    },
+
+    {
+
+      id: '5d949b11-1722-451d-a547-fe0ff4a38740',
+
+      type: 'fixed',
+
+      sinking: false,
+
+      sinkingValue: '',
+
+      distanceFromLeft: '10'
+
+    }
+
+  ],
+
+  loadings: [
+
+    {
+
+      id: '3d23bf2b-fe46-40f0-b299-27a60412662f',
+
+      type: 'single',
+
+      distanceFromLeft: '4',
+
+      valueOfLoading: '20000',
+
+      spanOfLoading: '',
+
+      openingValue: '',
+
+      closingValue: ''
+
+    }
+
+  ]
+
+}

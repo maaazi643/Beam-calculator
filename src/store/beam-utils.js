@@ -230,7 +230,7 @@ export const getLoadMarkings = (beam) => {
       const leftInPercentage =
         (+load?.distanceFromLeft / beamTotalLength) * 100;
       const valueOfLoading = +load?.valueOfLoading;
-      markings.push({ leftInPercentage, load: valueOfLoading });
+      markings.push({ leftInPercentage, load: valueOfLoading, type: load.type });
     }
 
     if (load?.type === loadingEnums?.uniform) {
@@ -245,14 +245,22 @@ export const getLoadMarkings = (beam) => {
     if (load?.type === loadingEnums?.varying) {
       let leftInPercentage = (+load?.distanceFromLeft / beamTotalLength) * 100;
       let valueOfLoading = +load?.openingValue;
-      markings.push({ leftInPercentage, load: valueOfLoading });
+      markings.push({
+        leftInPercentage,
+        load: valueOfLoading,
+        type: load.type,
+      });
 
       leftInPercentage =
         ((+load?.spanOfLoading + +load?.distanceFromLeft) / beamTotalLength) *
         100;
 
       valueOfLoading = +load?.closingValue;
-      markings.push({ leftInPercentage, load: valueOfLoading });
+      markings.push({
+        leftInPercentage,
+        load: valueOfLoading,
+        type: load.type,
+      });
     }
   });
 

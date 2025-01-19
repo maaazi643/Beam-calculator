@@ -179,7 +179,7 @@ export default function FreeEndAndBendingMoment({ solutionAnalysis }) {
   return (
     <>
       <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 6). Find Bending Moment Diagram using Free And End Moments.
+        (Step 6). Find Bending Moment Diagram using Free And End Moments:
       </h2>
       {freeMoments?.map((el) => {
         return (

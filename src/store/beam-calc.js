@@ -396,7 +396,6 @@ const FEMformulas = {
 
       const [firstItem] = section;
       const w = +singleLoad?.valueOfLoading;
-      console.log(+firstItem?.distanceFromLeft);
       const a = Math.abs(
         +singleLoad?.distanceFromLeft - +firstItem?.distanceFromLeft
       );
@@ -1299,6 +1298,10 @@ export const getBeamAnalysis = (beam) => {
   const supports = beam?.supports?.slice() || [];
   const loadings = beam?.loadings?.slice() || [];
   const supportsAndLoading = [...supports, ...loadings];
+  const isSingleSpanWithFixedEnds =
+    spans?.length === 1 &&
+    supports?.length === 2 &&
+    supports?.every((sup) => sup?.type === supportEnums.fixed);
 
   const supportRanges = [];
   supports?.forEach((support, ind, arr) => {
@@ -1410,7 +1413,7 @@ export const getBeamAnalysis = (beam) => {
     };
   });
 
-  const MAXIMUM_NUMBER_OF_SLOPES = sections?.length + 1;
+  const MAXIMUM_NUMBER_OF_SLOPES = isSingleSpanWithFixedEnds ? 0 : sections?.length + 1;
   const momentEquationMap = {};
 
   // making slope deflection equations for each span
@@ -1571,58 +1574,68 @@ export const getBeamAnalysis = (beam) => {
 
   // find all equilibrium equations
   const equilibriumEquations = [];
-  supports?.forEach((sup, i) => {
-    // the is just to offset if the first support is not at zero
-    let balancer = 0;
-    const firstSupport = supports[0];
-    if (+firstSupport?.distanceFromLeft !== 0) {
-      balancer = 1;
-    }
-
-    const isFixed = sup?.type === supportEnums?.fixed;
-    const forward = `${i + 1 + balancer}.${i + 2 + balancer}`;
-    const backward = `${i + 1 + balancer}.${i + balancer}`;
-    const lastSupportRange = supportRanges?.at(-1);
-    const beamLength = lastSupportRange[1];
-    const supportIsAtBeamEnd = +sup?.distanceFromLeft === +beamLength;
-    const supportIsAtBeamStart = +sup?.distanceFromLeft === 0;
-
-    if (isFixed) {
-      return;
-    }
-
-    if (i == 0 && supportIsAtBeamStart) {
-      const steps = [sprintf("`M_%s = 0`", forward)];
-
-      equilibriumEquations?.push({
-        steps: steps,
-        equation: [forward, null],
-      });
-      return;
-    }
-
-    if (i == supports?.length - 1 && supportIsAtBeamEnd) {
-      const steps = [sprintf("`M_%s = 0`", backward)];
-
-      equilibriumEquations?.push({
-        steps: steps,
-        equation: [backward, null],
-      });
-      return;
-    }
-
-    const steps = [sprintf("`M_%s + M_%s = 0`", backward, forward)];
-
+  if(isSingleSpanWithFixedEnds){
     equilibriumEquations?.push({
-      steps: steps,
-      equation: [backward, forward],
+      steps: [
+        sprintf("`M_1.2 = %.2f`", slopesDeflectionEquations[0]?.lr?.equation?.at(-1)),
+        sprintf("`M_2.1 = %.2f`", slopesDeflectionEquations[0]?.rl?.equation?.at(-1)),
+      ],
+      equation: [null, null],
     });
-  });
+  }else{
+    supports?.forEach((sup, i) => {
+      // the is just to offset if the first support is not at zero
+      let balancer = 0;
+      const firstSupport = supports[0];
+      if (+firstSupport?.distanceFromLeft !== 0) {
+        balancer = 1;
+      }
+
+      const isFixed = sup?.type === supportEnums?.fixed;
+      const forward = `${i + 1 + balancer}.${i + 2 + balancer}`;
+      const backward = `${i + 1 + balancer}.${i + balancer}`;
+      const lastSupportRange = supportRanges?.at(-1);
+      const beamLength = lastSupportRange[1];
+      const supportIsAtBeamEnd = +sup?.distanceFromLeft === +beamLength;
+      const supportIsAtBeamStart = +sup?.distanceFromLeft === 0;
+
+      if (isFixed) {
+        return;
+      }
+
+      if (i == 0 && supportIsAtBeamStart) {
+        const steps = [sprintf("`M_%s = 0`", forward)];
+
+        equilibriumEquations?.push({
+          steps: steps,
+          equation: [forward, null],
+        });
+        return;
+      }
+
+      if (i == supports?.length - 1 && supportIsAtBeamEnd) {
+        const steps = [sprintf("`M_%s = 0`", backward)];
+
+        equilibriumEquations?.push({
+          steps: steps,
+          equation: [backward, null],
+        });
+        return;
+      }
+
+      const steps = [sprintf("`M_%s + M_%s = 0`", backward, forward)];
+
+      equilibriumEquations?.push({
+        steps: steps,
+        equation: [backward, forward],
+      });
+    });
+  }
 
   // find all simultaneous equations
   const coefficients = [];
   const constants = [];
-  const extraEquations = equilibriumEquations?.map((eqeq, ind) => {
+  const extraEquations = isSingleSpanWithFixedEnds ? [] : equilibriumEquations?.map((eqeq, ind) => {
     const equation = eqeq?.equation;
     const [firstEq, secondEq] = equation;
 
@@ -1636,12 +1649,6 @@ export const getBeamAnalysis = (beam) => {
 
       return +num1 + +num2;
     });
-
-    if (ind == 0) {
-      console.log(firstEquation);
-      console.log(secondEquation);
-      console.log(combination);
-    }
 
     const coefficient = combination?.slice(0, -2);
     const constant = combination
@@ -1705,7 +1712,7 @@ export const getBeamAnalysis = (beam) => {
   const [coefficientWithoutZeroColumns, zeroColumnsIndexesRemoved] =
     removeZeroColumns(coefficients);
 
-  const slopeValues = lusolve(coefficientWithoutZeroColumns, constants);
+  const slopeValues = isSingleSpanWithFixedEnds ? [] : lusolve(coefficientWithoutZeroColumns, constants);
   const slopeValuesCopy = [...slopeValues];
 
   // find all slopes
@@ -1733,6 +1740,14 @@ export const getBeamAnalysis = (beam) => {
   const moments = Object?.entries(momentEquationMap)?.map((entry) => {
     const [name, equation] = entry;
     const [l, r] = name.split(".");
+
+    if(isSingleSpanWithFixedEnds){
+      const moment = equation?.reduce((acc, num) => acc + num, 0);
+      momentsMap[name] = moment;
+      return {steps: [], name: name, moment: moment}
+    }
+
+
     let slopeAtLeft = slopeValuesMap?.[l]?.value;
     let slopeAtRight = slopeValuesMap?.[r]?.value;
 
@@ -1829,10 +1844,6 @@ export const getBeamAnalysis = (beam) => {
       rName
     );
     reactionsMap[rName] = reactionRL.reaction;
-    if (i == 0) {
-      console.log(reactionLR);
-      console.log(reactionRL);
-    }
 
     return {
       lr: {
@@ -2115,6 +2126,7 @@ export const getBeamAnalysis = (beam) => {
   return {
     fixedEndedMoments,
     slopesDeflectionEquations,
+    isSingleSpanWithFixedEnds,
     equilibriumEquations,
     extraEquations,
     slopeValuesMap,

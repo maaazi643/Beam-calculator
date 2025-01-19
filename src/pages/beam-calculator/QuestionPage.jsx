@@ -199,6 +199,7 @@ const LoadMarkings = ({ beam }) => {
         left: `${mark?.leftInPercentage}%`,
       }}
       load={mark?.load}
+      unit={mark?.type == loadingEnums.single ? "N" : "N/m"}
     />
   ));
 };

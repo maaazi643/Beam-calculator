@@ -70,7 +70,7 @@ function ShearForces({ solutionAnalysis }) {
   return (
     <>
       <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 5). Find shear forces And Shear Force Diagram.
+        (Step 5). Find shear forces And Shear Force Diagram:
       </h2>
       <div className="space-y-4">
         {solutionAnalysis?.shearForces?.map((el) => {

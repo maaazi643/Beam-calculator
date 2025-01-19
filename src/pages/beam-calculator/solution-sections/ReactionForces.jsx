@@ -8,7 +8,7 @@ function ReactionForces({ solutionAnalysis }) {
   return (
     <>
       <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 4). Find All reaction forces
+        (Step 4). Find All reaction forces:
       </h2>
       {solutionAnalysis?.reactions?.map((el, i1) => {
         return (

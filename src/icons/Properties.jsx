@@ -910,19 +910,20 @@ FlexuralRigidityMark.propTypes = {
   flexuralRigidity: PropTypes.number,
 };
 
-export const LoadingMark = ({ style, load, ...props }) => (
+export const LoadingMark = ({ style, load, unit, ...props }) => (
   <span
     className="absolute h-[12%] text-secondary text-base not-italic font-normal leading-[133%] -translate-x-1/2"
     style={style}
     {...props}
   >
-    {load?.toFixed(2)}N/m
+    {load?.toFixed(2)}{unit}
   </span>
 );
 
 LoadingMark.propTypes = {
   style: PropTypes.object.isRequired,
   load: PropTypes.number,
+  unit: PropTypes.string,
 };
 
 export const FullDimensionMark = ({ style, width, ...props }) => (
