@@ -9,10 +9,10 @@ export default function CalculatorLayout() {
 
   return (
     <div className="sm:flex sm:flex-row w-full min-h-screen h-screen max-h-screen overflow-hidden">
-      {/* <AlertModal
+      <AlertModal
         isVisible={showWatchVideoAlert}
         onClose={() => setShowWatchVideoAlert(false)}
-      /> */}
+      />
       <Sidebar />
       <Output />
     </div>

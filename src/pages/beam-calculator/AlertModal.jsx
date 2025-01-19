@@ -11,7 +11,7 @@ function AlertModal({isVisible, onClose}) {
   };
 
   const watchTutorialHandler = () => {
-    window.open("https://www.youtube.com/watch?v=EqwYDFxusAs");
+    window.open("https://youtu.be/1OipVBVdbHg");
     onClose()
   };
 
