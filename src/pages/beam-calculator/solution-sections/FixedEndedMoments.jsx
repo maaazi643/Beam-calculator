@@ -17,61 +17,75 @@ export default function FixedEndedMoments({ solutionAnalysis }) {
               Fixed End Moment For Span {el?.lr?.name} (left to right)
             </h3>
             {el?.lr?.steps?.map((step) => (
-              <MathJax key={uuidv4()}>{step}</MathJax>
+              <MathJax
+                key={uuidv4()}
+                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+              >
+                {step}
+              </MathJax>
             ))}
             <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
               Fixed End Moment For Span {el?.rl?.name} (right to left)
             </h3>
             {el?.rl?.steps?.map((step) => (
-              <MathJax key={uuidv4()}>{step}</MathJax>
+              <MathJax
+                key={uuidv4()}
+                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+              >
+                {step}
+              </MathJax>
             ))}
           </div>
         );
       })}
-      <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
-        <thead className="bg-gray-200">
-          <tr className="text-left text-gray-700">
-            <th></th>
-            {solutionAnalysis?.fixedEndedMoments?.map((el, ind) => (
-              <>
-                <th
-                  key={el?.lr?.name + ind}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  {el?.lr?.name}
-                </th>
-                <th
-                  key={el?.rl?.name + ind}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  {el?.rl?.name}
-                </th>
-              </>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-            <td>Fixed End Moments</td>
-            {solutionAnalysis?.fixedEndedMoments?.map((el, ind) => (
-              <>
-                <td
-                  key={el?.lr?.name + ind}
-                  className="px-4 py-2 border border-gray-300"
-                >
-                  <MathJax>{sprintf("`%.2f Nm`", el?.lr?.fem)}</MathJax>
-                </td>
-                <td
-                  key={el?.rl?.name + ind}
-                  className="px-4 py-2 border border-gray-300"
-                >
-                  <MathJax>{sprintf("`%.2f Nm`", el?.rl?.fem)}</MathJax>
-                </td>
-              </>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+      <div className="relative overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
+          <thead className="bg-gray-200">
+            <tr className="text-left text-gray-700">
+              <th></th>
+              {solutionAnalysis?.fixedEndedMoments?.map((el, ind) => (
+                <>
+                  <th
+                    key={el?.lr?.name + ind}
+                    className="px-4 py-2 border border-gray-300 font-semibold"
+                  >
+                    {el?.lr?.name}
+                  </th>
+                  <th
+                    key={el?.rl?.name + ind}
+                    className="px-4 py-2 border border-gray-300 font-semibold"
+                  >
+                    {el?.rl?.name}
+                  </th>
+                </>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
+              <td className="text-nowrap px-4 py-2 border border-gray-300">
+                Fixed End Moments
+              </td>
+              {solutionAnalysis?.fixedEndedMoments?.map((el, ind) => (
+                <>
+                  <td
+                    key={el?.lr?.name + ind}
+                    className="px-4 py-2 border border-gray-300"
+                  >
+                    <MathJax>{sprintf("`%.2f Nm`", el?.lr?.fem)}</MathJax>
+                  </td>
+                  <td
+                    key={el?.rl?.name + ind}
+                    className="px-4 py-2 border border-gray-300"
+                  >
+                    <MathJax>{sprintf("`%.2f Nm`", el?.rl?.fem)}</MathJax>
+                  </td>
+                </>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

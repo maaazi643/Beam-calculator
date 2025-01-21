@@ -17,10 +17,20 @@ function ReactionForces({ solutionAnalysis }) {
               Take moment about Point: {el?.lr?.name?.split(".")[0]}
             </h3>
             {el?.lr?.steps?.map((step) => (
-              <MathJax key={uuidv4()}>{step}</MathJax>
+              <MathJax
+                key={uuidv4()}
+                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+              >
+                {step}
+              </MathJax>
             ))}
             {el?.rl?.steps?.map((step) => (
-              <MathJax key={uuidv4()}>{step}</MathJax>
+              <MathJax
+                key={uuidv4()}
+                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+              >
+                {step}
+              </MathJax>
             ))}
           </div>
         );
@@ -39,35 +49,44 @@ function ReactionForces({ solutionAnalysis }) {
           }
         )}
       </div> */}
-      <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
-        <thead className="bg-gray-200">
-          <tr className="text-left text-gray-700">
-            <th></th>
-            {Object.keys(solutionAnalysis?.finalReactionMaps)?.map((el) => (
-              <>
-                <th
-                  key={uuidv4()}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  <MathJax>{sprintf("`R_%d`", el)}</MathJax>
-                </th>
-              </>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-            <td>Reactions</td>
-            {Object.values(solutionAnalysis?.finalReactionMaps)?.map((el) => (
-              <>
-                <td key={uuidv4()} className="px-4 py-2 border border-gray-300">
-                  {`${el?.toFixed(2)}`}N
-                </td>
-              </>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+      <div className="relative overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
+          <thead className="bg-gray-200">
+            <tr className="text-left text-gray-700">
+              <th></th>
+              {Object.keys(solutionAnalysis?.finalReactionMaps)?.map((el) => (
+                <>
+                  <th
+                    key={uuidv4()}
+                    className="px-4 py-2 border border-gray-300 font-semibold"
+                  >
+                    <MathJax className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden">
+                      {sprintf("`R_%d`", el)}
+                    </MathJax>
+                  </th>
+                </>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
+              <td className="text-nowrap px-4 py-2 border border-gray-300">
+                Reactions
+              </td>
+              {Object.values(solutionAnalysis?.finalReactionMaps)?.map((el) => (
+                <>
+                  <td
+                    key={uuidv4()}
+                    className="px-4 py-2 border border-gray-300"
+                  >
+                    {`${el?.toFixed(2)}`}N
+                  </td>
+                </>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

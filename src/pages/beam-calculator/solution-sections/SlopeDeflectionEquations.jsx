@@ -26,7 +26,12 @@ function SlopeDeflectionEquations({ solutionAnalysis }) {
                 right)
               </h3>
               {el?.lr?.steps?.map((step) => (
-                <MathJax key={uuidv4()}>{step}</MathJax>
+                <MathJax
+                  key={uuidv4()}
+                  className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                >
+                  {step}
+                </MathJax>
               ))}
               {/* <p>{JSON.stringify(el?.lr?.equation)}</p> */}
               {/* <p>{JSON.stringify(el?.lr?.filled)}</p> */}
@@ -35,7 +40,12 @@ function SlopeDeflectionEquations({ solutionAnalysis }) {
                 left)
               </h3>
               {el?.rl?.steps?.map((step) => (
-                <MathJax key={uuidv4()}>{step}</MathJax>
+                <MathJax
+                  key={uuidv4()}
+                  className="text-xs sm:text-sm md:text-base"
+                >
+                  {step}
+                </MathJax>
               ))}
               {/* <p>{JSON.stringify(el?.rl?.equation)}</p> */}
               {/* <p>{JSON.stringify(el?.rl?.filled)}</p> */}

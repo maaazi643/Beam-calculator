@@ -3,7 +3,6 @@ import Home from "./pages/home/Home";
 import CalculatorLayout from "./pages/beam-calculator/CalculatorLayout";
 import QuestionPage from "./pages/beam-calculator/QuestionPage";
 import SolutionPage from "./pages/beam-calculator/SolutionPage";
-import StepsPage from "./pages/beam-calculator/StepsPage";
 import TestPage from "./pages/beam-calculator/TestPage";
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
         <Route path="test" element={<TestPage />} />
         <Route path="beam-calculator" element={<CalculatorLayout />}>
           <Route index path="question" element={<QuestionPage />} />
-          {/* <Route path="steps" element={<StepsPage />} /> */}
           <Route path="solution" element={<SolutionPage />} />
         </Route>
         <Route

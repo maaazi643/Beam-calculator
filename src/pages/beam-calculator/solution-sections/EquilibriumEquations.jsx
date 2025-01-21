@@ -19,7 +19,8 @@ function EquilibriumEquations({ solutionAnalysis }) {
       </h2>
       {isSingleSpanWithFixedEnds ? (
         <p>
-          Since No Pinned Or Roller Support there are also no Equilibrium Equation(s)
+          Since No Pinned Or Roller Support there are also no Equilibrium
+          Equation(s)
         </p>
       ) : (
         <>
@@ -29,7 +30,12 @@ function EquilibriumEquations({ solutionAnalysis }) {
                 {el?.steps?.map((step) => (
                   <>
                     <span>{i + 1}. </span>
-                    <MathJax key={uuidv4()}>{step}</MathJax>
+                    <MathJax
+                      key={uuidv4()}
+                      className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                    >
+                      {step}
+                    </MathJax>
                   </>
                 ))}
               </div>
@@ -43,7 +49,12 @@ function EquilibriumEquations({ solutionAnalysis }) {
               <div key={uuidv4()} className="space-y-4">
                 {el?.steps?.map((step) => (
                   <>
-                    <MathJax key={uuidv4()}>{step}</MathJax>
+                    <MathJax
+                      key={uuidv4()}
+                      className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                    >
+                      {step}
+                    </MathJax>
                   </>
                 ))}
               </div>
@@ -57,7 +68,12 @@ function EquilibriumEquations({ solutionAnalysis }) {
             return (
               <div key={uuidv4()} className="space-y-4">
                 {el?.steps?.map((step) => (
-                  <MathJax key={uuidv4()}>{step}</MathJax>
+                  <MathJax
+                    key={uuidv4()}
+                    className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                  >
+                    {step}
+                  </MathJax>
                 ))}
               </div>
             );
@@ -67,44 +83,53 @@ function EquilibriumEquations({ solutionAnalysis }) {
               <div key={uuidv4()} className="space-y-4">
                 {el?.steps?.map((step) => (
                   <>
-                    <MathJax key={uuidv4()}>{step}</MathJax>
+                    <MathJax
+                      key={uuidv4()}
+                      className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                    >
+                      {step}
+                    </MathJax>
                   </>
                 ))}
               </div>
             );
           })}
-          <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
-            <thead className="bg-gray-200">
-              <tr className="text-left text-gray-700">
-                <th></th>
-                {solutionAnalysis?.moments?.map((el) => (
-                  <>
-                    <th
-                      key={uuidv4()}
-                      className="px-4 py-2 border border-gray-300 font-semibold"
-                    >
-                      {el?.name}
-                    </th>
-                  </>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-                <td>Moments</td>
-                {solutionAnalysis?.moments?.map((el) => (
-                  <>
-                    <td
-                      key={uuidv4()}
-                      className="px-4 py-2 border border-gray-300"
-                    >
-                      <MathJax>{sprintf("`%.2f Nm`", el?.moment)}</MathJax>
-                    </td>
-                  </>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+          <div className="relative overflow-x-auto">
+            <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
+              <thead className="bg-gray-200">
+                <tr className="text-left text-gray-700">
+                  <th></th>
+                  {solutionAnalysis?.moments?.map((el) => (
+                    <>
+                      <th
+                        key={uuidv4()}
+                        className="px-4 py-2 border border-gray-300 font-semibold"
+                      >
+                        {el?.name}
+                      </th>
+                    </>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
+                  <td className="text-nowrap px-4 py-2 border border-gray-300">Moments</td>
+                  {solutionAnalysis?.moments?.map((el) => (
+                    <>
+                      <td
+                        key={uuidv4()}
+                        className="px-4 py-2 border border-gray-300"
+                      >
+                        <MathJax className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden">
+                          {sprintf("`%.2f Nm`", el?.moment)}
+                        </MathJax>
+                      </td>
+                    </>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </>

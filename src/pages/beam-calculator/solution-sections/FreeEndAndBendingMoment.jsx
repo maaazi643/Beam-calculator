@@ -13,50 +13,55 @@ import { COLORS } from "../../../../tailwind.config";
 import { v4 as uuidv4 } from "uuid";
 import { MathJax } from "better-react-mathjax";
 import { sprintf } from "sprintf-js";
+import { useMediaQuery } from "react-responsive";
 
 const FreeMomentDiagram = ({ data }) => {
+  const isMobile = useMediaQuery({ maxWidth: 640 });
+
   return (
     <div>
       <h2 className="text-center">Free Moment Diagram</h2>
-      <ResponsiveContainer width="100%" height={325}>
-        <AreaChart
-          width="100%"
-          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="distanceFromLeft"
-            label={{
-              value: "Distance from Left (m)",
-              position: "insideBottom",
-              offset: -10,
-            }}
-            allowDuplicatedCategory={false}
-          />
-          <YAxis
-            label={{
-              value: "Moment (Nm)",
-              angle: -90,
-              position: "insideLeft",
-            }}
-            domain={["auto", "auto"]}
-            allowDuplicatedCategory={false}
-          />
-          <Tooltip />
-
-          {data?.map((d, i) => (
-            <Area
-              key={i}
-              data={d?.points}
-              type={d?.type}
-              dataKey="moment"
-              stroke={COLORS["secondary-2"]}
-              fill={COLORS["secondary-2"]}
-              dot={{ r: 3 }}
+      <div className="overflow-x-auto">
+        <ResponsiveContainer width={isMobile ? "200%" : "100%"} height={325}>
+          <AreaChart
+            width="100%"
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="distanceFromLeft"
+              label={{
+                value: "Distance from Left (m)",
+                position: "insideBottom",
+                offset: -10,
+              }}
+              allowDuplicatedCategory={false}
             />
-          ))}
-        </AreaChart>
-      </ResponsiveContainer>
+            <YAxis
+              label={{
+                value: "Moment (Nm)",
+                angle: -90,
+                position: "insideLeft",
+              }}
+              domain={["auto", "auto"]}
+              allowDuplicatedCategory={false}
+            />
+            <Tooltip />
+
+            {data?.map((d, i) => (
+              <Area
+                key={i}
+                data={d?.points}
+                type={d?.type}
+                dataKey="moment"
+                stroke={COLORS["secondary-2"]}
+                fill={COLORS["secondary-2"]}
+                dot={{ r: 3 }}
+              />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
@@ -66,34 +71,37 @@ FreeMomentDiagram.propTypes = {
 };
 
 const EndMomentDiagram = ({ data }) => {
+  const isMobile = useMediaQuery({ maxWidth: 640 });
+
   return (
     <div>
       <h2 className="text-center">End Moment Diagram</h2>
-      <ResponsiveContainer width="100%" height={325}>
-        <AreaChart
-          width="100%"
-          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="distanceFromLeft"
-            label={{
-              value: "Distance from Left (m)",
-              position: "insideBottom",
-              offset: -10,
-            }}
-            allowDuplicatedCategory={false}
-          />
-          <YAxis
-            label={{
-              value: "Moment (Nm)",
-              angle: -90,
-              position: "insideLeft",
-            }}
-            domain={["auto", "auto"]}
-            allowDuplicatedCategory={false}
-          />
-          <Tooltip />
+      <div className="overflow-x-auto">
+        <ResponsiveContainer width={isMobile ? "200%" : "100%"} height={325}>
+          <AreaChart
+            width="100%"
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="distanceFromLeft"
+              label={{
+                value: "Distance from Left (m)",
+                position: "insideBottom",
+                offset: -10,
+              }}
+              allowDuplicatedCategory={false}
+            />
+            <YAxis
+              label={{
+                value: "Moment (Nm)",
+                angle: -90,
+                position: "insideLeft",
+              }}
+              domain={["auto", "auto"]}
+              allowDuplicatedCategory={false}
+            />
+            <Tooltip />
 
             <Area
               data={data}
@@ -103,8 +111,9 @@ const EndMomentDiagram = ({ data }) => {
               fill={COLORS["secondary-2"]}
               dot={{ r: 3 }}
             />
-        </AreaChart>
-      </ResponsiveContainer>
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
@@ -114,55 +123,60 @@ EndMomentDiagram.propTypes = {
 };
 
 const BendingMomentDiagram = ({ endMomentData1, freeMomentData }) => {
+  const isMobile = useMediaQuery({ maxWidth: 640 });
+
+
   return (
     <div>
       <h2 className="text-center">Bending Moment Diagram</h2>
-      <ResponsiveContainer width="100%" height={325}>
-        <AreaChart
-          width="100%"
-          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="distanceFromLeft"
-            label={{
-              value: "Distance from Left (m)",
-              position: "insideBottom",
-              offset: -10,
-            }}
-            allowDuplicatedCategory={false}
-          />
-          <YAxis
-            label={{
-              value: "Moment (Nm)",
-              angle: -90,
-              position: "insideLeft",
-            }}
-            domain={["auto", "auto"]}
-            allowDuplicatedCategory={false}
-          />
-          <Tooltip />
-          {freeMomentData?.map((d, i) => (
+      <div className="overflow-x-auto">
+        <ResponsiveContainer width={isMobile ? "200%" : "100%"} height={325}>
+          <AreaChart
+            width="100%"
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="distanceFromLeft"
+              label={{
+                value: "Distance from Left (m)",
+                position: "insideBottom",
+                offset: -10,
+              }}
+              allowDuplicatedCategory={false}
+            />
+            <YAxis
+              label={{
+                value: "Moment (Nm)",
+                angle: -90,
+                position: "insideLeft",
+              }}
+              domain={["auto", "auto"]}
+              allowDuplicatedCategory={false}
+            />
+            <Tooltip />
+            {freeMomentData?.map((d, i) => (
+              <Area
+                key={i}
+                data={d?.points}
+                type={d?.type}
+                dataKey="moment"
+                stroke={COLORS["secondary-2"]}
+                fill={COLORS["secondary-2"]}
+                dot={{ r: 3 }}
+              />
+            ))}
             <Area
-              key={i}
-              data={d?.points}
-              type={d?.type}
+              data={endMomentData1}
+              type="linear"
               dataKey="moment"
               stroke={COLORS["secondary-2"]}
               fill={COLORS["secondary-2"]}
               dot={{ r: 3 }}
             />
-          ))}
-          <Area
-            data={endMomentData1}
-            type="linear"
-            dataKey="moment"
-            stroke={COLORS["secondary-2"]}
-            fill={COLORS["secondary-2"]}
-            dot={{ r: 3 }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
@@ -188,46 +202,60 @@ export default function FreeEndAndBendingMoment({ solutionAnalysis }) {
               Free Moment For Span {el?.name}
             </h3>
             {el?.steps?.map((step) => (
-              <MathJax key={uuidv4()}>{step}</MathJax>
+              <MathJax
+                key={uuidv4()}
+                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+              >
+                {step}
+              </MathJax>
             ))}
           </div>
         );
       })}
-      <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
-        <thead className="bg-gray-200">
-          <tr className="text-left text-gray-700">
-            <th></th>
-            {freeMoments?.map((el, ind) => (
-              <>
-                <th
-                  key={el?.name + ind}
-                  className="px-4 py-2 border border-gray-300 font-semibold"
-                >
-                  {el?.name}
-                </th>
-              </>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-            <td>Free End Moments</td>
-            {freeMoments?.map((el, ind) => (
-              <>
-                <td
-                  key={el?.name + ind}
-                  className="px-4 py-2 border border-gray-300"
-                >
-                  <MathJax>{sprintf("`%.2f Nm`", el?.fm)}</MathJax>
-                </td>
-              </>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+      <div className="relative overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
+          <thead className="bg-gray-200">
+            <tr className="text-left text-gray-700">
+              <th></th>
+              {freeMoments?.map((el, ind) => (
+                <>
+                  <th
+                    key={el?.name + ind}
+                    className="px-4 py-2 border border-gray-300 font-semibold"
+                  >
+                    {el?.name}
+                  </th>
+                </>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
+              <td className="text-nowrap px-4 py-2 border border-gray-300">
+                Free End Moments
+              </td>
+              {freeMoments?.map((el, ind) => (
+                <>
+                  <td
+                    key={el?.name + ind}
+                    className="px-4 py-2 border border-gray-300"
+                  >
+                    <MathJax className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden">
+                      {sprintf("`%.2f Nm`", el?.fm)}
+                    </MathJax>
+                  </td>
+                </>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <FreeMomentDiagram data={freeMomentsDiagram} />
       <EndMomentDiagram data={endMomentsDiagram} />
-      <BendingMomentDiagram endMomentData1={endMomentsDiagram} freeMomentData={freeMomentsDiagram} />
+      <BendingMomentDiagram
+        endMomentData1={endMomentsDiagram}
+        freeMomentData={freeMomentsDiagram}
+      />
     </>
   );
 }

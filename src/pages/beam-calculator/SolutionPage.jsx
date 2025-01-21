@@ -77,7 +77,7 @@ export default function SolutionPage() {
   };
 
   return (
-    <div className="space-y-4" ref={targetRef} onClick={downloadPDF}>
+    <div className="space-y-4 overflow-x-hidden" ref={targetRef} onClick={downloadPDF}>
       <FixedEndedMoments solutionAnalysis={solutionAnalysis} />
       <SlopeDeflectionEquations solutionAnalysis={solutionAnalysis} />
       <EquilibriumEquations solutionAnalysis={solutionAnalysis} />
