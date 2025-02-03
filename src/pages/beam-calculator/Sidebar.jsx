@@ -53,8 +53,6 @@ export default function Sidebar() {
   const { showSidebarOnMobile } = useSelector((state) => state.ui);
   const isMobile = useMediaQuery({ maxWidth: 640 });
 
-  // console.log(beamProperties);
-
   const toggleSidebarHandler = () => {
     dispatch(
       uiActions.set({

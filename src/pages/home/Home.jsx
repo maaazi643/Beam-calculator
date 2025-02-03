@@ -80,11 +80,11 @@ export default function Home() {
             </p>
           </NavLink>
           <NavLink
-            to="/frame-calculator/question"
+            to="/frame-calculator"
+            // to="/frame-calculator/question"
             className="border border-[#CDCED9] rounded-2xl border-solid px-10 pt-16 pb-11 flex flex-col gap-14 grow basis-[50%] transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
           >
             <img
-              to="/frame-calculator"
               src={frameImg}
               alt="frame"
               className="aspect-video"

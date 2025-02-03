@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createNewSpan } from "./beam-utils";
 import {
   question1,
   question2,
@@ -34,7 +33,7 @@ const initialState = {
   beamPropertiesUndoStack: [],
   beamPropertiesRedoStack: [],
   beamProperties: defaultBeamProperties,
-  // beamProperties: question1,
+  // beamProperties: question4,
   // beamProperties: questionErr1,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,

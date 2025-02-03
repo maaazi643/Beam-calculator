@@ -1,6 +1,6 @@
 import { loadingEnums, supportEnums } from "./beam-utils";
 import { sprintf } from "sprintf-js";
-import { lusolve, re } from "mathjs";
+import { lusolve } from "mathjs";
 
 const FEMformulas = {
   "single-pinned-equal": {
