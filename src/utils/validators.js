@@ -13,6 +13,14 @@ export const validateSpanLength = (length) => {
   return [true, ""];
 };
 
+export const validateSpanHeight = (height) => {
+  if (!isDecimal(height)) return [false, "height must be a number."];
+  if (height <= 0) return [false, "height must be greater than 0."];
+  if (height > MaxSpanLength)
+    return [false, `height must be less than ${MaxSpanLength}.`];
+  return [true, ""];
+};
+
 export const validateSpanFlexuralRigidity = (flexuralRigidity) => {
   if (!isDecimal(flexuralRigidity))
     return [false, "Flexural rigidity must be a number."];
@@ -50,7 +58,7 @@ export const validateSpans = (spans) => {
 };
 
 export const validateSupportSinkingValue = (supportType, value) => {
-  if (supportType === supportEnums.SINKING_PINNED) return [true, ""];
+  // if (supportType === supportEnums.SINKING_PINNED) return [true, ""];
   if (!isDecimal(value)) return [false, "Sinking value must be a number."];
   if (value <= 0) return [false, "Sinking value must be greater than 0."];
   if (value > MaxSinkingValue)
@@ -113,6 +121,12 @@ export const validateLoadingDistanceFromLeft = (loadingType, value) => {
   return [true, ""];
 };
 
+export const validateLoadingDistanceFromTop = (loadingType, value) => {
+  if (!isDecimal(value)) return [false, "Distance from top must be a number."];
+  if (value < 0) return [false, "Distance from top must be greater than 0."];
+  return [true, ""];
+};
+
 export const validateLoadingValue = (loadingType, value) => {
   if (!isDecimal(value)) return [false, "Value must be a number."];
   if (value <= 0) return [false, "Value must be greater than 0."];
@@ -163,7 +177,10 @@ export const validateLoadings = (loadings, beamTotalLength) => {
       return false;
     }
 
-    if ((+loading?.distanceFromLeft + +loading?.spanOfLoading) > beamTotalLength) {
+    if (
+      +loading?.distanceFromLeft + +loading?.spanOfLoading >
+      beamTotalLength
+    ) {
       errorMessage = `Loading ${i + 1} is outside the beam.`;
       return false;
     }
@@ -207,4 +224,96 @@ export const validateLoadings = (loadings, beamTotalLength) => {
   });
 
   return [loadingsAreValid, errorMessage];
+};
+
+export const validateColumn = (columnName = "left column", column) => {
+  const { length, support, loading } = column;
+  const { type: supportType, sinking, sinkingValue } = support;
+  const {
+    type: loadingType,
+    distanceFromTop,
+    valueOfLoading,
+    spanOfLoading,
+    openingValue,
+    closingValue,
+  } = loading;
+
+  const [lengthIsValid, lengthErrorMessage] = validateSpanHeight(length);
+
+  if (!lengthIsValid)
+    return [
+      false,
+      `The ${columnName} height is invalid. ${lengthErrorMessage}`,
+    ];
+
+  const [sinkingValueIsValid, sinkingErrorMessage] =
+    validateSupportSinkingValue(supportType, sinkingValue);
+
+  if (sinking && !sinkingValueIsValid)
+    return [
+      false,
+      `The ${columnName} column sinking value is invalid. ${sinkingErrorMessage}`,
+    ];
+
+  let isValid = true;
+  if (loadingType !== loadingEnums?.none) {
+    if (loadingType === loadingEnums?.single) {
+      isValid =
+        validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+        validateLoadingValue(loadingType, valueOfLoading)[0];
+    } else if (loadingType === loadingEnums?.uniform) {
+      isValid =
+        validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+        validateLoadingValue(loadingType, valueOfLoading)[0] &&
+        validateLoadingSpan(loadingType, spanOfLoading)[0];
+    } else if (loadingType === loadingEnums?.varying) {
+      isValid =
+        validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+        validateOpeningValue(loadingType, openingValue)[0] &&
+        validateClosingValue(loadingType, closingValue)[0] &&
+        validateLoadingSpan(loadingType, spanOfLoading)[0];
+    }
+  }
+
+  if (!isValid) return [false, `The ${columnName} column loading is invalid.`];
+
+  return [true, ""];
+};
+export const validateBeam = (beam) => {
+  const { length, loading } = beam;
+  const {
+    type: loadingType,
+    distanceFromTop,
+    valueOfLoading,
+    spanOfLoading,
+    openingValue,
+    closingValue,
+  } = loading;
+
+  const [lengthIsValid, lengthErrorMessage] = validateSpanHeight(length);
+
+  if (!lengthIsValid)
+    return [false, `The beam length is invalid. ${lengthErrorMessage}`];
+
+  let isValid = true;
+  if (loadingType === loadingEnums?.single) {
+    isValid =
+      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateLoadingValue(loadingType, valueOfLoading)[0];
+  } else if (loadingType === loadingEnums?.uniform) {
+    isValid =
+      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateLoadingValue(loadingType, valueOfLoading)[0] &&
+      validateLoadingSpan(loadingType, spanOfLoading)[0];
+  } else if (loadingType === loadingEnums?.varying) {
+    isValid =
+      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateOpeningValue(loadingType, openingValue)[0] &&
+      validateClosingValue(loadingType, closingValue)[0] &&
+      validateLoadingSpan(loadingType, spanOfLoading)[0];
+  }
+
+  if (!isValid) return [false, `The beam loading is invalid.`];
+
+  return [true, ""];
 };

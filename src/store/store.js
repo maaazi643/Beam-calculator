@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import beamReducer from "./beam";
 import uiReducer from "./ui";
+import beamReducer from "./beam";
+import frameReducer from "./frame";
 
 export const store = configureStore({
   reducer: {
-    beam: beamReducer,
     ui: uiReducer,
+    beam: beamReducer,
+    frame: frameReducer,
   },
 });

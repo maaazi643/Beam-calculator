@@ -54,7 +54,7 @@ const WrapperSwitch = styled(Switch)(({ checked }) => ({
   },
 }));
 
-export default function WrapperToggle({ checked, onChange, className }) {
+export default function WrapperToggle({ checked, onChange, className, text }) {
   const handleChange = (event) => {
     onChange(event.target.checked);
   };
@@ -62,7 +62,7 @@ export default function WrapperToggle({ checked, onChange, className }) {
   return (
     <LabelWrapper className={className}>
       <span className="text-[#212121] text-sm not-italic font-semibold leading-[133%] font-inter">
-        Sinking
+        {text || "Sinking"}
       </span>
       <FormGroup>
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -81,4 +81,5 @@ WrapperToggle.propTypes = {
   className: PropTypes.string,
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
+  text: PropTypes.string,
 };

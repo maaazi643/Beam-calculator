@@ -42,6 +42,7 @@ export const loadingEnums = Object.freeze({
   single: "single",
   uniform: "uniform",
   varying: "varying",
+  none: "none",
 });
 
 export const createNewLoad = (
