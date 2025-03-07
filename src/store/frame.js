@@ -1,18 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import {
-  question1,
-  question2,
-  question3,
-  question4,
-  question5,
-  question8,
-  question9,
-  question10,
-  question11,
-  question12,
-  question13,
-  questionErr1,
-} from "../../questions";
+import { createSlice, current } from "@reduxjs/toolkit";
+import { question1 , question2} from "../../frame-question";
 import { supportEnums, loadingEnums } from "./beam-utils";
 
 const defaultColumn = {
@@ -25,7 +12,7 @@ const defaultColumn = {
   },
   loading: {
     type: loadingEnums.none,
-    distanceFromTop: "",
+    distanceFromTop: "0",
     valueOfLoading: "",
     spanOfLoading: "",
     openingValue: "",
@@ -38,7 +25,7 @@ const defaultBeam = {
   flexuralRigidity: "0",
   loading: {
     type: loadingEnums.single,
-    distanceFromLeft: "",
+    distanceFromLeft: "0",
     valueOfLoading: "",
     spanOfLoading: "",
     openingValue: "",
@@ -53,19 +40,21 @@ const defaultFrameProperties = {
 };
 
 const initialState = {
+  // beam config
+  showBeamConfig: true,
+  beam: defaultBeam,
   // left column config
-  showLeftSpanConfig: true,
+  showLeftSpanConfig: false,
   leftColumn: defaultColumn,
   // right column config
   showRightSpanConfig: false,
   rightColumn: defaultColumn,
-  // beam config
-  showBeamConfig: false,
-  beam: defaultBeam,
   // activeSupportType: null,
   framePropertiesUndoStack: [],
   framePropertiesRedoStack: [],
   frameProperties: defaultFrameProperties,
+  // frameProperties: question1,
+  // frameProperties: question2,
   solutionAnalysis: {},
   solutionAnalysisErrorMessage: null,
   solutionIsLoading: false,
@@ -85,6 +74,9 @@ export const frameSlice = createSlice({
         payload.forEach(({ key, value }) => {
           state[key] = value;
         });
+
+        const t = current(state);
+        console.log(t);
       } else {
         const { key, value } = payload;
         state[key] = value;
@@ -93,8 +85,11 @@ export const frameSlice = createSlice({
   },
 });
 
-export const isBeamEmpty = (beam) => {
-  return beam?.spans?.length === 0;
+export const isFrameEmpty = (frame) => {
+  const {beam, leftColumn, rightColumn} = frame
+  console.log(beam, leftColumn, rightColumn)
+  return +beam.length == '0'
+  // return +beam.length == '0' && +leftColumn.length == '0' && +rightColumn.length == '0'
 };
 
 export const frameActions = frameSlice.actions;

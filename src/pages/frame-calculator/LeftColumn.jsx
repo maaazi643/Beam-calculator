@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { frameActions } from "../../store/frame";
 import { motion, AnimatePresence } from "framer-motion";
@@ -222,6 +222,33 @@ function LeftItem() {
     );
   };
 
+  const changeDistanceFromTop = (distanceFromTop) => {
+    const newLoad = { ...loading, distanceFromTop: distanceFromTop };
+    dispatch(
+      frameActions.set({
+        key: "leftColumn",
+        value: { ...leftColumn, loading: newLoad },
+      })
+    );
+  };
+
+  const changeSpanOfLoading = (spanOfLoading) => {
+    const newLoad = { ...loading, spanOfLoading: spanOfLoading };
+    dispatch(
+      frameActions.set({
+        key: "leftColumn",
+        value: { ...leftColumn, loading: newLoad },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if(loadingType != loadingEnums.single){
+      changeDistanceFromTop(0);
+      changeSpanOfLoading(length);
+    }
+  }, [loadingType, length])
+
   return (
     <div className="space-y-[1rem] span-section">
       <div className="flex flex-row items-start gap-x-[1rem]">
@@ -389,7 +416,7 @@ function SinglePointLoadSettings() {
 function UniformDistributedLoadSettings() {
   const dispatch = useDispatch();
   const { leftColumn } = useSelector((state) => state.frame);
-  const { loading } = leftColumn;
+  const { loading, length } = leftColumn;
   const { type, distanceFromTop, spanOfLoading, valueOfLoading } = loading;
 
   const [distanceFromTopIsValid, distanceFromTopErrorMessage] =
@@ -448,9 +475,10 @@ function UniformDistributedLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromTop}
+          value={distanceFromTop || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -468,9 +496,10 @@ function UniformDistributedLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeSpanOfLoading}
-          value={spanOfLoading}
+          value={spanOfLoading || "0"}
           isValid={spanOfLoadingIsValid}
           errorMessage={spanOfLoadingErrorMessage}
+          disabled={true}
         />
       </div>
     </motion.div>
@@ -536,9 +565,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromTop}
+          value={distanceFromTop || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -566,9 +596,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeSpanOfLoading}
-          value={spanOfLoading}
+          value={spanOfLoading || "0"}
           isValid={spanOfLoadingIsValid}
           errorMessage={spanOfLoadingErrorMessage}
+          disabled={true}
         />
       </div>
     </motion.div>

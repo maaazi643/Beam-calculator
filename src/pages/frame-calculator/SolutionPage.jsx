@@ -9,11 +9,11 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import ErrorIcon from "@mui/icons-material/Error";
 import { usePDF } from "react-to-pdf";
 import FixedEndedMoments from "./solution-sections/FixedEndedMoments";
-import SlopeDeflectionEquations from "./solution-sections/SlopeDeflectionEquations";
-import EquilibriumEquations from "./solution-sections/EquilibriumEquations";
-import ReactionForces from "./solution-sections/ReactionForces";
-import ShearForces from "./solution-sections/ShearForces";
-import FreeEndAndBendingMoment from "./solution-sections/FreeEndAndBendingMoment";
+// import SlopeDeflectionEquations from "./solution-sections/SlopeDeflectionEquations";
+// import EquilibriumEquations from "./solution-sections/EquilibriumEquations";
+// import ReactionForces from "./solution-sections/ReactionForces";
+// import ShearForces from "./solution-sections/ShearForces";
+// import FreeEndAndBendingMoment from "./solution-sections/FreeEndAndBendingMoment";
 
 export default function SolutionPage() {
   const randomSolutionFilename = `solution-${uuidv4()?.replaceAll(

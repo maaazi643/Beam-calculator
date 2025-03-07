@@ -916,7 +916,8 @@ export const LoadingMark = ({ style, load, unit, ...props }) => (
     style={style}
     {...props}
   >
-    {load?.toFixed(2)}{unit}
+    {load?.toFixed(2)}
+    {unit}
   </span>
 );
 
@@ -940,4 +941,321 @@ export const FullDimensionMark = ({ style, width, ...props }) => (
 FullDimensionMark.propTypes = {
   style: PropTypes.object.isRequired,
   width: PropTypes.number,
+};
+
+export const HorizontalSinglePointLoad = ({ style, toLeft, className, props }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="60"
+      height="16"
+      viewBox="0 0 60 16"
+      fill="none"
+      preserveAspectRatio="none"
+      style={style}
+      className={twMerge(`${toLeft ? "" : "rotate-180"}`, className)} 
+      {...props}
+    >
+      <path
+        d="M59.7071 8.70711C60.0976 8.31658 60.0976 7.68342 59.7071 7.29289L53.3431 0.928932C52.9526 0.538408 52.3195 0.538408 51.9289 0.928932C51.5384 1.31946 51.5384 1.95262 51.9289 2.34315L57.5858 8L51.9289 13.6569C51.5384 14.0474 51.5384 14.6805 51.9289 15.0711C52.3195 15.4616 52.9526 15.4616 53.3431 15.0711L59.7071 8.70711ZM0 9L59 9V7L0 7L0 9Z"
+        fill="black"
+      />
+    </svg>
+  );
+};
+
+HorizontalSinglePointLoad.propTypes = {
+  style: PropTypes.object,
+  props: PropTypes.object,
+  className: PropTypes.string,
+  toLeft: PropTypes.bool,
+};
+
+export const FixedSupportUpright = ({ style, props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="7"
+    viewBox="0 0 22 7"
+    fill="none"
+    preserveAspectRatio="none"
+    style={style}
+    {...props}
+  >
+    <path d="M21 0.932617L5 0.932618" stroke="black" strokeWidth="0.888889" />
+    <line
+      y1="-0.222222"
+      x2="6.89239"
+      y2="-0.222222"
+      transform="matrix(0.723952 -0.689851 -0.594267 -0.804268 15.7661 5.82129)"
+      stroke="black"
+      strokeWidth="0.444444"
+    />
+    <line
+      y1="-0.222222"
+      x2="6.89239"
+      y2="-0.222222"
+      transform="matrix(0.723952 -0.689851 -0.594267 -0.804268 11.8525 5.82129)"
+      stroke="black"
+      strokeWidth="0.444444"
+    />
+    <line
+      y1="-0.222222"
+      x2="6.89239"
+      y2="-0.222222"
+      transform="matrix(0.723952 -0.689851 -0.594267 -0.804268 7.93896 5.82129)"
+      stroke="black"
+      strokeWidth="0.444444"
+    />
+    <line
+      y1="-0.222222"
+      x2="6.89239"
+      y2="-0.222222"
+      transform="matrix(0.723952 -0.689851 -0.594267 -0.804268 4.02515 5.82129)"
+      stroke="black"
+      strokeWidth="0.444444"
+    />
+    <line
+      y1="-0.222222"
+      x2="6.89239"
+      y2="-0.222222"
+      transform="matrix(0.723952 -0.689851 -0.594267 -0.804268 0.111328 5.82129)"
+      stroke="black"
+      strokeWidth="0.444444"
+    />
+  </svg>
+);
+
+FixedSupportUpright.propTypes = {
+  style: PropTypes.object,
+  props: PropTypes.object,
+};
+
+export const VerticalUniformDistributedLoadIcon = ({ style, className, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="44"
+    height="61"
+    viewBox="0 0 44 61"
+    fill="none"
+    preserveAspectRatio="none"
+    style={style}
+    className={className}
+    {...props}
+  >
+    <path
+      d="M1.30353 60V1.5"
+      stroke="black"
+      strokeWidth="1.39286"
+      strokeLinecap="round"
+    />
+    <path
+      d="M2 60H42.8572L35.5612 53.0357"
+      stroke="black"
+      strokeWidth="1.39286"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M1.99994 30.0536C1.61531 30.0536 1.30351 30.3654 1.30351 30.75C1.30351 31.1346 1.61531 31.4464 1.99994 31.4464V30.0536ZM43.3495 31.2424C43.6215 30.9705 43.6215 30.5295 43.3495 30.2576L38.9175 25.8255C38.6455 25.5535 38.2046 25.5535 37.9326 25.8255C37.6606 26.0975 37.6606 26.5384 37.9326 26.8104L41.8722 30.75L37.9326 34.6896C37.6606 34.9616 37.6606 35.4025 37.9326 35.6745C38.2046 35.9465 38.6455 35.9465 38.9175 35.6745L43.3495 31.2424ZM1.99994 31.4464L42.8571 31.4464V30.0536L1.99994 30.0536V31.4464Z"
+      fill="black"
+    />
+    <path
+      d="M1.99994 1.5H42.8571L35.5612 8.46429"
+      stroke="black"
+      strokeWidth="1.39286"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+VerticalUniformDistributedLoadIcon.propTypes = {
+  style: PropTypes.object,
+  props: PropTypes.object,
+  className: PropTypes.string,
+};
+
+export const VerticalVaryingDistributedLoadIcon = ({
+  style,
+  bigToSmall,
+  className,
+  triangular,
+  ...props
+}) => {
+  if (bigToSmall && triangular) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="67"
+        height="98"
+        viewBox="0 0 67 98"
+        fill="none"
+        preserveAspectRatio="none"
+        style={style}
+        className={className}
+        {...props}
+      >
+        <path
+          d="M65 1L1 97"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M66.495 32.505C66.7683 32.7784 66.7683 33.2216 66.495 33.495L62.0402 37.9497C61.7668 38.2231 61.3236 38.2231 61.0503 37.9497C60.7769 37.6764 60.7769 37.2332 61.0503 36.9598L65.01 33L61.0503 29.0402C60.7769 28.7668 60.7769 28.3236 61.0503 28.0503C61.3236 27.7769 61.7668 27.7769 62.0402 28.0503L66.495 32.505ZM44 32.3L66 32.3L66 33.7L44 33.7L44 32.3Z"
+          fill="black"
+        />
+        <path
+          d="M66.495 64.505C66.7683 64.7784 66.7683 65.2216 66.495 65.495L62.0402 69.9497C61.7668 70.2231 61.3236 70.2231 61.0503 69.9497C60.7769 69.6764 60.7769 69.2332 61.0503 68.9598L65.0101 65L61.0503 61.0402C60.7769 60.7668 60.7769 60.3236 61.0503 60.0503C61.3236 59.7769 61.7668 59.7769 62.0402 60.0503L66.495 64.505ZM22 64.3L66 64.3L66 65.7L22 65.7L22 64.3Z"
+          fill="black"
+        />
+        <path
+          d="M1 97H65L57.6718 90"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (!bigToSmall && triangular) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="67"
+        height="98"
+        viewBox="0 0 67 98"
+        fill="none"
+        preserveAspectRatio="none"
+        style={style}
+        className={className}
+        {...props}
+      >
+        <path
+          d="M65 97L1 0.999998"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M66.495 65.495C66.7683 65.2216 66.7683 64.7784 66.495 64.505L62.0402 60.0503C61.7668 59.7769 61.3236 59.7769 61.0503 60.0503C60.7769 60.3236 60.7769 60.7668 61.0503 61.0402L65.01 65L61.0503 68.9598C60.7769 69.2332 60.7769 69.6764 61.0503 69.9497C61.3236 70.2231 61.7668 70.2231 62.0402 69.9497L66.495 65.495ZM44 65.7L66 65.7L66 64.3L44 64.3L44 65.7Z"
+          fill="black"
+        />
+        <path
+          d="M66.495 33.495C66.7683 33.2216 66.7683 32.7784 66.495 32.505L62.0402 28.0503C61.7668 27.7769 61.3236 27.7769 61.0503 28.0503C60.7769 28.3236 60.7769 28.7668 61.0503 29.0402L65.0101 33L61.0503 36.9598C60.7769 37.2332 60.7769 37.6764 61.0503 37.9497C61.3236 38.2231 61.7668 38.2231 62.0402 37.9497L66.495 33.495ZM22 33.7L66 33.7L66 32.3L22 32.3L22 33.7Z"
+          fill="black"
+        />
+        <path
+          d="M1 1H65L57.6718 8"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (bigToSmall && !triangular) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="67"
+        height="98"
+        viewBox="0 0 67 98"
+        fill="none"
+        preserveAspectRatio="none"
+        style={style}
+        className={className}
+        {...props}
+      >
+        <path
+          d="M21 1L0.999999 97"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M21 1H66L57.9643 8"
+          stroke="black"
+          strokeWidth="1.39286"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M66.495 32.505C66.7683 32.7784 66.7683 33.2216 66.495 33.495L62.0402 37.9497C61.7668 38.2231 61.3236 38.2231 61.0503 37.9497C60.7769 37.6764 60.7769 37.2332 61.0503 36.9598L65.0101 33L61.0503 29.0402C60.7769 28.7668 60.7769 28.3236 61.0503 28.0503C61.3236 27.7769 61.7668 27.7769 62.0402 28.0503L66.495 32.505ZM14 32.3L66 32.3L66 33.7L14 33.7L14 32.3Z"
+          fill="black"
+        />
+        <path
+          d="M66.495 64.505C66.7683 64.7784 66.7683 65.2216 66.495 65.495L62.0402 69.9497C61.7668 70.2231 61.3236 70.2231 61.0502 69.9497C60.7769 69.6764 60.7769 69.2332 61.0502 68.9598L65.01 65L61.0502 61.0402C60.7769 60.7668 60.7769 60.3236 61.0502 60.0503C61.3236 59.7769 61.7668 59.7769 62.0402 60.0503L66.495 64.505ZM7 64.3L66 64.3L66 65.7L7 65.7L7 64.3Z"
+          fill="black"
+        />
+        <path
+          d="M1 97H65L57.6718 90"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (!bigToSmall && !triangular) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="67"
+        height="98"
+        viewBox="0 0 67 98"
+        fill="none"
+        preserveAspectRatio="none"
+        style={style}
+        className={className}
+        {...props}
+      >
+        <path
+          d="M21 97L0.999999 0.999995"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M21 97H66L57.9643 90"
+          stroke="black"
+          strokeWidth="1.39286"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M66.495 65.495C66.7683 65.2216 66.7683 64.7784 66.495 64.505L62.0402 60.0503C61.7668 59.7769 61.3236 59.7769 61.0503 60.0503C60.7769 60.3236 60.7769 60.7668 61.0503 61.0402L65.0101 65L61.0503 68.9598C60.7769 69.2332 60.7769 69.6764 61.0503 69.9497C61.3236 70.2231 61.7668 70.2231 62.0402 69.9497L66.495 65.495ZM14 65.7L66 65.7L66 64.3L14 64.3L14 65.7Z"
+          fill="black"
+        />
+        <path
+          d="M66.495 33.495C66.7683 33.2216 66.7683 32.7784 66.495 32.505L62.0402 28.0503C61.7668 27.7769 61.3236 27.7769 61.0502 28.0503C60.7769 28.3236 60.7769 28.7668 61.0502 29.0402L65.01 33L61.0502 36.9598C60.7769 37.2332 60.7769 37.6764 61.0502 37.9497C61.3236 38.2231 61.7668 38.2231 62.0402 37.9497L66.495 33.495ZM7 33.7L66 33.7L66 32.3L7 32.3L7 33.7Z"
+          fill="black"
+        />
+        <path
+          d="M1 1H65L57.6718 8"
+          stroke="black"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  return <span>Wrong use bro</span>;
+};
+
+VerticalVaryingDistributedLoadIcon.propTypes = {
+  style: PropTypes.object,
+  bigToSmall: PropTypes.bool,
+  triangular: PropTypes.bool,
+  props: PropTypes.object,
+  className: PropTypes.string,
 };

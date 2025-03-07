@@ -283,7 +283,7 @@ export const validateBeam = (beam) => {
   const { length, loading } = beam;
   const {
     type: loadingType,
-    distanceFromTop,
+    distanceFromLeft,
     valueOfLoading,
     spanOfLoading,
     openingValue,
@@ -298,16 +298,16 @@ export const validateBeam = (beam) => {
   let isValid = true;
   if (loadingType === loadingEnums?.single) {
     isValid =
-      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateLoadingDistanceFromLeft(loadingType, distanceFromLeft)[0] &&
       validateLoadingValue(loadingType, valueOfLoading)[0];
   } else if (loadingType === loadingEnums?.uniform) {
     isValid =
-      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateLoadingDistanceFromLeft(loadingType, distanceFromLeft)[0] &&
       validateLoadingValue(loadingType, valueOfLoading)[0] &&
       validateLoadingSpan(loadingType, spanOfLoading)[0];
   } else if (loadingType === loadingEnums?.varying) {
     isValid =
-      validateLoadingDistanceFromTop(loadingType, distanceFromTop)[0] &&
+      validateLoadingDistanceFromLeft(loadingType, distanceFromLeft)[0] &&
       validateOpeningValue(loadingType, openingValue)[0] &&
       validateClosingValue(loadingType, closingValue)[0] &&
       validateLoadingSpan(loadingType, spanOfLoading)[0];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { frameActions } from "../../store/frame";
 import { motion, AnimatePresence } from "framer-motion";
@@ -62,8 +62,8 @@ export default function Beam() {
     );
   };
 
-  const applySpanHandler = () => {
-    const [isValid, errorMessage] = validateBeam("beam", beam);
+  const applyBeamHandler = () => {
+    const [isValid, errorMessage] = validateBeam(beam);
 
     if (!isValid) {
       showNotification(errorMessage);
@@ -113,7 +113,7 @@ export default function Beam() {
             <BeamItem />
           </motion.div>
         </AnimatePresence>
-        <WrapperButton onClick={applySpanHandler}>Apply</WrapperButton>
+        <WrapperButton onClick={applyBeamHandler}>Apply</WrapperButton>
       </motion.div>
     </PropertyWrapper>
   );
@@ -121,7 +121,7 @@ export default function Beam() {
 
 function BeamItem() {
   const dispatch = useDispatch();
-  const { beam } = useSelector((state) => state.frame);
+  const { beam, frameProperties } = useSelector((state) => state.frame);
   const { length, flexuralRigidity, loading } = beam;
   const { type: loadingType } = loading;
   const [lengthIsValid, lengthErrorMessage] = validateSpanHeight(length);
@@ -159,6 +159,33 @@ function BeamItem() {
       })
     );
   };
+
+  const changeDistanceFromLeft = (distanceFromLeft) => {
+    const newLoad = { ...loading, distanceFromLeft: distanceFromLeft };
+    dispatch(
+      frameActions.set({
+        key: "beam",
+        value: { ...beam, loading: newLoad },
+      })
+    );
+  };
+
+  const changeSpanOfLoading = (spanOfLoading) => {
+    const newLoad = { ...loading, spanOfLoading: spanOfLoading };
+    dispatch(
+      frameActions.set({
+        key: "beam",
+        value: { ...beam, loading: newLoad },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (loadingType !== loadingEnums.single) {
+      changeDistanceFromLeft(0);
+      changeSpanOfLoading(length);
+    }
+  }, [loadingType, length]);
 
   return (
     <div className="space-y-[1rem] span-section">
@@ -219,7 +246,7 @@ function SinglePointLoadSettings() {
   const [valueOfLoadingIsValid, valueOfLoadingErrorMessage] =
     validateLoadingValue(type, valueOfLoading);
 
-  const changeDistanceFromTop = (distanceFromLeft) => {
+  const changeDistanceFromLeft = (distanceFromLeft) => {
     const newLoad = { ...loading, distanceFromLeft: distanceFromLeft };
     dispatch(
       frameActions.set({
@@ -255,7 +282,7 @@ function SinglePointLoadSettings() {
         <WrapperParagraph>Distance (from left)</WrapperParagraph>
         <NumberInput
           Icon={MetreUnit}
-          onChange={changeDistanceFromTop}
+          onChange={changeDistanceFromLeft}
           value={distanceFromLeft}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
@@ -337,9 +364,10 @@ function UniformDistributedLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromLeft}
+          value={distanceFromLeft || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -357,9 +385,10 @@ function UniformDistributedLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeSpanOfLoading}
-          value={spanOfLoading}
+          value={spanOfLoading || "0"}
           isValid={spanOfLoadingIsValid}
           errorMessage={spanOfLoadingErrorMessage}
+          disabled={true}
         />
       </div>
     </motion.div>
@@ -390,22 +419,30 @@ function UniformVaryingLoadSettings() {
 
   const changeDistanceFromTop = (distanceFromLeft) => {
     const newLoad = { ...loading, distanceFromLeft: distanceFromLeft };
-    dispatch(frameActions.set({ key: "beam", value: newLoad }));
+    dispatch(
+      frameActions.set({ key: "beam", value: { ...beam, loading: newLoad } })
+    );
   };
 
   const changeSpanOfLoading = (spanOfLoading) => {
     const newLoad = { ...loading, spanOfLoading: spanOfLoading };
-    dispatch(frameActions.set({ key: "beam", value: newLoad }));
+    dispatch(
+      frameActions.set({ key: "beam", value: { ...beam, loading: newLoad } })
+    );
   };
 
   const changeOpeningValue = (openingValue) => {
     const newLoad = { ...loading, openingValue: openingValue };
-    dispatch(frameActions.set({ key: "beam", value: newLoad }));
+    dispatch(
+      frameActions.set({ key: "beam", value: { ...beam, loading: newLoad } })
+    );
   };
 
   const changeClosingValue = (closingValue) => {
     const newLoad = { ...loading, closingValue: closingValue };
-    dispatch(frameActions.set({ key: "beam", value: newLoad }));
+    dispatch(
+      frameActions.set({ key: "beam", value: { ...beam, loading: newLoad } })
+    );
   };
 
   return (
@@ -425,9 +462,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromLeft}
+          value={distanceFromLeft || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -455,9 +493,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeSpanOfLoading}
-          value={spanOfLoading}
+          value={spanOfLoading || "0"}
           isValid={spanOfLoadingIsValid}
           errorMessage={spanOfLoadingErrorMessage}
+          disabled={true}
         />
       </div>
     </motion.div>

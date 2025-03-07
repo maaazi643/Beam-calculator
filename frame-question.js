@@ -1,3 +1,155 @@
-export const frameQuestion = {
-  
-}
+export const question1 = {
+  leftColumn: {
+    length: "4",
+    flexuralRigidity: "0",
+    support: {
+      type: "fixed",
+      sinking: false,
+      sinkingValue: "",
+    },
+    loading: {
+      type: "none",
+      distanceFromTop: "",
+      valueOfLoading: "",
+      spanOfLoading: "",
+      openingValue: "",
+      closingValue: "",
+    },
+  },
+  beam: {
+    length: "4",
+    flexuralRigidity: "0",
+    loading: {
+      type: "uniform",
+      distanceFromLeft: "0",
+      valueOfLoading: "9",
+      spanOfLoading: "4",
+      openingValue: "",
+      closingValue: "",
+    },
+  },
+  rightColumn: {
+    length: "4",
+    flexuralRigidity: "0",
+    support: {
+      type: "fixed",
+      sinking: false,
+      sinkingValue: "",
+    },
+    loading: {
+      type: "none",
+      distanceFromTop: "",
+      valueOfLoading: "",
+      spanOfLoading: "",
+      openingValue: "",
+      closingValue: "",
+    },
+  },
+};
+
+export const question2 = {
+  leftColumn: {
+    length: "4",
+    flexuralRigidity: "2",
+    support: {
+      type: "fixed",
+      sinking: false,
+      sinkingValue: "",
+    },
+    loading: {
+      type: "single",
+      distanceFromTop: "2",
+      valueOfLoading: "20",
+      spanOfLoading: "",
+      openingValue: "",
+      closingValue: "",
+    },
+    // loading: {
+    //   type: "uniform",
+    //   distanceFromTop: "0",
+    //   valueOfLoading: "20",
+    //   spanOfLoading: "4",
+    //   openingValue: "",
+    //   closingValue: "",
+    // },
+    // loading: {
+    //   type: "varying",
+    //   distanceFromTop: "",
+    //   valueOfLoading: "",
+    //   spanOfLoading: "4",
+    //   openingValue: "15",
+    //   closingValue: "25",
+    // },
+  },
+  // beam: {
+  //   length: "5",
+  //   flexuralRigidity: "1",
+  //   loading: {
+  //     type: "single",
+  //     distanceFromLeft: "2",
+  //     valueOfLoading: "15",
+  //     spanOfLoading: "",
+  //     openingValue: "",
+  //     closingValue: "",
+  //   },
+  // },
+  // beam: {
+  //   length: "5",
+  //   flexuralRigidity: "1",
+  //   loading: {
+  //     type: "uniform",
+  //     distanceFromLeft: "0",
+  //     valueOfLoading: "15",
+  //     spanOfLoading: "5",
+  //     openingValue: "",
+  //     closingValue: "",
+  //   },
+  // },
+  beam: {
+    length: "5",
+    flexuralRigidity: "1",
+    loading: {
+      type: "varying",
+      distanceFromLeft: "0",
+      valueOfLoading: "",
+      spanOfLoading: "5",
+      openingValue: "10",
+      closingValue: "0",
+      // openingValue: "5",
+      // closingValue: "10",
+    },
+  },
+  rightColumn: {
+    length: "3",
+    flexuralRigidity: "2",
+    support: {
+      type: "fixed",
+      sinking: false,
+      sinkingValue: "",
+    },
+    loading: {
+      type: "single",
+      distanceFromTop: "2",
+      valueOfLoading: "20",
+      spanOfLoading: "",
+      openingValue: "",
+      closingValue: "",
+    },
+    // loading: {
+    //   type: "uniform",
+    //   distanceFromTop: "0",
+    //   valueOfLoading: "20",
+    //   spanOfLoading: "4",
+    //   openingValue: "",
+    //   closingValue: "",
+    // },
+    // loading: {
+    //   type: "varying",
+    //   distanceFromTop: "",
+    //   valueOfLoading: "",
+    //   spanOfLoading: "4",
+    //   openingValue: "25",
+    //   closingValue: "0",
+    // },
+  },
+};

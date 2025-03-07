@@ -142,8 +142,8 @@ export default function Sidebar() {
             />
           )}
         </div>
-        <LeftColumn />
         <Beam />
+        <LeftColumn />
         <RightColumn />
       </Scroller>
       <div className="">

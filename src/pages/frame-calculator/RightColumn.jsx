@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { frameActions } from "../../store/frame";
 import { motion, AnimatePresence } from "framer-motion";
@@ -85,10 +85,7 @@ export default function RightColumn() {
     );
   };
 
-  console.log(frameProperties);
-
   const applySpanHandler = () => {
-    console.log(rightColumn);
     const [isValid, errorMessage] = validateColumn("right column", rightColumn);
 
     if (!isValid) {
@@ -136,7 +133,7 @@ export default function RightColumn() {
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
           >
-            <LeftItem />
+            <RightItem />
           </motion.div>
         </AnimatePresence>
         <WrapperButton onClick={applySpanHandler}>Apply</WrapperButton>
@@ -145,7 +142,7 @@ export default function RightColumn() {
   );
 }
 
-function LeftItem() {
+function RightItem() {
   const dispatch = useDispatch();
   const { rightColumn } = useSelector((state) => state.frame);
   const { length, flexuralRigidity, support, loading } = rightColumn;
@@ -223,6 +220,33 @@ function LeftItem() {
       })
     );
   };
+
+  const changeDistanceFromTop = (distanceFromTop) => {
+    const newLoad = { ...loading, distanceFromTop: distanceFromTop };
+    dispatch(
+      frameActions.set({
+        key: "rightColumn",
+        value: { ...rightColumn, loading: newLoad },
+      })
+    );
+  };
+
+  const changeSpanOfLoading = (spanOfLoading) => {
+    const newLoad = { ...loading, spanOfLoading: spanOfLoading };
+    dispatch(
+      frameActions.set({
+        key: "rightColumn",
+        value: { ...rightColumn, loading: newLoad },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (loadingType != loadingEnums.single) {
+      changeDistanceFromTop(0);
+      changeSpanOfLoading(length);
+    }
+  }, [loadingType, length]);
 
   return (
     <div className="space-y-[1rem] span-section">
@@ -450,9 +474,10 @@ function UniformDistributedLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromTop}
+          value={distanceFromTop || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -538,9 +563,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeDistanceFromTop}
-          value={distanceFromTop}
+          value={distanceFromTop || "0"}
           isValid={distanceFromTopIsValid}
           errorMessage={distanceFromTopErrorMessage}
+          disabled={true}
         />
       </div>
       <div className="space-y-[0.5rem]">
@@ -568,9 +594,10 @@ function UniformVaryingLoadSettings() {
         <NumberInput
           Icon={MetreUnit}
           onChange={changeSpanOfLoading}
-          value={spanOfLoading}
+          value={spanOfLoading || "0"}
           isValid={spanOfLoadingIsValid}
           errorMessage={spanOfLoadingErrorMessage}
+          disabled={true}
         />
       </div>
     </motion.div>
