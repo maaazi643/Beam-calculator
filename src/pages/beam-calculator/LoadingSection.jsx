@@ -112,13 +112,13 @@ export default function LoadingSection() {
   };
 
   return (
-    <PropertyWrapper className="">
+    <PropertyWrapper className="bg-[#F0E68C]">
       <button
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"
       >
         <WrapperHeader className="flex flex-row items-center gap-2">
-          <span>Loadings</span>
+          <span className="text-black">Loadings</span>
           <motion.span
             initial="hidden"
             animate={loadings.length > 0 ? "visible" : "hidden"}
@@ -152,11 +152,12 @@ export default function LoadingSection() {
             </motion.div>
           ))}
         </AnimatePresence>
-        <WrapperButton onClick={addLoadingHandler}>
-          <span>Add New Load</span>
-          <RoundedPlus />
-        </WrapperButton>
-        <WrapperButton onClick={applyLoadingsHandler}>Apply</WrapperButton>
+        <div className="flex flex-row space-x-10">
+          <WrapperButton onClick={addLoadingHandler}>
+            <span>Add New Loading</span>
+          </WrapperButton>
+          <WrapperButton onClick={applyLoadingsHandler}>Save</WrapperButton>
+        </div>
       </motion.div>
     </PropertyWrapper>
   );

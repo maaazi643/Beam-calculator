@@ -1,4 +1,3 @@
-import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -26,18 +25,8 @@ import {
   getBeamTotalLength,
 } from "../../store/beam-utils";
 import { beamActions } from "../../store/beam";
-import EngineeringIcon from "@mui/icons-material/Engineering";
-import { isBeamEmpty } from "../../store/beam";
-// import JSONFormatter from "json-formatter-js";
 
-// const jsonStyle = {
-//   propertyStyle: { color: "#4a4a4a" }, // Neutral gray for property names
-//   stringStyle: { color: "#4caf50" }, // Soft green for strings
-//   numberStyle: { color: "#ffa726" }, // Warm orange for numbers
-//   booleanStyle: { color: "#42a5f5" }, // Cool blue for booleans
-//   nullStyle: { color: "#9e9e9e", fontStyle: "italic" }, // Gray italic for null
-//   bracketStyle: { color: "#6d6d6d" }, // Dark gray for brackets
-// };
+import { isBeamEmpty } from "../../store/beam";
 
 const LoadIcon = ({ load, beam, beamPixelLength }) => {
   const dim = getLoadPositionAndDimension(beam, load.id, beamPixelLength);
@@ -52,7 +41,6 @@ const LoadIcon = ({ load, beam, beamPixelLength }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          // transform: `translate(-${left}%, 0)`,
         }}
         valueOfLoading={load?.valueOfLoading}
       />
@@ -68,7 +56,6 @@ const LoadIcon = ({ load, beam, beamPixelLength }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          // transform: `translate(-${left}%, 0)`,
         }}
       />
     );
@@ -83,7 +70,6 @@ const LoadIcon = ({ load, beam, beamPixelLength }) => {
           position: "absolute",
           left: `${left}%`,
           top: `${top}%`,
-          // transform: `translate(-${left}%, 0)`,
         }}
         bigToSmall={+load?.openingValue > +load?.closingValue}
         triangular={+load?.openingValue === 0 || +load?.closingValue === 0}
@@ -236,13 +222,8 @@ export default function QuestionPage() {
   if (showBeamImage) {
     return (
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <EngineeringIcon
-          className="text-secondary"
-          style={{ fontSize: "9rem" }}
-        />
-
-        <p className="text-xl font-medium text-secondary text-center">
-          Please apply at least one span.
+        <p className="text-xl font-medium text-black text-center">
+          Please Input your values.
         </p>
       </div>
     );

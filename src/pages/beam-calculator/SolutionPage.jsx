@@ -20,7 +20,7 @@ export default function SolutionPage() {
     "-",
     ""
   )}.pdf`;
-  const { toPDF, targetRef } = usePDF({ filename: randomSolutionFilename });
+
   const { solutionAnalysis, solutionAnalysisErrorMessage, solutionIsLoading } =
     useSelector((state) => state.beam);
 
@@ -43,7 +43,7 @@ export default function SolutionPage() {
   if (solutionAnalysisErrorMessage) {
     return (
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <ErrorIcon className="text-secondary" style={{ fontSize: "9rem" }} />
+        <ErrorIcon className="text-white" style={{ fontSize: "9rem" }} />
 
         <p className="text-xl font-medium text-secondary text-center">
           {solutionAnalysisErrorMessage}
@@ -56,32 +56,19 @@ export default function SolutionPage() {
   if (noAnalysis) {
     return (
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <DescriptionIcon
-          className="text-secondary"
-          style={{ fontSize: "9rem" }}
-        />
-
-        <p className="text-xl font-medium text-secondary text-center">
-          Please solve a question.
+        <p className="text-xl font-medium text-black text-center">
+          Please ask a question to expect a solution.
         </p>
       </div>
     );
   }
 
-  const downloadPDF = () => {
-    try {
-      // toPDF();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
-    <div className="space-y-4 overflow-x-hidden" ref={targetRef} onClick={downloadPDF}>
-      <FixedEndedMoments solutionAnalysis={solutionAnalysis} />
+    <div className="space-y-4 overflow-x-hidden">
+      {/* <FixedEndedMoments solutionAnalysis={solutionAnalysis} />
       <SlopeDeflectionEquations solutionAnalysis={solutionAnalysis} />
       <EquilibriumEquations solutionAnalysis={solutionAnalysis} />
-      <ReactionForces solutionAnalysis={solutionAnalysis} />
+      <ReactionForces solutionAnalysis={solutionAnalysis} /> */}
       <ShearForces solutionAnalysis={solutionAnalysis} />
       <FreeEndAndBendingMoment solutionAnalysis={solutionAnalysis} />
     </div>

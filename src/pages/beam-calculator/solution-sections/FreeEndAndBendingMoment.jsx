@@ -125,7 +125,6 @@ EndMomentDiagram.propTypes = {
 const BendingMomentDiagram = ({ endMomentData1, freeMomentData }) => {
   const isMobile = useMediaQuery({ maxWidth: 640 });
 
-
   return (
     <div>
       <h2 className="text-center">Bending Moment Diagram</h2>
@@ -192,19 +191,20 @@ export default function FreeEndAndBendingMoment({ solutionAnalysis }) {
 
   return (
     <>
-      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 6). Find Bending Moment Diagram using Free And End Moments:
+      <h2 className="text-black text-2xl uppercase font-semibold leading-[normal]">
+        Final Bending Moment Diagram using Free Moments And End Moments
       </h2>
       {freeMoments?.map((el) => {
         return (
           <div key={uuidv4()} className="space-y-4">
-            <h3 className="text-secondary text-base italic font-semibold leading-[normal] font-inter">
+            <h3 className="text-black text-2xl uppercase font-semibold leading-[normal]">
               Free Moment For Span {el?.name}
             </h3>
             {el?.steps?.map((step) => (
               <MathJax
                 key={uuidv4()}
-                className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                // className="text-black text-2xl uppercase font-semibold leading-[1.4rem] overflow-x-auto overflow-y-hidden"
+                className="text-xs sm:text-sm md:text-base font-poppins overflow-x-auto overflow-y-hidden"
               >
                 {step}
               </MathJax>
@@ -212,44 +212,7 @@ export default function FreeEndAndBendingMoment({ solutionAnalysis }) {
           </div>
         );
       })}
-      <div className="relative overflow-x-auto">
-        <table className="table-auto w-full border-collapse border border-gray-300 rounded-lg">
-          <thead className="bg-gray-200">
-            <tr className="text-left text-gray-700">
-              <th></th>
-              {freeMoments?.map((el, ind) => (
-                <>
-                  <th
-                    key={el?.name + ind}
-                    className="px-4 py-2 border border-gray-300 font-semibold"
-                  >
-                    {el?.name}
-                  </th>
-                </>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="even:bg-gray-100 odd:bg-white text-gray-800">
-              <td className="text-nowrap px-4 py-2 border border-gray-300">
-                Free End Moments
-              </td>
-              {freeMoments?.map((el, ind) => (
-                <>
-                  <td
-                    key={el?.name + ind}
-                    className="px-4 py-2 border border-gray-300"
-                  >
-                    <MathJax className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden">
-                      {sprintf("`%.2f Nm`", el?.fm)}
-                    </MathJax>
-                  </td>
-                </>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div>
+
       <FreeMomentDiagram data={freeMomentsDiagram} />
       <EndMomentDiagram data={endMomentsDiagram} />
       <BendingMomentDiagram

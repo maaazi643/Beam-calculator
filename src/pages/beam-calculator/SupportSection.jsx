@@ -20,7 +20,11 @@ import {
   RollerSupportButton,
   FixedSupportButton,
 } from "../../icons/Properties";
-import { createNewSupport, getBeamTotalLength, supportEnums } from "../../store/beam-utils";
+import {
+  createNewSupport,
+  getBeamTotalLength,
+  supportEnums,
+} from "../../store/beam-utils";
 import {
   validateSupportSinkingValue,
   validateSupportDistanceFromLeft,
@@ -99,7 +103,10 @@ export default function SupportSection() {
   };
 
   const applySupportHandler = () => {
-    const [supportsAreValid, errorMessage] = validateSupports(supports, getBeamTotalLength(beamProperties));
+    const [supportsAreValid, errorMessage] = validateSupports(
+      supports,
+      getBeamTotalLength(beamProperties)
+    );
 
     if (!supportsAreValid) {
       showNotification(errorMessage);
@@ -120,20 +127,20 @@ export default function SupportSection() {
   };
 
   return (
-    <PropertyWrapper className="">
+    <PropertyWrapper className="bg-[#F0E68C]">
       <button
         onClick={toggleShowSupportHandler}
         className="inline-flex w-full items-center justify-between"
       >
         <WrapperHeader className="flex flex-row items-center gap-2">
-          <span>Supports</span>
+          <span className="text-black">Supports</span>
           <motion.span
             initial="hidden"
             animate={supports.length > 0 ? "visible" : "hidden"}
             variants={indicatorVariants}
           >
             <MemberIndicator number={supports.length} />
-          </motion.span>{" "}
+          </motion.span>
         </WrapperHeader>
         <UpArrow
           className={`transform transition-transform ${
@@ -160,6 +167,7 @@ export default function SupportSection() {
             </motion.div>
           ))}
         </AnimatePresence>
+
         <AnimatePresence>
           {!isBeamEndFixed && (
             <motion.div
@@ -168,24 +176,23 @@ export default function SupportSection() {
               variants={configDropdownVariants}
             >
               <WrapperButton onClick={addSupportHandler}>
-                <span>Add New Support</span>
-                <RoundedPlus />
+                <span>Enter New Support</span>
               </WrapperButton>
             </motion.div>
           )}
         </AnimatePresence>
-        <WrapperButton onClick={applySupportHandler}>Apply</WrapperButton>
+        <WrapperButton onClick={applySupportHandler}>Save</WrapperButton>
       </motion.div>
     </PropertyWrapper>
   );
 }
 
 const supportPropTypes = PropTypes.shape({
-  id: PropTypes.string.isRequired, // Assuming uuidv4() generates a string
-  type: PropTypes.string.isRequired, // Replace with specific values if type has a fixed set of options
-  sinking: PropTypes.bool.isRequired, // Indicates sinking status
-  sinkingValue: PropTypes.number.isRequired, // Numeric value for sinking
-  distanceFromLeft: PropTypes.number.isRequired, // Numeric distance
+  id: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  sinking: PropTypes.bool.isRequired,
+  sinkingValue: PropTypes.number.isRequired,
+  distanceFromLeft: PropTypes.number.isRequired,
 }).isRequired;
 
 function SupportItem({ support }) {
@@ -216,10 +223,6 @@ function SupportItem({ support }) {
     <div className="space-y-[1rem] px-[0.5px] support-section">
       <WrapperParagraph>Support Type</WrapperParagraph>
       <div className="flex gap-x-[0.5rem]">
-        <PinnedSupportButton
-          active={isPinnedSupport}
-          onClick={changeSupportType.bind(null, supportEnums.pinned)}
-        />
         <RollerSupportButton
           active={isRollerSupport}
           onClick={changeSupportType.bind(null, supportEnums.roller)}
@@ -227,6 +230,10 @@ function SupportItem({ support }) {
         <FixedSupportButton
           active={isFixedSupport}
           onClick={changeSupportType.bind(null, supportEnums.fixed)}
+        />
+        <PinnedSupportButton
+          active={isPinnedSupport}
+          onClick={changeSupportType.bind(null, supportEnums.pinned)}
         />
       </div>
       {isPinnedSupport && <PinnedSupportSettings support={support} />}

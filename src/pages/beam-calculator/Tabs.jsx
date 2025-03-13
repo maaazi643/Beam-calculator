@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { NavLink, useLocation, useNavigate } from "react-router";
 
@@ -9,8 +9,8 @@ function Tab({ to, children }) {
       className={({ isActive }) =>
         `${
           isActive
-            ? "text-secondary font-semibold text-lg"
-            : "text-secondary-2 font-normal text-base"
+            ? "text-black font-semibold text-lg"
+            : "text-black font-normal text-base"
         } not-italic leading-[133%] font-inter transition-all duration-200 ease-in-out hover:text-secondary hover:font-semibold`
       }
     >
@@ -40,10 +40,10 @@ export default function Tabs() {
   }, [navigate, endsWithQuestion, endsWithSteps, endsWithSolution]);
 
   return (
-    <div className="pb-3 border-b border-b-secondary flex items-center gap-x-6">
+    <div className="pb-3 border-b border-b-white flex items-center gap-x-6">
       <Tab to="question">Question</Tab>
       {/* <Tab to="steps">Steps</Tab> */}
-      <Tab to="solution">Solution</Tab>
+      <Tab to="solution">Solution to the question</Tab>
     </div>
   );
 }

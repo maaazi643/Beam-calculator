@@ -13,7 +13,6 @@ import DeleteButton from "../../components/buttons/DeleteButton";
 import UpArrow from "../../icons/UpArrow";
 import Trash from "../../icons/Trash";
 import { MetreUnit, EIUnit } from "../../icons/units";
-import RoundedPlus from "../../icons/RoundedPlus";
 import { createNewSpan } from "../../store/beam-utils";
 import {
   validateSpanLength,
@@ -33,7 +32,7 @@ const dropdownVariants = {
     height: "auto",
     transition: { duration: 0.3, ease: "easeInOut" },
     marginTop: 16,
-    borderTop: "1px solid #D4D4D8",
+    borderTop: "1px solid #fff",
     paddingTop: 16,
   },
 };
@@ -69,7 +68,7 @@ export default function SpanSection() {
   };
 
   const applySpanHandler = () => {
-    const [spansAreValid, errorMessage] = validateSpans(spans)
+    const [spansAreValid, errorMessage] = validateSpans(spans);
 
     if (!spansAreValid) {
       showNotification(errorMessage);
@@ -90,13 +89,13 @@ export default function SpanSection() {
   };
 
   return (
-    <PropertyWrapper className="">
+    <PropertyWrapper className="bg-[#F0E68C]">
       <button
         onClick={toggleShowConfigHandler}
         className="inline-flex w-full items-center justify-between"
       >
         <WrapperHeader className="flex flex-row items-center gap-2">
-          <span>Spans</span>
+          <span className="text-black">Spans</span>
           <motion.span
             initial="hidden"
             animate={spans.length > 0 ? "visible" : "hidden"}
@@ -130,11 +129,12 @@ export default function SpanSection() {
             </motion.div>
           ))}
         </AnimatePresence>
-        <WrapperButton onClick={addSpanHandler}>
-          <span>Add New Span</span>
-          <RoundedPlus />
-        </WrapperButton>
-        <WrapperButton onClick={applySpanHandler}>Apply</WrapperButton>
+        <div className="flex flex-row space-x-10">
+          <WrapperButton onClick={addSpanHandler}>
+            <span>Enter New Span</span>
+          </WrapperButton>
+          <WrapperButton onClick={applySpanHandler}>Save</WrapperButton>
+        </div>
       </motion.div>
     </PropertyWrapper>
   );
@@ -170,7 +170,9 @@ function SpanItem({ span }) {
     <div className="space-y-[1rem] span-section">
       <div className="flex flex-row items-start gap-x-[1rem]">
         <div className="space-y-[0.5rem]">
-          <WrapperParagraph>Length</WrapperParagraph>
+          <WrapperParagraph className="text-black">
+            Enter Span Length
+          </WrapperParagraph>
           <NumberInput
             Icon={MetreUnit}
             placeholder=""
@@ -181,7 +183,9 @@ function SpanItem({ span }) {
           />
         </div>
         <div className="space-y-[0.5rem]">
-          <WrapperParagraph>EI</WrapperParagraph>
+          <WrapperParagraph className="text-black">
+            Enter EI Value
+          </WrapperParagraph>
           <NumberInput
             Icon={EIUnit}
             placeholder=""

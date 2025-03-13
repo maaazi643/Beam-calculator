@@ -25,16 +25,10 @@ export default function Navbar() {
       <div className="flex gap-x-2">
         <NavLink to="/" className="flex gap-x-2">
           <LeftArrow />
-          <span className="text-secondary-2 text-sm not-italic font-normal leading-[133%]">
-            Home
+          <span className="text-white text-sm not-italic font-normal leading-[133%]">
+            Back
           </span>
         </NavLink>
-        <span className="text-secondary-2 text-sm not-italic font-normal leading-[133%]">
-          /
-        </span>
-        <span className="text-secondary text-sm not-italic font-semibold leading-[133%]">
-          Beam Calculator{" "}
-        </span>
       </div>
       {isMobile && <SettingsIcon onClick={toggleSidebarHandler} />}
     </div>

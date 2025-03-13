@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import {
   AreaChart,
   CartesianGrid,
@@ -6,7 +5,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Area
+  Area,
 } from "recharts";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
@@ -53,7 +52,6 @@ const ShearForceDiagram = ({ data }) => {
                 dataKey="force"
                 stroke={COLORS["secondary-2"]}
                 fill={COLORS["secondary"]}
-                // dot={{ r: 3 }}
               />
             ))}
           </AreaChart>
@@ -68,12 +66,12 @@ ShearForceDiagram.propTypes = {
 };
 
 function ShearForces({ solutionAnalysis }) {
-  const {shearForceDiagramPoints} = solutionAnalysis
+  const { shearForceDiagramPoints } = solutionAnalysis;
 
   return (
     <>
-      <h2 className="text-secondary text-lg sm:text-2xl italic font-semibold leading-[normal] font-inter">
-        (Step 5). Find shear forces And Shear Force Diagram:
+      <h2 className="text-black text-2xl uppercase font-semibold leading-[normal]">
+        The Final Shear Force Diagram:
       </h2>
       <div className="space-y-4">
         {solutionAnalysis?.shearForces?.map((el) => {
@@ -83,7 +81,8 @@ function ShearForces({ solutionAnalysis }) {
                 <>
                   <MathJax
                     key={uuidv4()}
-                    className="text-xs sm:text-sm md:text-base overflow-x-auto overflow-y-hidden"
+                    className="text-xs sm:text-sm md:text-base font-poppins overflow-x-auto overflow-y-hidden"
+                    // className="text-black text-2xl uppercase font-semibold leading-[normal] overflow-x-auto overflow-y-hidden"
                   >
                     {step}
                   </MathJax>

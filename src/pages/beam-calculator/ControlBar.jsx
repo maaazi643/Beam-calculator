@@ -1,10 +1,10 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { twMerge } from "tailwind-merge";
 import { useSelector, useDispatch } from "react-redux";
 import { beamActions } from "../../store/beam";
 import ControlButton from "../../components/buttons/ControlButton";
 import { Undo, Redo, Clear } from "../../icons/controls";
+import Trash from "../../icons/Trash";
 
 export default function ControlBar({ className }) {
   const dispatch = useDispatch();
@@ -71,21 +71,21 @@ export default function ControlBar({ className }) {
   return (
     <div
       className={twMerge(
-        "bg-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] py-8 px-4 flex items-center justify-center gap-8",
+        "bg-[#7B3F00] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] py-5 px-4 flex items-center justify-center gap-8 mt-10 rounded-[10px]",
         className
       )}
     >
       <ControlButton onClick={undoHandler}>
         <Undo />
-        <span>Undo</span>
+        <span className="text-white">Move a step back</span>
       </ControlButton>
       <ControlButton onClick={redoHandler}>
         <Redo />
-        <span>Redo</span>
+        <span className="text-white">Try Again</span>
       </ControlButton>
       <ControlButton onClick={clearHandler}>
-        <Clear />
-        <span>Clear</span>
+        <Trash />
+        <span className="text-white">Delete</span>
       </ControlButton>
     </div>
   );

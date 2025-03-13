@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 import { COLORS } from "../../tailwind.config";
@@ -10,8 +10,7 @@ export const SinglePointLoadButton = ({ active, onClick }) => {
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
       onClick={onClick}
       animate={{
-        backgroundColor: active ? "#444" : "#fff", // bg-secondary / bg-primary
-        // scale: active ? 1.1 : 1, // Slight scaling effect
+        backgroundColor: active ? "#7B3F00" : "#d16f06",
       }}
       transition={{
         type: "spring",
@@ -38,7 +37,7 @@ export const SinglePointLoadButton = ({ active, onClick }) => {
           <motion.path
             d="M3.17002 21.5967C3.35226 21.7789 3.64774 21.7789 3.82998 21.5967L6.79983 18.6268C6.98208 18.4446 6.98208 18.1491 6.79983 17.9668C6.61759 17.7846 6.32211 17.7846 6.13986 17.9668L3.5 20.6067L0.860135 17.9668C0.677891 17.7846 0.382414 17.7846 0.200169 17.9668C0.0179243 18.1491 0.0179243 18.4446 0.200169 18.6268L3.17002 21.5967ZM3.03333 0.733337L3.03333 21.2667H3.96667L3.96667 0.733337H3.03333Z"
             animate={{
-              fill: active ? "#fff" : "#444", // Path color transitions
+              backgroundColor: active ? "#7B3F00" : "#d16f06",
             }}
             transition={{
               duration: 0.3,
@@ -62,8 +61,7 @@ export const UniformDistributedLoadButton = ({ active, onClick }) => {
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
       onClick={onClick}
       animate={{
-        backgroundColor: active ? "#444" : "#fff", // Change background color
-        // scale: active ? 1.1 : 1, // Slight scaling effect
+        backgroundColor: active ? "#7B3F00" : "#d16f06",
       }}
       transition={{
         type: "spring",
@@ -92,10 +90,9 @@ export const UniformDistributedLoadButton = ({ active, onClick }) => {
           y1="1.26667"
           x2="26.2002"
           y2="1.26667"
-          stroke={active ? "#fff" : "#444"} // Stroke color transition
-          strokeWidth="0.933333"
+          stroke={active ? "#fff" : "#444"}
           animate={{
-            strokeWidth: active ? 1.5 : 0.933333, // Animate stroke width
+            strokeWidth: active ? 1.5 : 0.933333,
           }}
           transition={{
             duration: 0.3,
@@ -222,7 +219,7 @@ export const PinnedSupportButton = ({ active, onClick }) => {
       className="p-[0.7rem] rounded-lg inline-flex items-center justify-center"
       onClick={onClick}
       animate={{
-        backgroundColor: active ? "#444" : "#fff", // Button background color
+        backgroundColor: active ? "#7B3F00" : "#d16f06",
       }}
       transition={{
         type: "spring",
@@ -943,7 +940,12 @@ FullDimensionMark.propTypes = {
   width: PropTypes.number,
 };
 
-export const HorizontalSinglePointLoad = ({ style, toLeft, className, props }) => {
+export const HorizontalSinglePointLoad = ({
+  style,
+  toLeft,
+  className,
+  props,
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -953,7 +955,7 @@ export const HorizontalSinglePointLoad = ({ style, toLeft, className, props }) =
       fill="none"
       preserveAspectRatio="none"
       style={style}
-      className={twMerge(`${toLeft ? "" : "rotate-180"}`, className)} 
+      className={twMerge(`${toLeft ? "" : "rotate-180"}`, className)}
       {...props}
     >
       <path
@@ -1031,7 +1033,11 @@ FixedSupportUpright.propTypes = {
   props: PropTypes.object,
 };
 
-export const VerticalUniformDistributedLoadIcon = ({ style, className, ...props }) => (
+export const VerticalUniformDistributedLoadIcon = ({
+  style,
+  className,
+  ...props
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="44"
