@@ -31,7 +31,7 @@ import {
 } from "../../store/beam-utils";
 // import { beamActions } from "../../store/beam";
 import EngineeringIcon from "@mui/icons-material/Engineering";
-import { isFrameEmpty } from "../../store/frame";
+import { isFrameBeamEmpty } from "../../store/frame";
 // import JSONFormatter from "json-formatter-js";
 import JsonFormatter from "react-json-formatter";
 
@@ -61,11 +61,11 @@ export default function QuestionPage() {
       const diagramWrapperRect = diagramWrapper?.getBoundingClientRect();
       const beamEl = diagramWrapper?.querySelector("div#beam");
       const beamElRect = beamEl?.getBoundingClientRect();
-      const topDiff = Math.abs(diagramWrapperRect.top - beamElRect.top);
+      const topDiff = Math.abs(diagramWrapperRect?.top - beamElRect?.top);
       const bottomDiff = Math.abs(
-        diagramWrapperRect.bottom - beamElRect.bottom
+        diagramWrapperRect?.bottom - beamElRect?.bottom
       );
-      setHeight(diagramWrapperRect.height);
+      setHeight(diagramWrapperRect?.height || 0);
       setTopToBeam(topDiff);
       setBeamToBottom(bottomDiff);
       console.log(topDiff, bottomDiff);
@@ -85,7 +85,7 @@ export default function QuestionPage() {
     beamToBottom,
   };
 
-  const showFrameImage = isFrameEmpty(frameProperties);
+  const showFrameImage = isFrameBeamEmpty(frameProperties);
 
   if (showFrameImage) {
     return (

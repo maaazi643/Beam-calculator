@@ -85,11 +85,9 @@ export const frameSlice = createSlice({
   },
 });
 
-export const isFrameEmpty = (frame) => {
-  const {beam, leftColumn, rightColumn} = frame
-  console.log(beam, leftColumn, rightColumn)
-  return +beam.length == '0'
-  // return +beam.length == '0' && +leftColumn.length == '0' && +rightColumn.length == '0'
+export const isFrameBeamEmpty = (frame) => {
+  const {beam} = frame
+  return +beam.length ==  0
 };
 
 export const frameActions = frameSlice.actions;
